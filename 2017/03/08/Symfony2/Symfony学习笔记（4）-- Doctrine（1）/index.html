@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Symfony学习笔记（4）-- Doctrine（1）"/>
+
+
+
+
+  <meta name="keywords" content="symfony," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（4）-- Doctrine（1）/"/>
+
+
+<meta name="description" content="Doctrine是一个第三方Bundle，其唯一目的就是在Symfony2中操纵数据库。 ##一个小例子熟悉Doctrine(假设我们的数据库是MySql) ###在命令行创建一个小例子的Bundle php app/console generate:bundle --namespace=Acme/StoreBundle ###配置数据库：通过parameters.yml来确定一些数据库基本参数">
+<meta name="keywords" content="symfony">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Symfony学习笔记（4）-- Doctrine（1）">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（4）-- Doctrine（1）/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="Doctrine是一个第三方Bundle，其唯一目的就是在Symfony2中操纵数据库。 ##一个小例子熟悉Doctrine(假设我们的数据库是MySql) ###在命令行创建一个小例子的Bundle php app/console generate:bundle --namespace=Acme/StoreBundle ###配置数据库：通过parameters.yml来确定一些数据库基本参数">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-Doctrine映射.png">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Symfony学习笔记（4）-- Doctrine（1）">
+<meta name="twitter:description" content="Doctrine是一个第三方Bundle，其唯一目的就是在Symfony2中操纵数据库。 ##一个小例子熟悉Doctrine(假设我们的数据库是MySql) ###在命令行创建一个小例子的Bundle php app/console generate:bundle --namespace=Acme/StoreBundle ###配置数据库：通过parameters.yml来确定一些数据库基本参数">
+<meta name="twitter:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-Doctrine映射.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Symfony学习笔记（4）-- Doctrine（1） · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Symfony学习笔记（4）-- Doctrine（1）
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p><a href="http://www.doctrine-project.org/" target="_blank" rel="external">Doctrine</a>是一个第三方Bundle，其唯一目的就是在Symfony2中操纵数据库。</p>
+<p>##一个小例子熟悉Doctrine(假设我们的数据库是MySql)</p>
+<p>###在命令行创建一个小例子的Bundle</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console generate:bundle --namespace=Acme/StoreBundle</div></pre></td></tr></table></figure>
+<p>###配置数据库：<br>通过<strong>parameters.yml</strong>来确定一些数据库基本参数</p>
+<p>###创建数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ php app/console doctrine:database:create</div></pre></td></tr></table></figure>
+<blockquote>
+<p>很重要！别忘了设置Mysql的编码格式</p>
+<p>在<strong>my.cnf</strong>中：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">[mysqld]</div><div class="line">collation-server = utf8_general_ci</div><div class="line">character-set-server = utf8</div></pre></td></tr></table></figure>
+</blockquote>
+<p>###创建数据库表实体</p>
+<p><strong>法一：手动书写代码</strong></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/Product.php</span></div><div class="line"><span class="keyword">namespace</span> <span class="title">Acme</span>\<span class="title">StoreBundle</span>\<span class="title">Entity</span>;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">protected</span> $name;</div><div class="line">  <span class="keyword">protected</span> $price;</div><div class="line">  <span class="keyword">protected</span> $description;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>法二：控制台交互式创建</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:generate:entity</div></pre></td></tr></table></figure>
+<p>###添加映射信息，如下图所示，Doctrine完成了PHP中实体对象到数据库表的映射</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-Doctrine映射.png" alt="Doctrine映射"></p>
+<p>我们可以通过Annotations完成PHP class到数据表的映射，当然也可以使用YAML或者XML，但是三者决不能混用。</p>
+<p><strong>Annotations</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/Product.php</span></div><div class="line"><span class="keyword">namespace</span> <span class="title">Acme</span>\<span class="title">StoreBundle</span>\<span class="title">Entity</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Doctrine</span>\<span class="title">ORM</span>\<span class="title">Mapping</span> <span class="title">as</span> <span class="title">ORM</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Entity</div><div class="line"> * <span class="doctag">@ORM</span>\Table(name="product")//表名可以省略，可以通过类名进行自动判断</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span></span></div><div class="line">&#123;</div><div class="line"> <span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Column(type="integer")</div><div class="line"> * <span class="doctag">@ORM</span>\Id</div><div class="line"> * <span class="doctag">@ORM</span>\GeneratedValue(strategy="AUTO")</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $id;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Column(type="string", length=100)</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $name;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Column(type="decimal", scale=2)</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $price;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Column(type="text")</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $description;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>YAML</strong>：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># src/Acme/StoreBundle/Resources/config/doctrine/Product.orm.yml</span></div><div class="line"><span class="string">Acme\StoreBundle\Entity\Product:</span></div><div class="line"><span class="attr">    type:</span> <span class="string">entity</span></div><div class="line"><span class="attr">    table:</span> <span class="string">product</span></div><div class="line"><span class="attr">    id:</span></div><div class="line"><span class="attr">        id:</span></div><div class="line"><span class="attr">            type:</span> <span class="string">integer</span></div><div class="line"><span class="attr">            generator:</span> <span class="string">&#123;</span> <span class="attr">strategy:</span> <span class="string">AUTO</span> <span class="string">&#125;</span></div><div class="line"><span class="attr">    fields:</span></div><div class="line"><span class="attr">        name:</span></div><div class="line"><span class="attr">            type:</span> <span class="string">string</span></div><div class="line"><span class="attr">            length:</span> <span class="number">100</span></div><div class="line"><span class="attr">        price:</span></div><div class="line"><span class="attr">            type:</span> <span class="string">decimal</span></div><div class="line"><span class="attr">            scale:</span> <span class="number">2</span></div><div class="line"><span class="attr">        description:</span></div><div class="line"><span class="attr">            type:</span> <span class="string">text</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：类名尽量不要用sql中的保留字，如 Group等。</p>
+</blockquote>
+<p>###产生<strong>Getters</strong>和<strong>Setters</strong>方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:generate:entities Acme/StoreBundle/Entity/Product</div></pre></td></tr></table></figure>
+<p>###创建product对象所映射的数据库表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:schema:update --force</div></pre></td></tr></table></figure>
+<p>根据实体类的变化Doctrine自动产生相应SQL语句完成数据视图的更新。</p>
+<p>###将对象持久化到数据库</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Controller/DefaultController.php</span></div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">use</span> <span class="title">Acme</span>\<span class="title">StoreBundle</span>\<span class="title">Entity</span>\<span class="title">Product</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Symfony</span>\<span class="title">Component</span>\<span class="title">HttpFoundation</span>\<span class="title">Response</span>;</div><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">createAction</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  $product = <span class="keyword">new</span> Product();</div><div class="line"> 	$product-&gt;setName(<span class="string">'A Foo Bar'</span>);</div><div class="line"> 	$product-&gt;setPrice(<span class="string">'19.99'</span>);</div><div class="line"> 	$product-&gt;setDescription(<span class="string">'Lorem ipsum dolor'</span>);</div><div class="line">  $em = <span class="keyword">$this</span>-&gt;getDoctrine()-&gt;getManager();</div><div class="line"> 	$em-&gt;persist($product);</div><div class="line"> 	$em-&gt;flush();<span class="comment">//flush以后才真正刷新数据库</span></div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Response(<span class="string">'Created product id '</span>.$product-&gt;getId());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里有必要提到一下<strong>flush()</strong>这个方法，他会自动衡量持久化后数据的变更情况，并产生最适当的查询语句。例如，如果你持久化总计100个product对象，并在之后调用flush()方法，Doctrine将自动创建1个简单的预处理语句并在之后每条插入操作中重用该语句，这种足够快速高效的模式称为<strong>“工作单元（Unit of Work）”</strong>。</p>
+<p>###从数据库中取得数据。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">showAction</span><span class="params">($id)</span></span></div><div class="line">&#123;</div><div class="line">  $product = <span class="keyword">$this</span>-&gt;getDoctrine()</div><div class="line"> -&gt;getRepository(<span class="string">'AcmeStoreBundle:Product'</span>)</div><div class="line"> -&gt;find($id);</div><div class="line">  <span class="keyword">if</span> (!$product) &#123;</div><div class="line"> 		<span class="keyword">throw</span> <span class="keyword">$this</span>-&gt;createNotFoundException(</div><div class="line"> 		<span class="string">'No product found for id '</span>.$id</div><div class="line"> );</div><div class="line"> &#125;</div><div class="line"><span class="comment">// ... do something, like pass the $product object into a template</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>###什么是repository？<br>可以理解为一个特殊的PHP类，其唯一的工作就是取得其对应实体相关数据。如下可以看到repository封装有很多方法来以不同的形式取得数据，实现了模型层的一些功能。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// query by the primary key (usually "id")</span></div><div class="line">$product = $repository-&gt;find($id);</div><div class="line"><span class="comment">// dynamic method names to find based on a column value</span></div><div class="line">$product = $repository-&gt;findOneById($id);</div><div class="line">$product = $repository-&gt;findOneByName(<span class="string">'foo'</span>);</div><div class="line"><span class="comment">// find *all* products</span></div><div class="line">$products = $repository-&gt;findAll();</div><div class="line"><span class="comment">// find a group of products based on an arbitrary column value</span></div><div class="line">$products = $repository-&gt;findByPrice(<span class="number">19.99</span>);</div></pre></td></tr></table></figure>
+<p><strong>利用findBy及findOneBy来控制含有多个限制的对象获取</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// query for one product matching by name and price</span></div><div class="line">$product = $repository-&gt;findOneBy(</div><div class="line">  <span class="keyword">array</span>(<span class="string">'name'</span> =&gt; <span class="string">'foo'</span>, <span class="string">'price'</span> =&gt; <span class="number">19.99</span>)</div><div class="line">);</div><div class="line"><span class="comment">// query for all products matching the name, ordered by price</span></div><div class="line">$products = $repository-&gt;findBy(</div><div class="line">  <span class="keyword">array</span>(<span class="string">'name'</span> =&gt; <span class="string">'foo'</span>),</div><div class="line">  <span class="keyword">array</span>(<span class="string">'price'</span> =&gt; <span class="string">'ASC'</span>)</div><div class="line">);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：可以Symfony中toolbar查看了有多少查询被执行。</p>
+</blockquote>
+<p>###更新与删除，都是通过flush刷新</p>
+<p><strong>更新</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">updateAction</span><span class="params">($id)</span></span></div><div class="line">&#123;</div><div class="line">  $em = <span class="keyword">$this</span>-&gt;getDoctrine()-&gt;getManager();</div><div class="line">  $product = $em-&gt;getRepository(<span class="string">'AcmeStoreBundle:Product'</span>)-&gt;find($id);</div><div class="line"><span class="keyword">if</span> (!$product) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">$this</span>-&gt;createNotFoundException(</div><div class="line">    <span class="string">'No product found for id '</span>.$id</div><div class="line"> 	);</div><div class="line">&#125;</div><div class="line">  $product-&gt;setName(<span class="string">'New product name!'</span>);</div><div class="line">  $em-&gt;flush();</div><div class="line">  <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;redirect(<span class="keyword">$this</span>-&gt;generateUrl(<span class="string">'homepage'</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>删除</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line">$em-&gt;remove($product);</div><div class="line">$em-&gt;flush();</div></pre></td></tr></table></figure>
+<p>##通过QueryBuilder来建立查询语句</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line">$repository = <span class="keyword">$this</span>-&gt;getDoctrine()</div><div class="line"> -&gt;getRepository(<span class="string">'AcmeStoreBundle:Product'</span>);</div><div class="line">$query = $repository-&gt;createQueryBuilder(<span class="string">'p'</span>)</div><div class="line"> -&gt;where(<span class="string">'p.price &gt; :price'</span>)<span class="comment">//设置:price为占位符(placeholder)，防止SQL注入</span></div><div class="line"> -&gt;setParameter(<span class="string">'price'</span>, <span class="string">'19.99'</span>)<span class="comment">//设置占位符的值</span></div><div class="line"> -&gt;orderBy(<span class="string">'p.price'</span>, <span class="string">'ASC'</span>)</div><div class="line"> -&gt;getQuery();</div><div class="line">$products = $query-&gt;getResult();</div></pre></td></tr></table></figure>
+<p>###通过DQL建立查询，这样书写更像是在写SQL语句，对于复杂的查询非常有用。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">$em = $this-&gt;getDoctrine()-&gt;getManager();</div><div class="line">$query = $em-&gt;createQuery(</div><div class="line"> 'SELECT p</div><div class="line"> FROM AcmeStoreBundle:Product p //注意，表名，字段名的书写，以及SQL防注入</div><div class="line"> WHERE p.price &gt; :price</div><div class="line"> ORDER BY p.price ASC'</div><div class="line">)-&gt;setParameter('price', '19.99');</div><div class="line">$products = $query-&gt;getResult();</div></pre></td></tr></table></figure>
+<p>##封装</p>
+<p>为了更好地代码分离度和代码重用性，更建议将一些查询封装到实体对应的Repository中，仍是可以通过Annotations及YAML完成绑定实体及Repository。</p>
+<p><strong>Annotations</strong>:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/Product.php</span></div><div class="line"><span class="keyword">namespace</span> <span class="title">Acme</span>\<span class="title">StoreBundle</span>\<span class="title">Entity</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Doctrine</span>\<span class="title">ORM</span>\<span class="title">Mapping</span> <span class="title">as</span> <span class="title">ORM</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\Entity(repositoryClass="Acme\StoreBundle\Entity\ProductRepository")</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span></span></div><div class="line">&#123;</div><div class="line"> <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>YAML</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># src/Acme/StoreBundle/Resources/config/doctrine/Product.orm.yml</span></div><div class="line"><span class="string">Acme\StoreBundle\Entity\Product:</span></div><div class="line"><span class="attr">    type:</span> <span class="string">entity</span></div><div class="line"><span class="attr">    repositoryClass:</span> <span class="string">Acme\StoreBundle\Entity\ProductRepository</span></div><div class="line"> <span class="comment"># ...</span></div></pre></td></tr></table></figure>
+<p><strong>通过控制台自动产生repository类</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:generate:entities Acme</div></pre></td></tr></table></figure>
+<p><strong>考虑在repository类中添加自己的方法</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/ProductRepository.php</span></div><div class="line"><span class="keyword">namespace</span> <span class="title">Acme</span>\<span class="title">StoreBundle</span>\<span class="title">Entity</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Doctrine</span>\<span class="title">ORM</span>\<span class="title">EntityRepository</span>;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProductRepository</span> <span class="keyword">extends</span> <span class="title">EntityRepository</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">findAllOrderedByName</span><span class="params">()</span></span></div><div class="line">  &#123;</div><div class="line"> 		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;getEntityManager()</div><div class="line"> 				-&gt;createQuery(<span class="string">'SELECT p FROM AcmeStoreBundle:Product p ORDER BY p.name ASC'</span>)</div><div class="line"> 				-&gt;getResult();</div><div class="line"> 	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（4）-- Doctrine（1）/">http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（4）-- Doctrine（1）/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/symfony/">symfony</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Symfony2/Symfony学习笔记（3）-- Controller控制器 /">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Symfony学习笔记（3）-- Controller控制器</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Symfony2/Symfony学习笔记（5）-- Doctrine（2）/">
+        <span class="next-text nav-default">Symfony学习笔记（5）-- Doctrine（2）</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

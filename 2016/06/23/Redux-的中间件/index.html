@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Redux 中间件的实现"/>
+
+
+
+
+  <meta name="keywords" content="JavaScript,React,Redux," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2016/06/23/Redux-的中间件/"/>
+
+
+<meta name="description" content="引子我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：">
+<meta name="keywords" content="JavaScript,React,Redux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redux 中间件的实现">
+<meta property="og:url" content="http://yoyoyohamapi.me/2016/06/23/Redux-的中间件/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="引子我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/b1fe65ad-1d2f-4bbe-a35e-f287fce57267/image.png">
+<meta property="og:image" content="http://yoyoyohamapi.qiniudn.com/redux-middleware-middleware.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/46caf1d5-08b1-4adf-9016-65461f32a717/image.png">
+<meta property="og:updated_time" content="2017-04-29T03:04:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redux 中间件的实现">
+<meta name="twitter:description" content="引子我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：">
+<meta name="twitter:image" content="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Redux 中间件的实现 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Redux 中间件的实现
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jun 23, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中间件"><span class="toc-text">中间件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-撰写中间件"><span class="toc-text">1. 撰写中间件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-组合中间件"><span class="toc-text">2. 组合中间件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-pipeline"><span class="toc-text">3. pipeline</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#举个栗子-–-计数器"><span class="toc-text">举个栗子 – 计数器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#middlewares-js"><span class="toc-text">middlewares.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#actions-js"><span class="toc-text">actions.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reducers-js"><span class="toc-text">reducers.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#index-js"><span class="toc-text">index.js</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：</p>
+<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png" width="500"><br></div>
+
+<a id="more"></a>
+<p>Redux 的 dispatch 方法被设计得非常轻量，我们不妨查看 Redux 中的 <strong>createStore.js</strong> 源码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">action</span>) </span>&#123;</div><div class="line"></div><div class="line">   <span class="comment">// 需要 action 是一个纯对象 </span></div><div class="line">   <span class="keyword">if</span> (!isPlainObject(action)) &#123;</div><div class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(</div><div class="line">       <span class="string">'Actions must be plain objects.'</span> +</div><div class="line">       <span class="string">'Use custom middleware for async actions.'</span></div><div class="line">     )</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// action 需要声明类型</span></div><div class="line">   <span class="keyword">if</span> (<span class="keyword">typeof</span> action.type === <span class="string">'undefined'</span>) &#123;</div><div class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(</div><div class="line">       <span class="string">'Actions may not have an undefined"type"property.'</span> +</div><div class="line">       <span class="string">'Have you misspelled a constant?'</span></div><div class="line">     )</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// 检查是否正在 dispatch 中</span></div><div class="line">   <span class="keyword">if</span> (isDispatching) &#123;</div><div class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Reducers may not dispatch actions.'</span>)</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// 开始 dispatch, 倘若 dispatch 遇到阻碍(exception), 允许再次 dispatch</span></div><div class="line">   <span class="keyword">try</span> &#123;</div><div class="line">     isDispatching = <span class="literal">true</span></div><div class="line">     <span class="comment">// 通过 reducer 来刷新状态</span></div><div class="line">     currentState = currentReducer(currentState, action)</div><div class="line">   &#125; <span class="keyword">finally</span> &#123;</div><div class="line">     <span class="comment">// 修复 dispatch 状态, 以便再次发送</span></div><div class="line">     isDispatching = <span class="literal">false</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="comment">// 获取最新一次(next) 的监听列表, 逐个响应该 dispatch</span></div><div class="line">   <span class="keyword">var</span> listeners = currentListeners = nextListeners</div><div class="line">   <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; listeners.length; i++) &#123;</div><div class="line">     listeners[i]()</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="keyword">return</span> action</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们发现，在 dispatch 实现中，仅能接受和返回一个 plain action 对象：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">type</span>: CLICK</div><div class="line">  text: <span class="string">'submit'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h2><p>在开发环境下，我们要在 dispatch 过程中输出一些日志，比如 dispatch 前后的系统状态变动，可以有如下方式：</p>
+<ul>
+<li>直接在业务代码中添加日志打印：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> action = addTodo(<span class="string">'Use Redux'</span>)</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">store.dispatch(action)</div><div class="line"><span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div></pre></td></tr></table></figure>
+<p>目的是达到了，但是并不智慧（代码侵入性太强），我们每需要一个日志打印，就得手动在业务代码中添加，这会使我们业务代码变得肮脏（到处是重复的 <code>console.log</code> ）而难以阅读。</p>
+<ul>
+<li>重新构造一个经过包裹的 dispatch</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatchAndLog</span>(<span class="params">store, action</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">  store.dispatch(action)</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之后，在有日志需求的地方，我们用该 <code>dispatchAndLog</code> 方法替换原有的 <code>dispatch</code> 方法：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">dispatchAndLog(store, addTodo(<span class="string">'Use Redux'</span>))</div></pre></td></tr></table></figure>
+<p>看起来这样做不错，代码也清爽简洁，但设想这样一种情况，团队的其他人交给我们了一份老旧的代码片，使用的全是 <code>dispatch</code> 方法，为了日志需求，我们不得不定位到每一个 <code>dispatch</code> 进行替换，这口锅你愿意不愿意背？当然还得背，否则 KPI 就要捉急，为了背着不是那么累，还得往下思考。</p>
+<ul>
+<li>Monkey Patching</li>
+</ul>
+<p>在上一种解决方式中，壁垒就是我们得 <strong> 重复 </strong> 替换每一个 <code>dispatch</code> 调用。<code>dispatch</code> 作为 <code>store</code> 的一个方法，保存的是一个方法引用，所以我们可以让 <code>store</code> 的 <code>dispatch</code> 属性重新指向包裹后的引用：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 先暂存老的业务逻辑</span></div><div class="line"><span class="keyword">let</span> next = store.dispatch</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatchAndLog</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">  <span class="comment">// 为老的业务逻辑打上补丁 patching</span></div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">  <span class="keyword">let</span> result = next(action)</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">  <span class="keyword">return</span> result</div><div class="line">&#125;</div><div class="line"><span class="comment">// 新的逻辑替换掉老的逻辑</span></div><div class="line">store.dispatch = dispatchAndLog</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Monkey Patching 是一个很常见的技术手段，先在老的业务逻辑上打补丁（patching）形成新的逻辑，再用新的逻辑替换掉老的逻辑，而几乎不影响代码变动。</p>
+</blockquote>
+<p>好像天亮了，在你充满希望的等着上级褒奖时，新的需求来了：在一些场景下，为了保证性能（如惰性求值），我们不想 action 是一个 plain object，而希望它是一个<a href="http://www.ruanyifeng.com/blog/2015/05/thunk.html" target="_blank" rel="external"> thunk </a>，为此，我们包裹一个新的 <code>dispatch</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 此时，`store.dispatch` 已经拥有了日志功能</span></div><div class="line"><span class="keyword">let</span> next = store.dispatch <span class="comment">// 快照老的 `dispatch`</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatchThunk</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> action === <span class="string">'function'</span>)</div><div class="line">    <span class="keyword">return</span> action(store)</div><div class="line">  <span class="keyword">return</span> next(action) <span class="comment">// 调用老的 `dispatch`</span></div><div class="line">&#125;</div><div class="line">store.dispatch = dispatchThunk <span class="comment">// 刷新 `dispatch`</span></div></pre></td></tr></table></figure>
+<p>此时，我们验证 Monkey Patching 的解决策略在新的需求到来时依然能够从容应对，通过不断的打补丁，我们使得原有的 <code>dispatch</code> 方法不断强大，这个强大体现在两个方面：</p>
+<ol>
+<li>在 <code>dispatch</code> 的执行过程中注入了新的逻辑，例如日志打印</li>
+<li>支持更广泛的 action 类型，不仅可以是 plain object，还可以是 thunk，甚至是 promise</li>
+</ol>
+<p>但是，我们也发现了，代码仍然在这些方面有所重复：</p>
+<ol>
+<li>缓存老的 <code>dispatch</code> 逻辑：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> next = store.dispatch</div></pre></td></tr></table></figure>
+<ol>
+<li>替换 <code>store.dispatch</code>：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">store.dispatch = dispatchThunk</div></pre></td></tr></table></figure>
+<p>对于第一个问题， 我们可以通过参数传递来 <strong> 隐式地 </strong> 缓存老逻辑：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatchAndLog</span>(<span class="params">store, next</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">action</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">    <span class="keyword">let</span> result = next(action)</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在，我们新的业务代码会变成如下形式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">store.dispatch = dispatchAndLog(store, store.dispatch)</div><div class="line">store.disptach = dispatchThunk(store, store.dispatch)</div></pre></td></tr></table></figure>
+<p>如果熟悉函数式编程，我们还可以通过 <a href="https://zh.wikipedia.org/wiki/%E6%9F%AF%E9%87%8C%E5%8C%96" target="_blank" rel="external"> curry 化</a> 优化上述代码片:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">logger</span>(<span class="params">store</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">next</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">      <span class="built_in">console</span>.log(<span class="string">'dispatching'</span>, action)</div><div class="line">      <span class="keyword">let</span> result = next(action)</div><div class="line">      <span class="built_in">console</span>.log(<span class="string">'next state'</span>, store.getState())</div><div class="line">      <span class="keyword">return</span> result</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在，代码变成了：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> dispatch = store.dispatch</div><div class="line">dispatch = logger(store)(dispatch)</div><div class="line">dispatch = thunk(store)(dispatch)</div><div class="line">store.dispatch = dispatch</div></pre></td></tr></table></figure>
+<p>我们发现，对于 <code>dispatch</code> 的构造，是一个 <strong> 链式（chain）</strong> 的修饰过程，每一个对于现有 <code>dispatch</code> 的改造都可以视为一个 <strong> 中间件（middleware）</strong>， 我们现在封装一个函数表示上述过程：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 为 store 设置中间件</div><div class="line"> * @param store</div><div class="line"> * @paran middlewares &#123;Array&#125; 中间件列表</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyMiddleware</span>(<span class="params">store, middlewares</span>) </span>&#123;</div><div class="line">  <span class="comment">// 保证 `middlewares` 是一个数组</span></div><div class="line">  middlewares = middlewares.slice()</div><div class="line">  <span class="comment">// 我们声明的中间件序列最靠外的应当被最后响应</span></div><div class="line">  <span class="comment">// 所以最靠外的中间件应当最接近原生的 `dispatch`</span></div><div class="line">  middlewares.reverse()</div><div class="line"></div><div class="line">  <span class="comment">// 初始化 `dispatch`</span></div><div class="line">  <span class="keyword">let</span> dispatch = store.dispatch</div><div class="line">  <span class="comment">// 迭代装饰 `dispatch`</span></div><div class="line">  middlewares.forEach(<span class="function"><span class="params">middleware</span> =&gt;</span></div><div class="line">    dispatch = middleware(store)(dispatch)</div><div class="line">  )</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, store, &#123; dispatch &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>OK，业务代码现在变成如下形式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">store = applyMiddleware(store, [thunk, logger])</div></pre></td></tr></table></figure>
+<p>这已经是一个非常干练的解决方式了，也非常接近于 Redux 自身提供的 <code>applyMiddleware</code> 的函数实现，但是该函数存在如下两个缺陷：</p>
+<ol>
+<li>将整个 <code>store</code> 暴露给中间件是过剩的，因为这些中间件仅有（1）<strong> 改造 dispatch 方法 </strong>、（2）<strong> 读取当前状态 </strong> 的需求， 所以仅需要暴露给他们 <code>dispatch(action)</code> 及 <code>getState()</code> 就够了，这形成了 Redux 对中间件的约定。</li>
+<li>该方法存在这样一个隐患：可以无休止的应用中间件，如果开发者使用不当，将会产生对 <code>store.dispatch</code> 的重复包装：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">store = applyMiddleware(store, [thunk, logger])</div><div class="line"><span class="comment">// ...</span></div><div class="line">store = applyMiddleware(store, [thunk, logger])</div><div class="line"></div><div class="line"><span class="comment">// 此时，日志会被嵌套且重复地打印</span></div><div class="line">store.dispatch(action)</div></pre></td></tr></table></figure>
+<p>所以，更合理的一种做法是，把应用中间件到 <code>store</code> 的过程放到第一次返回 <code>store</code> 之前， 亦即，在用户拿到 <code>store</code> 对象前，<code>store.disptach</code> 已经被中间件序列包装完毕。</p>
+<p>官方实现的 <code>applyMiddleware</code> 解决了这些问题：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">applyMiddleware</span>(<span class="params">...middlewares</span>) </span>&#123;</div><div class="line"> <span class="comment">// 重构了 `createStore` 方法， 保证用户在拿到 `store` 对象前，</span></div><div class="line"> <span class="comment">// `store` 对象的 `dispatch` 已经被中间件序列包装完毕</span></div><div class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">createStore</span>) =&gt;</span> (reducer, initialState, enhancer) =&gt; &#123;</div><div class="line">    <span class="keyword">var</span> store = createStore(reducer, initialState, enhancer)</div><div class="line">    <span class="comment">// 原始的 `dispatch`</span></div><div class="line">    <span class="keyword">var</span> dispatch = store.dispatch</div><div class="line">    <span class="keyword">var</span> chain = []</div><div class="line"></div><div class="line">  <span class="comment">// 暴露有限的 API 给中间件</span></div><div class="line">    <span class="keyword">var</span> middlewareAPI = &#123;</div><div class="line">      <span class="attr">getState</span>: store.getState,</div><div class="line">      <span class="comment">// 通过闭包，每个中间件仅调用最新的 `dispatch`</span></div><div class="line">      dispatch: <span class="function">(<span class="params">action</span>) =&gt;</span> dispatch(action)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 利用 curry 化，初始化中间件链</span></div><div class="line">    chain = middlewares.map(<span class="function"><span class="params">middleware</span> =&gt;</span> middleware(middlewareAPI))</div><div class="line">    <span class="comment">// 利用函数组合，组合各个中间件至最终的 `dispatch` 形态</span></div><div class="line">    dispatch = compose(...chain)(store.dispatch)</div><div class="line"></div><div class="line">    <span class="comment">// 返回一个通过中间件重构了 `dispatch` 的 `store` 对象</span></div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      ...store,</div><div class="line">      dispatch</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意到， 该方法实际上是重构了 <code>createStore()</code>, 在官方的 <code>createStore</code> 实现中，我们观察到如下源码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// createStore.js</span></div><div class="line"><span class="comment">// 如果传递了 `enhancer`, 就必须保证 `enhancer` 是一个函数</span></div><div class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> enhancer !== <span class="string">'undefined'</span>) &#123;</div><div class="line">   <span class="keyword">if</span> (<span class="keyword">typeof</span> enhancer !== <span class="string">'function'</span>) &#123;</div><div class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Expected the enhancer to be a function.'</span>)</div><div class="line">   &#125;</div><div class="line">   <span class="comment">// 如果 `enhancer` 合法, 那么创建 `store` 的行为就放到 `enhancer` 中完成</span></div><div class="line">   <span class="keyword">return</span> enhancer(createStore)(reducer, initialState)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们得知，一旦遇到 <code>enhancer</code>（在这里是 <code>applyMiddleware</code>），那么创建 <code>store</code> 的行为就放到 <code>enhancer</code> 中完成，这样就解决了对 <code>store.dispatch</code> 的重复包装问题。</p>
+<p>此外，在 <code>applyMiddleware</code> 中有如下一段代码片很重要：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">dispatch = compose(...chain)(store.dispatch)</div></pre></td></tr></table></figure>
+<p>这段代码片中利用了函数式编程中函数组合（composing）的概念，从中间件链中不断抽出函数进行组合（一个 reduce 过程）， 组合方向为从右向左。为什么要进行函数组合呢，回顾之前的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> dispatch = store.dispatch</div><div class="line">dispatch = logger(store)(dispatch)</div><div class="line">dispatch = thunk(store)(dispatch)</div><div class="line">store.dispatch = dispatch</div></pre></td></tr></table></figure>
+<p>该构造过程可以简化为：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">store.dispatch = thunk(store)(logger(store)(dispatch))</div></pre></td></tr></table></figure>
+<p>如果了解函数式编程（学习 Redux 必须了解），这样的形式就暗示了我们可以进行函数组合（composing）来组合各个中间件构造最终的 dispatch， 官方的 compose 实现如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// compose.js</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 组合函数</div><div class="line"> * @param funcs 待组合函数列表</div><div class="line"> */</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">compose</span>(<span class="params">...funcs</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (funcs.length === <span class="number">0</span>) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span> arg</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 获得起始函数</span></div><div class="line">    <span class="keyword">const</span> last = funcs[funcs.length - <span class="number">1</span>]</div><div class="line">    <span class="comment">// 获得其余函数</span></div><div class="line">    <span class="keyword">const</span> rest = funcs.slice(<span class="number">0</span>, <span class="number">-1</span>)</div><div class="line">    <span class="comment">// 通过 `reduceRight`, 从右向左组合函数</span></div><div class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> rest.reduceRight(<span class="function">(<span class="params">composed, f</span>) =&gt;</span> f(composed), last(...args))</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>假如我们的中间件序列为：<code>[mid1, mid2, mid3]</code>, 那么最终组合成的函数即为：<code>mid1(mid2(mid3(...args)))</code>。 在 <code>dispatch</code> 时，中间件的响应顺序也为 <code>[mid1,mid2,mid3]</code></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们整理一下通过中间件机制增强 dispatch 的过程：</p>
+<h3 id="1-撰写中间件"><a href="#1-撰写中间件" class="headerlink" title="1. 撰写中间件"></a>1. 撰写中间件</h3><p>打补丁，包裹老的业务逻辑到新的业务逻辑形成一个新的中间件，同时将各个中间件按序进行存储，形成一个中间件链。</p>
+<h3 id="2-组合中间件"><a href="#2-组合中间件" class="headerlink" title="2. 组合中间件"></a>2. 组合中间件</h3><p>通过函数组合，新的业务逻辑不断装饰老的业务逻辑。</p>
+<h3 id="3-pipeline"><a href="#3-pipeline" class="headerlink" title="3. pipeline"></a>3. pipeline</h3><p>action 将在各个中间件间流动, 每次流动，都有可能产生新的 action。使用了中间件技术的 dispatch 将会成为一个流通 action 的管道</p>
+<p>现在，具有中间件参与的 dispatch 如下图所示：</p>
+<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/b1fe65ad-1d2f-4bbe-a35e-f287fce57267/image.png" width="500"><br></div>
+
+<h2 id="举个栗子-–-计数器"><a href="#举个栗子-–-计数器" class="headerlink" title="举个栗子 – 计数器"></a>举个栗子 – 计数器</h2><p>现在，完整的看一个在 Redux 使用中间件的例子 – 一个<a href="https://github.com/yoyoyohamapi/redux-middleware-example" target="_blank" rel="external">简单的计数器</a></p>
+<p>首先，我们定义两个中间件：</p>
+<ol>
+<li>日志中间件：输出 dispatch 过程中的一些信息</li>
+<li>thunk 中间件：允许 action 是一个 thunk</li>
+</ol>
+<h3 id="middlewares-js"><a href="#middlewares-js" class="headerlink" title="middlewares.js"></a>middlewares.js</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 日志中间件</div><div class="line"> */</div><div class="line"><span class="keyword">const</span> logger = <span class="function">(<span class="params">&#123;dispatch, getState&#125;</span>) =&gt;</span> next =&gt; <span class="function"><span class="params">action</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'current state'</span>, getState())</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'dispatching...'</span>, action)</div><div class="line">    <span class="keyword">let</span> result = next(action)</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'next state'</span>, getState())</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'.........'</span>)</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * thunk 中间件</div><div class="line"> */</div><div class="line"><span class="keyword">const</span> thunk = <span class="function">(<span class="params">&#123;dispatch, getState&#125;</span>) =&gt;</span> next =&gt; <span class="function"><span class="params">action</span>=&gt;</span></div><div class="line">    <span class="keyword">typeof</span> action === <span class="string">'function'</span>?action(dispatch, getState):next(action)</div><div class="line"></div><div class="line"><span class="keyword">export</span> &#123;thunk,logger&#125;</div></pre></td></tr></table></figure>
+<h3 id="actions-js"><a href="#actions-js" class="headerlink" title="actions.js"></a>actions.js</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> INCREMENT = <span class="string">'INCREMENT'</span></div><div class="line"><span class="keyword">export</span> <span class="keyword">const</span> DECREMENT = <span class="string">'DECREMENT'</span></div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">increment</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">type</span>: INCREMENT</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">decrement</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">type</span>: DECREMENT</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">incrementIfOdd</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">dispatch, getState</span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">const</span> &#123; counter &#125; = getState();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (counter % <span class="number">2</span> === <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        dispatch(increment());</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="reducers-js"><a href="#reducers-js" class="headerlink" title="reducers.js"></a>reducers.js</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; INCREMENT, DECREMENT &#125; <span class="keyword">from</span> <span class="string">'./actions'</span></div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">countReducer</span>(<span class="params">state=&#123;counter:<span class="number">0</span>&#125;, action</span>) </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">        <span class="keyword">case</span> INCREMENT:</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, state, &#123;</div><div class="line">                <span class="attr">counter</span>: state.counter + <span class="number">1</span></div><div class="line">            &#125;)</div><div class="line">        <span class="keyword">case</span> DECREMENT:</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, state, &#123;</div><div class="line">                <span class="attr">counter</span>: state.counter - <span class="number">1</span></div><div class="line">            &#125;)</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">return</span> state</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">'babel-polyfill'</span></div><div class="line"><span class="keyword">import</span> &#123; createStore, applyMiddleware &#125; <span class="keyword">from</span> <span class="string">'redux'</span></div><div class="line"><span class="keyword">import</span>  &#123; increment, decrement, incrementIfOdd &#125; <span class="keyword">from</span> <span class="string">'./actions'</span></div><div class="line"><span class="keyword">import</span> &#123; logger, thunk&#125; <span class="keyword">from</span> <span class="string">'./middlerwares'</span></div><div class="line"><span class="keyword">import</span> rootReducer <span class="keyword">from</span> <span class="string">'./reducers'</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> store = createStore(</div><div class="line">    rootReducer,</div><div class="line">    applyMiddleware(</div><div class="line">        thunk,</div><div class="line">        logger</div><div class="line">    )</div><div class="line">)</div><div class="line"></div><div class="line">store.dispatch(increment())</div><div class="line">store.dispatch(increment())</div><div class="line">store.dispatch(decrement())</div><div class="line">store.dispatch(incrementIfOdd())</div></pre></td></tr></table></figure>
+<p>程序运行结果如下图所示：</p>
+<div style="text-align:center"><br><img src="http://yoyoyohamapi.qiniudn.com/redux-middleware-middleware.png" width="200"><br></div>
+
+<p>我们用图描述 <code>store.dispatch(incrementIfOdd())</code> 这一过程, 假设当前的 <code>counter</code> 为奇数：</p>
+<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/46caf1d5-08b1-4adf-9016-65461f32a717/image.png" width="500"><br></div>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://redux.js.org/docs/advanced/Middleware.html" target="_blank" rel="external">Middlewares</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2016/06/23/Redux-的中间件/">http://yoyoyohamapi.me/2016/06/23/Redux-的中间件/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/JavaScript/">JavaScript</a>
+            
+              <a href="/tags/React/">React</a>
+            
+              <a href="/tags/Redux/">Redux</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/06/20/Flux下的组件化开发/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Flux 下的组件化开发</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/06/28/JavaScript-中的递归优化/">
+        <span class="next-text nav-default">JavaScript 中的递归优化</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  </body>
+</html>

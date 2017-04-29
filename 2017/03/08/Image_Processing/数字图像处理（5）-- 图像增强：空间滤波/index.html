@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="数字图像处理（5）-- 图像增强：空间滤波"/>
+
+
+
+
+  <meta name="keywords" content="数字图像处理," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（5）-- 图像增强：空间滤波/"/>
+
+
+<meta name="description" content="空间滤波的实质：用某个mask（或者称 kernel）去覆盖某个像素，并参考该像素及其邻域像素的强度，去计算一个乘积和:  $w*f$ 其中: 系数 $w$ 来自于 mask，而 $f$ 指示像素强度。相关和卷积的操作过程皆是如此。 空间平滑滤波：用途：用于模糊处理和减少噪声。 典型的随机噪声由灰度级的急剧变化组成； 平滑处理降低了图像的 “尖锐” 变化； “负面效应”：图像边缘模糊化；（图像边缘">
+<meta name="keywords" content="数字图像处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字图像处理（5）-- 图像增强：空间滤波">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（5）-- 图像增强：空间滤波/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="空间滤波的实质：用某个mask（或者称 kernel）去覆盖某个像素，并参考该像素及其邻域像素的强度，去计算一个乘积和:  $w*f$ 其中: 系数 $w$ 来自于 mask，而 $f$ 指示像素强度。相关和卷积的操作过程皆是如此。 空间平滑滤波：用途：用于模糊处理和减少噪声。 典型的随机噪声由灰度级的急剧变化组成； 平滑处理降低了图像的 “尖锐” 变化； “负面效应”：图像边缘模糊化；（图像边缘">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 中值滤波器. jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 空间微分. jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 拉普拉斯算子. jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 拉普拉斯 Demo.jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-sobel 算子. jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-gx,gy.jpg">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-sobleDemo.jpg">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字图像处理（5）-- 图像增强：空间滤波">
+<meta name="twitter:description" content="空间滤波的实质：用某个mask（或者称 kernel）去覆盖某个像素，并参考该像素及其邻域像素的强度，去计算一个乘积和:  $w*f$ 其中: 系数 $w$ 来自于 mask，而 $f$ 指示像素强度。相关和卷积的操作过程皆是如此。 空间平滑滤波：用途：用于模糊处理和减少噪声。 典型的随机噪声由灰度级的急剧变化组成； 平滑处理降低了图像的 “尖锐” 变化； “负面效应”：图像边缘模糊化；（图像边缘">
+<meta name="twitter:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 中值滤波器. jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 数字图像处理（5）-- 图像增强：空间滤波 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          数字图像处理（5）-- 图像增强：空间滤波
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#空间滤波的实质："><span class="toc-text">空间滤波的实质：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#空间平滑滤波："><span class="toc-text">空间平滑滤波：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线性平滑滤波器"><span class="toc-text">线性平滑滤波器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#均值滤波："><span class="toc-text">均值滤波：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加权均值滤波："><span class="toc-text">加权均值滤波：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#统计排序（Order-Statistic）滤波器（非线性）"><span class="toc-text">统计排序（Order-Statistic）滤波器（非线性）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#中值滤波（median-filter）："><span class="toc-text">中值滤波（median filter）：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#空间锐化滤波器："><span class="toc-text">空间锐化滤波器：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#空间微分引入："><span class="toc-text">空间微分引入：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于二阶微分的图像增强-——-拉普拉斯算子"><span class="toc-text">基于二阶微分的图像增强 —— 拉普拉斯算子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反锐化掩膜（Usharp-Masking）与高频提升滤波-Highboost-Filtering-处理"><span class="toc-text">反锐化掩膜（Usharp Masking）与高频提升滤波 (Highboost Filtering) 处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一阶微分的应用-–-梯度"><span class="toc-text">一阶微分的应用 – 梯度</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="空间滤波的实质："><a href="#空间滤波的实质：" class="headerlink" title="空间滤波的实质："></a>空间滤波的实质：</h2><p>用某个<strong>mask（或者称 kernel）</strong>去覆盖某个像素，并参考该像素及其邻域像素的强度，去计算一个乘积和:</p>
+<p> $w*f$</p>
+<p>其中: 系数 $w$ 来自于 mask，而 $f$ 指示像素强度。相关和卷积的操作过程皆是如此。</p>
+<h2 id="空间平滑滤波："><a href="#空间平滑滤波：" class="headerlink" title="空间平滑滤波："></a>空间平滑滤波：</h2><p>用途：用于模糊处理和减少噪声。</p>
+<p>典型的随机噪声由灰度级的急剧变化组成；</p>
+<p>平滑处理降低了图像的 “尖锐” 变化；</p>
+<p><strong>“负面效应”</strong>：图像边缘模糊化；（图像边缘也由灰度级的急剧变化组成）。</p>
+<h3 id="线性平滑滤波器"><a href="#线性平滑滤波器" class="headerlink" title="线性平滑滤波器"></a>线性平滑滤波器</h3><h4 id="均值滤波："><a href="#均值滤波：" class="headerlink" title="均值滤波："></a>均值滤波：</h4><p>算法思路很简单，即求取 mask 覆盖像素的平均值，用该平均值替代中心像素值。</p>
+<p><strong>opencv2</strong>中，通过</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">blur( src, dst, Size( i, i ), Point(<span class="number">-1</span>,<span class="number">-1</span>)）</div></pre></td></tr></table></figure>
+<p>方法实现均值滤波，其中：</p>
+<ul>
+<li><p>src: 输入图像</p>
+</li>
+<li><p>dst: 输出图像</p>
+</li>
+<li><p>Size( w,h ): 定义内核大小( w 像素宽度， h 像素高度)</p>
+</li>
+<li><p>Point(-1, -1): 指定锚点位置(被平滑点)， 如果是负值，取核的中心为锚点。</p>
+</li>
+</ul>
+<h4 id="加权均值滤波："><a href="#加权均值滤波：" class="headerlink" title="加权均值滤波："></a>加权均值滤波：</h4><p>需考虑各个像素的权重，该权重由像素位置决定，显然，越靠近中心像素其权重越高。</p>
+<h3 id="统计排序（Order-Statistic）滤波器（非线性）"><a href="#统计排序（Order-Statistic）滤波器（非线性）" class="headerlink" title="统计排序（Order-Statistic）滤波器（非线性）"></a>统计排序（Order-Statistic）滤波器（非线性）</h3><h4 id="中值滤波（median-filter）："><a href="#中值滤波（median-filter）：" class="headerlink" title="中值滤波（median filter）："></a>中值滤波（median filter）：</h4><p>对窗口内像素强度排序，选取中值作为中心像素强度。使拥有不同灰度的点看起来更接近于它的邻近值。主要用途：去除 “椒盐” 噪声（黑白相间的噪点）。其特点是在去除噪音的同时，可以比较好地保留边的锐度和图像细节。</p>
+<p>考虑像素集    <strong>（10,20,20,20,180,20,20,25,100）</strong>, 中心像素强度为 180，排序后为<strong>（10,20,20,20,20,20,25,100,180）</strong>，那么中心像素强度将被更新为 20，显然，原来发亮的中心像素（可能就会是一个白色噪点）经中值滤波后，其强度更接近周围像素，假若其真为噪点，显然该噪点就被成功消除</p>
+<p>二维中值滤波的窗口形状和尺寸对滤波效果影响较大，不同的图象内容和不同的应用要求，往往采用不同的窗口形状和尺寸。常用的二维中值滤波窗口有线状、十字形、方形等。窗口尺寸一般先用 3×3，再取 5×5 逐渐增大，直到滤波效果满意为止。就一般经验来讲，对于有缓变的较长轮廓线物体的图象，采用方形窗口为宜。对于包含有尖顶物体的图象，用十字形窗口；而窗口大小则以不超过图象中最小有效物体的尺寸为宜。如果图象中点、线、尖角细节较多，则不宜采用中值滤波。</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 中值滤波器. jpg" alt="中值滤波器"></p>
+<p>在 opencv2，通过 </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">medianBlur(src, dst, i)</div></pre></td></tr></table></figure>
+<p>方法来实现中值滤波，其中：</p>
+<ul>
+<li><p>src: 输入图像</p>
+</li>
+<li><p>dst: 输出图像, 必须与 src 相同类型<br>i: 内核大小 (只需一个值，因为我们使用正方形窗口)，必须为奇数。</p>
+</li>
+</ul>
+<h2 id="空间锐化滤波器："><a href="#空间锐化滤波器：" class="headerlink" title="空间锐化滤波器："></a>空间锐化滤波器：</h2><h3 id="空间微分引入："><a href="#空间微分引入：" class="headerlink" title="空间微分引入："></a>空间微分引入：</h3><p>锐化处理可以用空间微分来完成. 微分算子的响应强度与图像在该点的突变程度有关，图像微分增强了边缘和其他突变 (如噪声) 而消弱了灰度变化缓慢的区域.</p>
+<p>我们最感兴趣的是微分算子在<strong>①恒定灰度区域(平坦段)</strong>、<strong>②突变的开头与结尾(阶梯与斜坡突变)</strong>以及<strong>③沿着灰度级斜坡处的特性</strong>。</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 空间微分. jpg" alt="一阶微分与二阶微分"></p>
+<p>如上图所示：</p>
+<ul>
+<li><p>在<strong>平坦段</strong>，即灰度恒定段（constant intensity），一阶，二阶微分均为零，亦即对图像求取一阶微分或二阶微分后，灰度恒定段的灰度将被置为 0，全黑。</p>
+</li>
+<li><p>在<strong>斜坡段（ramp）</strong>，一阶微分非零（即对图像求取一阶微分后，该区域灰度非零，通常斜坡段多是像素边缘（灰度区分明显）部分，故而对图像求取一阶微分有利于边缘提取(即可二值化非零值为白色，零值为黑色，则边缘呈白色)），值得注意的是，在斜坡起点和终点处的二阶微分异号。</p>
+</li>
+<li><p>在<strong>灰度跃迁段（step）</strong>起点和终点间，二阶微分穿过零点（Zero Crossing），且值跃迁到高灰度，因而现象对于定为边缘（边缘灰度跃迁大，图像求取二阶微分后边缘呈浅灰色）很有作用。</p>
+</li>
+</ul>
+<p>总结：</p>
+<p>一阶微分和二阶微分的区别:</p>
+<ul>
+<li><p>一阶微分处理通常会产生较宽的边缘（斜坡段一阶微分灰度始终非零）</p>
+</li>
+<li><p>二阶微分处理对细节有较强的响应, 如细线和孤立点（会有灰度跃迁，在求取二阶微分后的图像上呈浅灰色）</p>
+</li>
+<li><p>一阶微分处理一般对灰度阶梯（一阶非零）有较强的响应</p>
+</li>
+<li><p>二阶微分处理对灰度级阶梯变化产生双响应（斜坡起点终点异号，斜坡上为零，即以零间隔起点，终点）</p>
+</li>
+<li><p>二阶微分在图像中灰度值变化相似时, 对线的响应要比对阶梯强, 且点比线强. 大多数应用中, 对图像增强来说. 二阶微分处理比一阶微分好, 因为形成细节的能力强. 而一阶微分处理主要用于提取边缘.</p>
+</li>
+</ul>
+<h3 id="基于二阶微分的图像增强-——-拉普拉斯算子"><a href="#基于二阶微分的图像增强-——-拉普拉斯算子" class="headerlink" title="基于二阶微分的图像增强 —— 拉普拉斯算子"></a>基于二阶微分的图像增强 —— 拉普拉斯算子</h3><p>公式：$\Delta=f(x+1,y)+f(x-1,y)+f(x,y+1)+f(x,y-1)-4f(x,y)$</p>
+<p>由此得出拉普拉斯掩膜为（微分掩模的所有系数之和为 0 保证了灰度恒定区域的响应为 0）：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 拉普拉斯算子. jpg" alt="拉普拉斯算子"></p>
+<p>再思考，图像求取二阶微分后应当是什么样子的？因为二阶微分包含正值和负值，正值在灰度突变处呈浅灰色，负值全部视作 0 灰度，呈全黑。故原图在求取二阶微分后，边缘或者灰度突变的点将在新图像中呈浅灰色，其余部分呈黑色。</p>
+<p>若是边缘提取，那么拉普拉斯算子法结束即可，若是要锐化原图像，则还应当对拉普拉斯产生的图像与原图像做叠加处理。</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 拉普拉斯 Demo.jpg" alt="拉普拉斯 Demo"></p>
+<p>代码实现如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\highgui\highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\imgproc\imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="comment">//Global variable</span></div><div class="line">Mat imgSrc, imgGray, imgLaped, imgLapedScaled, imgFinal;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameSrc = <span class="string">"Src Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameLaped = <span class="string">"Laped Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameLapedScaled = <span class="string">"LapedScaled Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameFinal = <span class="string">"Final Image"</span>;</div><div class="line"><span class="comment">//Function Daclarations</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scaled</span><span class="params">(<span class="keyword">int</span> newMin, Mat src)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *imgPath = <span class="string">"F:\\ImgPrcSrcs\\DIP3E_Original_Images_CH03\\Fig0338(a)(blurry_moon).tif"</span>;</div><div class="line">  imgSrc = imread(imgPath);</div><div class="line">  cvtColor(imgSrc,imgGray,CV_RGB2GRAY);</div><div class="line">  namedWindow(winNameSrc, CV_WINDOW_AUTOSIZE);</div><div class="line">  imshow(winNameSrc,imgGray);</div><div class="line">  <span class="comment">// 先降噪</span></div><div class="line">  medianBlur(imgGray, imgGray, <span class="number">3</span>);</div><div class="line">  <span class="comment">// 调用拉普拉斯方法</span></div><div class="line">  <span class="keyword">int</span> kernel_size = <span class="number">3</span>;<span class="comment">// 设置拉普拉斯掩膜大小为 3</span></div><div class="line">  Laplacian(imgGray,imgLaped,CV_16S,kernel_size);</div><div class="line">  <span class="comment">/*</span></div><div class="line">  src_gray: 输入图像。</div><div class="line">  dst : 输出图像</div><div class="line">  ddepth : 输出图像的深度。 因为输入图像的深度是 CV_8U ，这里我们必须定义 ddepth = CV_16S 以避免外溢。</div><div class="line">  kernel_size : 内部调用的 Sobel 算子的内核大小，此例中设置为 3。</div><div class="line">  scale, delta 和 BORDER_DEFAULT : 使用默认值。</div><div class="line">  namedWindow(winNameLaped,CV_WINDOW_AUTOSIZE);</div><div class="line">  */</div><div class="line">  <span class="comment">// 还原为 8 位色深</span></div><div class="line">  convertScaleAbs(imgLaped, imgLaped);</div><div class="line">  <span class="comment">//Scaling</span></div><div class="line">  <span class="keyword">double</span> newMin= <span class="number">100</span>;</div><div class="line">  imgLapedScaled = imgLaped.clone();</div><div class="line">  scaled(newMin, imgLapedScaled);</div><div class="line">  namedWindow(winNameLaped,CV_WINDOW_AUTOSIZE);</div><div class="line">  namedWindow(winNameLapedScaled, CV_WINDOW_AUTOSIZE);</div><div class="line">  imshow(winNameLaped, imgLaped);</div><div class="line">  imshow(winNameLapedScaled, imgLapedScaled);</div><div class="line">  <span class="comment">// 锐化</span></div><div class="line">  add(imgGray,imgLaped,imgFinal);</div><div class="line">  namedWindow(winNameFinal, CV_WINDOW_AUTOSIZE);</div><div class="line">  imshow(winNameFinal,imgFinal);</div><div class="line">  waitKey(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"><span class="comment">//Scaling the Laplacianed Image</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scaled</span><span class="params">(<span class="keyword">int</span> newMin,Mat src)</span></span>&#123;</div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; imgLaped.rows; i++)</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; imgLaped.cols; j++)&#123;</div><div class="line">      src.at&lt;uchar&gt;(i, j) = src.at&lt;uchar&gt;(i, j) + newMin;</div><div class="line">    &#125;</div><div class="line">  normalize(src, src, <span class="number">255</span>, <span class="number">0</span>, NORM_MINMAX);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="反锐化掩膜（Usharp-Masking）与高频提升滤波-Highboost-Filtering-处理"><a href="#反锐化掩膜（Usharp-Masking）与高频提升滤波-Highboost-Filtering-处理" class="headerlink" title="反锐化掩膜（Usharp Masking）与高频提升滤波 (Highboost Filtering) 处理"></a>反锐化掩膜（Usharp Masking）与高频提升滤波 (Highboost Filtering) 处理</h3><p>过程：</p>
+<ul>
+<li><p>求得模糊处理后的图像：$f_1$</p>
+</li>
+<li><p>原图像减去模糊处理后的图像，得到清晰边缘（反锐化掩膜）：$mask=f-f_1$</p>
+</li>
+</ul>
+<ul>
+<li>原图像加上一定量的反锐化掩膜，进行锐化：$g = f+k*mask$（若 $k=1$，则称之为高频提升滤波）。</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\highgui\highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\imgproc\imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="comment">//Global Variables</span></div><div class="line">Mat imgSrc, imgSmoothed, imgMask, imgFinal;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span>* winNameSrc = <span class="string">"Src Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span>* winNameSmoothed = <span class="string">"Smoothed Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span>* winNameMask = <span class="string">"Unsharpen Mask"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span>* winNameFinal = <span class="string">"Final Image"</span>;</div><div class="line"><span class="comment">//Function Daclarations</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *imgPath = <span class="string">"F:\\ImgPrcSrcs\\DIP3E_Original_Images_CH03\\Fig0340(a)(dipxe_text).tif"</span>;</div><div class="line">  imgSrc = imread(imgPath, CV_LOAD_IMAGE_GRAYSCALE);</div><div class="line">  <span class="comment">// 图像模糊</span></div><div class="line">  blur(imgSrc,imgSmoothed,Size(<span class="number">3</span>,<span class="number">3</span>));</div><div class="line">  <span class="comment">// 反锐化掩膜 = 原图像 - 模糊图像</span></div><div class="line">  imgMask = imgSrc - imgSmoothed;</div><div class="line">  <span class="comment">// 最终图像 = 原图像 + 反锐化图像</span></div><div class="line">  <span class="keyword">double</span> k = <span class="number">1</span>;</div><div class="line">  imgFinal = imgSrc + k*imgMask;</div><div class="line">  namedWindow(winNameSrc,CV_WINDOW_AUTOSIZE);</div><div class="line">  namedWindow(winNameSmoothed,CV_WINDOW_AUTOSIZE);</div><div class="line">  namedWindow(winNameMask,CV_WINDOW_AUTOSIZE);</div><div class="line">  namedWindow(winNameFinal,CV_WINDOW_AUTOSIZE);</div><div class="line">  imshow(winNameSrc,imgSrc);</div><div class="line">  imshow(winNameSmoothed,imgSmoothed);</div><div class="line">  imshow(winNameMask,imgMask);</div><div class="line">  imshow(winNameFinal,imgFinal);</div><div class="line">  waitKey(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="一阶微分的应用-–-梯度"><a href="#一阶微分的应用-–-梯度" class="headerlink" title="一阶微分的应用 – 梯度"></a>一阶微分的应用 – 梯度</h3><p>####Sobel 梯度算子：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-sobel 算子. jpg" alt="Soble 算子"></p>
+<p>$M(x,y) = |g_x|+|g_y| = |(z_7+2<em>z_8+z_9)-(z_1+2</em>z_2+z_3)|+|(z_3+2<em>z_6+z_9)-(z_1+2</em>z_4+z_7)|$</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-gx,gy.jpg" alt="gx,gy"></p>
+<p>使用权重 2 的目的：突出中心点（最接近中心）的作用以达到平滑的目的。</p>
+<p>在<strong>opencv2</strong>中通过</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">Sobel(InputArray src, OutputArray dst, <span class="keyword">int</span> ddepth, <span class="keyword">int</span> xorder, <span class="keyword">int</span> yorder, <span class="keyword">int</span> ksize=<span class="number">3</span>, <span class="keyword">double</span> scale=<span class="number">1</span>, <span class="keyword">double</span> delta=<span class="number">0</span>, <span class="keyword">int</span> borderType=BORDER_DEFAULT )</div></pre></td></tr></table></figure>
+<p>实现 sobel 算子，参数解释：</p>
+<ul>
+<li><p>src – 源图像</p>
+</li>
+<li><p>dst – 目标图像</p>
+</li>
+<li><p>ddepth – 目标图像颜色深度。</p>
+</li>
+<li><p>xorder – x 方向的微分阶数。</p>
+</li>
+<li><p>yorder – y 方向的微分阶数。</p>
+</li>
+<li><p>ksize – Sobel 掩膜的大小，仅限于 1, 3, 5, or 7.</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\highgui\highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2\imgproc\imgproc.hpp&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"><span class="comment">//Global Varaibles</span></div><div class="line">Mat imgSrc, imgDst;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameSrc = <span class="string">"Src Image"</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">char</span> *winNameDst = <span class="string">"Dist Image"</span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *imgPath = <span class="string">"F:\\ImgPrcSrcs\\DIP3E_Original_Images_CH03\\Fig0342(a)(contact_lens_original).tif"</span>;</div><div class="line">  imgSrc = imread(imgPath,CV_LOAD_IMAGE_GRAYSCALE);</div><div class="line">  <span class="comment">// 模糊处理</span></div><div class="line">  GaussianBlur(imgSrc,imgSrc,Size(<span class="number">3</span>,<span class="number">3</span>),<span class="number">0</span>);</div><div class="line">  <span class="comment">//x,y 方向的梯度矩阵</span></div><div class="line">  Mat gradX, gradY;</div><div class="line">  <span class="comment">// 求 x,y 方向的梯度</span></div><div class="line">  Sobel(imgSrc,gradX,CV_16S,<span class="number">1</span>,<span class="number">0</span>);</div><div class="line">  Sobel(imgSrc,gradY,CV_16S,<span class="number">0</span>,<span class="number">1</span>);</div><div class="line">  <span class="comment">// 还原为 8 位色深</span></div><div class="line">  convertScaleAbs(gradX,gradX);</div><div class="line">  convertScaleAbs(gradY, gradY);</div><div class="line">  <span class="comment">//dst = |gradX|+|gradY|</span></div><div class="line">  add(<span class="built_in">abs</span>(gradX), <span class="built_in">abs</span>(gradY), imgDst);</div><div class="line">  namedWindow(winNameSrc,CV_WINDOW_AUTOSIZE);</div><div class="line">  namedWindow(winNameDst,CV_WINDOW_AUTOSIZE);</div><div class="line">  imshow(winNameSrc,imgSrc);</div><div class="line">  imshow(winNameDst,imgDst);</div><div class="line">  waitKey(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-sobleDemo.jpg" alt="SobelDemo"></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（5）-- 图像增强：空间滤波/">http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（5）-- 图像增强：空间滤波/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/数字图像处理/">数字图像处理</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Image_Processing/数字图像处理（6）-- 图像增强：空间滤波/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">数字图像处理（6）-- 图像增强：空间滤波</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Image_Processing/数字图像处理（7）-- 频率域滤波（1）：基本滤波器介绍/">
+        <span class="next-text nav-default">数字图像处理（7）-- 频率域滤波（1）：基本滤波器介绍</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

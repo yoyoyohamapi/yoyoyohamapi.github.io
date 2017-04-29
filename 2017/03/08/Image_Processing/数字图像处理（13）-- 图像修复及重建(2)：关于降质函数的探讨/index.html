@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="数字图像处理（13）-- 图像修复及重建 (2)：关于降质函数的探讨"/>
+
+
+
+
+  <meta name="keywords" content="数字图像处理," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（13）-- 图像修复及重建(2)：关于降质函数的探讨/"/>
+
+
+<meta name="description" content="在上一章中，我们着重讨论了图像受噪声污染而引起的质量下降，本章，将考虑原图像受某个降质函数的影响而引起的图像质量下降。 其频率域的降质模型为： $$G(u,v)=F(u,v)H(u,v)+N(u,v)$$ 其中：$G(u,v)$ 为质量下降后的图像的傅里叶变换,$H(u,v)$ 为降质函数的傅里叶变换,$F(u,v)$ 为原图像的傅里叶变换,$N(u,v)$ 为噪声图像的傅里叶变换。 ##1. 逆">
+<meta name="keywords" content="数字图像处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字图像处理（13）-- 图像修复及重建 (2)：关于降质函数的探讨">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（13）-- 图像修复及重建(2)：关于降质函数的探讨/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="在上一章中，我们着重讨论了图像受噪声污染而引起的质量下降，本章，将考虑原图像受某个降质函数的影响而引起的图像质量下降。 其频率域的降质模型为： $$G(u,v)=F(u,v)H(u,v)+N(u,v)$$ 其中：$G(u,v)$ 为质量下降后的图像的傅里叶变换,$H(u,v)$ 为降质函数的傅里叶变换,$F(u,v)$ 为原图像的傅里叶变换,$N(u,v)$ 为噪声图像的傅里叶变换。 ##1. 逆">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字图像处理（13）-- 图像修复及重建 (2)：关于降质函数的探讨">
+<meta name="twitter:description" content="在上一章中，我们着重讨论了图像受噪声污染而引起的质量下降，本章，将考虑原图像受某个降质函数的影响而引起的图像质量下降。 其频率域的降质模型为： $$G(u,v)=F(u,v)H(u,v)+N(u,v)$$ 其中：$G(u,v)$ 为质量下降后的图像的傅里叶变换,$H(u,v)$ 为降质函数的傅里叶变换,$F(u,v)$ 为原图像的傅里叶变换,$N(u,v)$ 为噪声图像的傅里叶变换。 ##1. 逆">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 数字图像处理（13）-- 图像修复及重建 (2)：关于降质函数的探讨 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          数字图像处理（13）-- 图像修复及重建 (2)：关于降质函数的探讨
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#信噪比-SNR（signal-to-noise-ratio）"><span class="toc-text">信噪比 SNR（signal-to-noise-ratio）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#均方差-MSE（mean-square-error）"><span class="toc-text">均方差 MSE（mean square error）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#空间域的信噪比-SNR"><span class="toc-text">空间域的信噪比 SNR</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>在上一章中，我们着重讨论了图像受噪声污染而引起的质量下降，本章，将考虑原图像受某个降质函数的影响而引起的图像质量下降。</p>
+<p>其频率域的降质模型为：</p>
+<span>$$G(u,v)=F(u,v)H(u,v)+N(u,v)$$</span><!-- Has MathJax -->
+<p>其中：$G(u,v)$ 为质量下降后的图像的傅里叶变换,$H(u,v)$ 为降质函数的傅里叶变换,$F(u,v)$ 为原图像的傅里叶变换,$N(u,v)$ 为噪声图像的傅里叶变换。</p>
+<p>##1. 逆滤波（Inverse Filtering）<br>这是一种概念上最为简单的图像修复方式，即我们考虑修复后的图像为：</p>
+<span>$$\widehat{F}(u,v)=\frac{G(u,v)}{H(u,v)}$$</span><!-- Has MathJax -->
+<p>亦即：</p>
+<span>$$\widehat{F}(u,v)=F(u,v)+\frac{N(u,v)}{H(u,v)}$$</span><!-- Has MathJax -->
+<p> 从上式不难看出，即便我们知道了降质函数 H，假如噪声 N 未知，我们仍然无法估计出修复后的图像，并且，若 H 在某一点取很小的值，也会导致整个式子无意义（因为此时 $\frac{N(u,v)}{H(u,v)}$ 将无限大，即原图像被无限忽视）。故而在实际应用中，我们考虑截断 H 中较小的值，即截断 H 的频谱图中远离中心位置的分量。</p>
+<p>##2. 维纳滤波（Wiener Filtering）<br>维纳滤波也称为最小均方差滤波（Minimum Mean Square Error Filtering），最小均方差滤波的目标是要找到一个原图像的估计 $\hat{f}$ 与原图像 f 的最小误差，其中，误差的定义式如下：</p>
+<span>$$e^2=E{(f-\hat{f})^2}$$</span><!-- Has MathJax -->
+<p>其中，E 是期望。</p>
+<p>现在，假定：</p>
+<p>图像，噪声相互独立<br>图像或者噪声其一有 0 均值<br>$\hat{f}$ 的灰度是关于 f 灰度的线性函数<br>由以上假定，可以由如下式子保证 $\hat{f}$ 与 f 之间的误差最小;</p>
+<span>$$$\widehat{F}(u,v)=[\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+S_\eta(u,v)/S_f(u,v)}]G(u,v)$$</span><!-- Has MathJax -->
+<p> 其中，$S_\eta(u,v)=|N(u,v)|^2$ 即噪声的功率谱，$S_f(u,v)=|F(u,v)|^2$ 即未退化的图像的功率谱。</p>
+<p>值得注意的时，若 $|N(u,v)|^2$ 为零，则维纳滤波退化成了逆滤波。同时，当我们处理白噪声是，$|N(u,v)|^2$ 通常是一个常数，这就大大简化了处理难度，但是，$|F(u,v)|^2$ 仍然未知，通常，我们选择用一个常数 K 来近似 $\frac{S_\eta(u,v)}{S_f(u,v)}$, 得到了如下维纳滤波表达式：</p>
+<span>$$\widehat{F}(u,v)=[\frac{1}{H(u,v)}\frac{|H(u,v)|^2}{|H(u,v)|^2+K}]G(u,v)$$</span><!-- Has MathJax -->
+<p>##3. 图像质量的度量标准;</p>
+<h3 id="信噪比-SNR（signal-to-noise-ratio）"><a href="#信噪比-SNR（signal-to-noise-ratio）" class="headerlink" title="信噪比 SNR（signal-to-noise-ratio）"></a>信噪比 SNR（signal-to-noise-ratio）</h3><span>$$SNR=\frac{\sum\limits_{u=0}^{M-1}\sum\limits_{v=0}^{N-1}|F(u,v)|^2}{\sum\limits_{u=0}^{M-1}\sum\limits_{v=0}^{N-1}|(u,v)|^2}$$</span><!-- Has MathJax -->
+<p>该标准是通过原图像与附加噪声间的比例关系来衡量图像质量，显然，该值越大，图像质量越高。</p>
+<h3 id="均方差-MSE（mean-square-error）"><a href="#均方差-MSE（mean-square-error）" class="headerlink" title="均方差 MSE（mean square error）"></a>均方差 MSE（mean square error）</h3><span>$$MSE=\frac{1}{MN}\sum\limits_{x=0}^{M-1}\sum\limits_{y=0}^{N-1}[f(x,y)-\hat{f}(x,y)]^2$$</span><!-- Has MathJax -->
+<p>该标准是通过比较估计图像与原图像间的差异来衡量图像修复情况的。值越小，修复越成功。</p>
+<h3 id="空间域的信噪比-SNR"><a href="#空间域的信噪比-SNR" class="headerlink" title="空间域的信噪比 SNR"></a>空间域的信噪比 SNR</h3><span>$$SNR=\frac{\sum\limits_{x=0}^{M-1}\sum\limits_{y=0}^{N-1}\hat{f}(x,y)^2}{\sum\limits_{x=0}^{M-1}\sum\limits_{y=0}^{N-1}[f(x,y)-\hat{f}(x,y)]^2}$$</span><!-- Has MathJax -->
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（13）-- 图像修复及重建(2)：关于降质函数的探讨/">http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（13）-- 图像修复及重建(2)：关于降质函数的探讨/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/数字图像处理/">数字图像处理</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Image_Processing/数字图像处理（14）-- 颜色知识(1)：CIE色度图/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">数字图像处理（14）-- 颜色知识 (1)：CIE 色度图</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Image_Processing/数字图像处理（16）-- 颜色知识(3)：伪彩色图像处理/">
+        <span class="next-text nav-default">数字图像处理（16）-- 颜色知识 (3)：伪彩色图像处理</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

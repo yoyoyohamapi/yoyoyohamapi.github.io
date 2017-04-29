@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="利用 Sails.js+MongoDB 开发博客系统 (2)-- 框架完善"/>
+
+
+
+
+  <meta name="keywords" content="sails,mongodb,nodejs," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Sails_Tutorial/利用sails.js+mongodb开发博客系统(2)--框架完善/"/>
+
+
+<meta name="description" content="章节概述在本章中，你将能学到如下知识：  如何将 sails 的模板引擎替换为 swig，并且设置和扩展 swig 集成 bower 来管理我们的前端库 集成 compass 来更优雅的撰写 css 通过 grunt 来监听 scss 文件变动，并自动编译 前端模块化开发思路即实现 集成 semantic-ui 来撰写 UI 利用 grunt 来对产品环境下的访问进行优化  更换模板引擎Sails">
+<meta name="keywords" content="sails,mongodb,nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用 Sails.js+MongoDB 开发博客系统 (2)-- 框架完善">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Sails_Tutorial/利用sails.js+mongodb开发博客系统(2)--框架完善/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="章节概述在本章中，你将能学到如下知识：  如何将 sails 的模板引擎替换为 swig，并且设置和扩展 swig 集成 bower 来管理我们的前端库 集成 compass 来更优雅的撰写 css 通过 grunt 来监听 scss 文件变动，并自动编译 前端模块化开发思路即实现 集成 semantic-ui 来撰写 UI 利用 grunt 来对产品环境下的访问进行优化  更换模板引擎Sails">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-views_dir.png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-index_show.png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-bower_jquery.png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails - 前端模块化开发. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-css_compressed.png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-js_compressed.png">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用 Sails.js+MongoDB 开发博客系统 (2)-- 框架完善">
+<meta name="twitter:description" content="章节概述在本章中，你将能学到如下知识：  如何将 sails 的模板引擎替换为 swig，并且设置和扩展 swig 集成 bower 来管理我们的前端库 集成 compass 来更优雅的撰写 css 通过 grunt 来监听 scss 文件变动，并自动编译 前端模块化开发思路即实现 集成 semantic-ui 来撰写 UI 利用 grunt 来对产品环境下的访问进行优化  更换模板引擎Sails">
+<meta name="twitter:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-views_dir.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 利用 Sails.js+MongoDB 开发博客系统 (2)-- 框架完善 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          利用 Sails.js+MongoDB 开发博客系统 (2)-- 框架完善
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#章节概述"><span class="toc-text">章节概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更换模板引擎"><span class="toc-text">更换模板引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-swig"><span class="toc-text">安装 swig</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#替换默认引擎"><span class="toc-text">替换默认引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建一些页面"><span class="toc-text">创建一些页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置路由："><span class="toc-text">设置路由：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用-bower-来管理我们的前端库"><span class="toc-text">利用 bower 来管理我们的前端库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-bower"><span class="toc-text">安装 bower</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在项目中配置-bower"><span class="toc-text">在项目中配置 bower</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-bower"><span class="toc-text">使用 bower</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用-compass-来撰写-CSS"><span class="toc-text">利用 compass 来撰写 CSS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-compass"><span class="toc-text">安装 compass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-compass"><span class="toc-text">配置 compass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置-compass-任务"><span class="toc-text">设置 compass 任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-grunt-contrib-compass"><span class="toc-text">安装 grunt-contrib-compass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-compass-任务"><span class="toc-text">创建 compass 任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监视-scss-文件变动"><span class="toc-text">监视 scss 文件变动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新任务流"><span class="toc-text">更新任务流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前端模块化开发"><span class="toc-text">前端模块化开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用-requirejs-进行模块化开发"><span class="toc-text">利用 requirejs 进行模块化开发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#声明"><span class="toc-text">声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置"><span class="toc-text">配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优化"><span class="toc-text">优化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-text">测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置页面和模块的映射关系："><span class="toc-text">配置页面和模块的映射关系：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#产品（Production）环境下的访问优化"><span class="toc-text">产品（Production）环境下的访问优化:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#章节预告"><span class="toc-text">章节预告</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="章节概述"><a href="#章节概述" class="headerlink" title="章节概述"></a>章节概述</h2><p>在本章中，你将能学到如下知识：</p>
+<ul>
+<li>如何将 sails 的模板引擎替换为 swig，并且设置和扩展 swig</li>
+<li>集成 bower 来管理我们的前端库</li>
+<li>集成 compass 来更优雅的撰写 css</li>
+<li>通过 grunt 来监听 scss 文件变动，并自动编译</li>
+<li>前端模块化开发思路即实现</li>
+<li>集成 semantic-ui 来撰写 UI</li>
+<li>利用 grunt 来对产品环境下的访问进行优化</li>
+</ul>
+<h2 id="更换模板引擎"><a href="#更换模板引擎" class="headerlink" title="更换模板引擎"></a>更换模板引擎</h2><p>Sails 默认的模板引擎为 ejs，仅就我个人而言，纯主观上来说，对这个框架不是很喜欢，尤其 ejs 不支持继承，令我大为恼火。所以我会考虑用 <a href="http://jinja.pocoo.org/" target="_blank" rel="external"><strong>jinja</strong></a> 风格的 swig 来做模板引擎。</p>
+<h3 id="安装-swig"><a href="#安装-swig" class="headerlink" title="安装 swig"></a>安装 swig</h3><blockquote>
+<p>标准的 swig 提供的 filter，tag 等可能不够用，比如字符串分割（split）等就未提供，为此，我们也需要安装其扩展</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">npm install swig --save</div><div class="line">npm install swig-extras --save</div></pre></td></tr></table></figure>
+<h3 id="替换默认引擎"><a href="#替换默认引擎" class="headerlink" title="替换默认引擎"></a>替换默认引擎</h3><p>在<strong>config/views.js</strong>中，修改 egine 为 swig, 并对 swig 做一些方便我们开发的配置，比如在这里，我们设定一些常用资源路径，避免了在页面中每次都要书写冗长的路径前缀。同时，为了在开发环境下修改 swig 而不用重启服务器，我们需要设置 swig 默认不缓存:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> extras = <span class="built_in">require</span>(<span class="string">'swig-extras'</span>);</div><div class="line"><span class="built_in">module</span>.exports.views = &#123;</div><div class="line">    <span class="attr">engine</span>: &#123;</div><div class="line">        <span class="comment">/* Template File Extension */</span></div><div class="line">        ext: <span class="string">'swig'</span>,</div><div class="line"></div><div class="line">        <span class="comment">/* Function to handle render request */</span></div><div class="line">        fn: <span class="function"><span class="keyword">function</span> (<span class="params">path, data, cb</span>) </span>&#123;</div><div class="line">            <span class="comment">/* Swig Renderer */</span></div><div class="line">            <span class="keyword">var</span> swig = <span class="built_in">require</span>(<span class="string">'swig'</span>);</div><div class="line">            <span class="comment">// 保证我们在开发环境下每次更改 swig 不用重启 sails</span></div><div class="line">            <span class="keyword">if</span> (data.settings.env === <span class="string">'development'</span>) &#123;</div><div class="line">                swig.setDefaults(&#123;<span class="attr">cache</span>: <span class="literal">false</span>&#125;);</div><div class="line">            &#125;</div><div class="line">            <span class="comment">/*</span></div><div class="line">             * 绑定一些常用路径</div><div class="line">             * Thanks to: https://github.com/mahdaen/sails-views-swig</div><div class="line">             * */</div><div class="line">            <span class="keyword">var</span> paths = &#123;</div><div class="line">                <span class="attr">script</span>: <span class="string">'/js'</span>,</div><div class="line">                <span class="attr">style</span>: <span class="string">'/styles/default'</span>,</div><div class="line">                <span class="attr">image</span>: <span class="string">'/images'</span>,</div><div class="line">                <span class="attr">font</span>: <span class="string">'/fonts'</span>,</div><div class="line">                <span class="attr">icon</span>: <span class="string">'/icons'</span>,</div><div class="line">                <span class="attr">bower</span>: <span class="string">'/bower_components'</span></div><div class="line">            &#125;;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (!data.path) &#123;</div><div class="line">                data.path = paths;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> paths) &#123;</div><div class="line">                    <span class="keyword">if</span> (!key <span class="keyword">in</span> data.path) &#123;</div><div class="line">                        data.path[key] = paths[key];</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 补充 extra</span></div><div class="line">            extras.useFilter(swig, <span class="string">'split'</span>);</div><div class="line">            <span class="comment">/* Render Templates */</span></div><div class="line">            <span class="keyword">return</span> swig.renderFile(path, data, cb);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">layout</span>: <span class="string">'layout'</span>,</div><div class="line"></div><div class="line">    <span class="attr">partials</span>: <span class="literal">false</span></div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="创建一些页面"><a href="#创建一些页面" class="headerlink" title="创建一些页面"></a>创建一些页面</h3><p>在<strong>views/</strong>下创建一些 swig 页面, 其中<strong>partial</strong>文件夹下为一些公用视图部分或者视图模板：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-views_dir.png" alt="views_dir"></p>
+<p>并初始化一些内容<br><strong>layout.swig</strong>:</p>
+<figure class="highlight twig"><table><tr><td class="code"><pre><div class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE html&gt;</span></span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">block</span></span> title -%&#125;</span><span class="xml"></span><span class="template-tag">&#123;%- <span class="name"><span class="keyword">endblock</span></span> %&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></div><div class="line">    <span class="comment">&#123;# 引入常用 css 文件 #&#125;</span><span class="xml"></span></div><div class="line">    <span class="template-tag">&#123;% <span class="name"><span class="keyword">include</span></span> "stylesheets.swig" -%&#125;</span><span class="xml"></span></div><div class="line">    <span class="template-tag">&#123;% <span class="name"><span class="keyword">block</span></span> stylesheets -%&#125;</span><span class="xml"></span><span class="template-tag">&#123;%- <span class="name"><span class="keyword">endblock</span></span> %&#125;</span><span class="xml"></span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="comment">&#123;# 引入导航栏 #&#125;</span><span class="xml"></span></div><div class="line">    <span class="template-tag">&#123;% <span class="name"><span class="keyword">include</span></span> "header.swig" -%&#125;</span><span class="xml"></span></div><div class="line">    <span class="comment">&#123;# 主内容显示部分，提供给集成页面重写 #&#125;</span><span class="xml"></span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"mainContainer"</span>&gt;</span></div><div class="line">        <span class="template-tag">&#123;% <span class="name"><span class="keyword">block</span></span> content -%&#125;</span><span class="xml"></span></div><div class="line">        <span class="template-tag">&#123;%- <span class="name"><span class="keyword">endblock</span></span> %&#125;</span><span class="xml"></span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="comment">&#123;# 引入常用脚本 #&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">    <span class="template-tag">&#123;% <span class="name"><span class="keyword">include</span></span> "scripts.swig" %&#125;</span><span class="xml"></span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>index.swig</strong>:</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&#123;% extends 'partial/layout.swig' %&#125;</div><div class="line">&#123;% block title -%&#125;Woo 的博客 &#123;%- endblock %&#125;</div><div class="line">&#123;% block content -%&#125;</div><div class="line">    &lt;div&gt;</div><div class="line">        &lt;p&gt;</div><div class="line">            这是 Woo 的博客?</div><div class="line">        &lt;/p&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&#123;%- endblock %&#125;</div></pre></td></tr></table></figure>
+<h3 id="设置路由："><a href="#设置路由：" class="headerlink" title="设置路由："></a>设置路由：</h3><p>为我们新添加的 index.twig 添加路由</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="string">'/'</span> : &#123;</div><div class="line">   <span class="attr">view</span> :<span class="string">'index'</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>OK, 现在我们执行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sails lift</div></pre></td></tr></table></figure>
+<p>并输入<a href="http://localhost:1337" target="_blank" rel="external">http://localhost:1337</a>, 就能看到如下页面：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-index_show.png" alt="index_show"></p>
+<h2 id="利用-bower-来管理我们的前端库"><a href="#利用-bower-来管理我们的前端库" class="headerlink" title="利用 bower 来管理我们的前端库"></a>利用 bower 来管理我们的前端库</h2><h3 id="安装-bower"><a href="#安装-bower" class="headerlink" title="安装 bower"></a>安装 bower</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">npm install bower -g</div></pre></td></tr></table></figure>
+<h3 id="在项目中配置-bower"><a href="#在项目中配置-bower" class="headerlink" title="在项目中配置 bower"></a>在项目中配置 bower</h3><p>在项目根目录下创建. bowerrc 文件, 并在文件中设置 bower 库目录</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"directory"</span>:<span class="string">"assets/bower_components"</span>,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之所以需要将 bower 下载下的组件放置在 assets 目录下，是方便我们在不用撰写任何 grunt 任务的情况下就能在页面中引用 bower 下载的库资源。</p>
+<h3 id="使用-bower"><a href="#使用-bower" class="headerlink" title="使用 bower"></a>使用 bower</h3><p>我们尝试利用 bower 来下载 jquery</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">bower install jquery --save</div></pre></td></tr></table></figure>
+<p>可以看到，jquery 的响应资源已经成功地安装在了在 assets/bower_components 目录下</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-bower_jquery.png" alt="bower_jquery"></p>
+<h2 id="利用-compass-来撰写-CSS"><a href="#利用-compass-来撰写-CSS" class="headerlink" title="利用 compass 来撰写 CSS"></a>利用 compass 来撰写 CSS</h2><h3 id="安装-compass"><a href="#安装-compass" class="headerlink" title="安装 compass"></a>安装 compass</h3><p>基于和 bower 的目录配置同样的理由，我们选择将 compass 放置在 assets 目录下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">gem install compass</div><div class="line">cd assets</div><div class="line">compass init</div></pre></td></tr></table></figure>
+<h3 id="配置-compass"><a href="#配置-compass" class="headerlink" title="配置 compass"></a>配置 compass</h3><p>修改 assets/config.rb 的文件内容如下：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="keyword">require</span> <span class="string">'compass/import-once/activate'</span></div><div class="line"><span class="comment"># Require any additional compass plugins here.</span></div><div class="line"></div><div class="line"><span class="comment"># Set this to the root of your project when deployed:</span></div><div class="line">http_path = <span class="string">"/"</span></div><div class="line">css_dir = <span class="string">"styles"</span></div><div class="line">sass_dir = <span class="string">"sass"</span></div><div class="line">images_dir = <span class="string">"images"</span></div><div class="line">javascripts_dir = <span class="string">"js"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># You can select your preferred output style here (can be overridden via the command line):</span></div><div class="line"><span class="comment"># output_style = :expanded or :nested or :compact or :compressed</span></div><div class="line">output_style = <span class="symbol">:expanded</span></div><div class="line"></div><div class="line"><span class="comment"># To enable relative paths to assets via compass helper functions. Uncomment:</span></div><div class="line"><span class="comment"># relative_assets = true</span></div><div class="line"></div><div class="line"><span class="comment"># To disable debugging comments that display the original location of your selectors. Uncomment:</span></div><div class="line"><span class="comment"># line_comments = false</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># If you prefer the indented syntax, you might want to regenerate this</span></div><div class="line"><span class="comment"># project again passing --syntax sass, or you can uncomment this:</span></div><div class="line"><span class="comment"># preferred_syntax = :sass</span></div><div class="line"><span class="comment"># and then run:</span></div><div class="line"><span class="comment"># sass-convert -R --from scss --to sass sass scss &amp;&amp; rm -rf sass &amp;&amp; mv scss sass</span></div></pre></td></tr></table></figure>
+<h3 id="设置-compass-任务"><a href="#设置-compass-任务" class="headerlink" title="设置 compass 任务"></a>设置 compass 任务</h3><p>OK，接下来我们需要创建响应的 grunt task 来设置 compass 的编译任务, 使得每次<strong>assets/sass</strong>文件夹下的 scss 文件变动时，不用手动输入命令就能完成 scss 到 css 的编译工作:</p>
+<h3 id="安装-grunt-contrib-compass"><a href="#安装-grunt-contrib-compass" class="headerlink" title="安装 grunt-contrib-compass"></a>安装 grunt-contrib-compass</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">npm install grunt-contrib-compass</div></pre></td></tr></table></figure>
+<h3 id="创建-compass-任务"><a href="#创建-compass-任务" class="headerlink" title="创建 compass 任务"></a>创建 compass 任务</h3><p>在<strong>tasks/config</strong>下新建<strong>compass.js</strong>并添加如下内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 指定 Compass 配置文件，完成 sass 编译</div><div class="line"> */</div><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">grunt</span>)</span>&#123;</div><div class="line">    grunt.config.set(<span class="string">'compass'</span>,&#123;</div><div class="line">        <span class="attr">dist</span>: &#123;</div><div class="line">            <span class="attr">options</span>: &#123;</div><div class="line">                <span class="attr">config</span>: <span class="string">'assets/config.rb'</span>,</div><div class="line">                <span class="comment">// 重要，如果不声明 assets，compass 无法找到待编译的 scss 文件</span></div><div class="line">                basePath : <span class="string">'assets'</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    grunt.loadNpmTasks(<span class="string">'grunt-contrib-compass'</span>);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="监视-scss-文件变动"><a href="#监视-scss-文件变动" class="headerlink" title="监视 scss 文件变动"></a>监视 scss 文件变动</h3><p>修改<strong>tasks/config</strong>下的<strong>watch.js</strong>任务，使得当 scss 文件变动时，compass 能够自动编译 scss 至 css。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">grunt</span>) </span>&#123;</div><div class="line"></div><div class="line">  grunt.config.set(<span class="string">'watch'</span>, &#123;</div><div class="line">    <span class="attr">options</span> :&#123;</div><div class="line">      <span class="attr">livereload</span>: <span class="literal">true</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">api</span>: &#123;</div><div class="line"></div><div class="line">      <span class="comment">// API files to watch:</span></div><div class="line">      files: [<span class="string">'api/**/*'</span>, <span class="string">'!**/node_modules/**'</span>]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">assets</span>: &#123;</div><div class="line"></div><div class="line">      <span class="comment">// Assets to watch:</span></div><div class="line">      files: [<span class="string">'assets/**/*'</span>, <span class="string">'tasks/pipeline.js'</span>, <span class="string">'!**/node_modules/**'</span>],</div><div class="line"></div><div class="line">      <span class="comment">// When assets are changed:</span></div><div class="line">      tasks: [<span class="string">'syncAssets'</span> , <span class="string">'linkAssets'</span>]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">compass</span>: &#123;</div><div class="line">      <span class="attr">files</span>: [<span class="string">'assets/sass/&#123;,*/&#125;*.scss'</span>],</div><div class="line">      <span class="attr">tasks</span>: [<span class="string">'compass'</span>,<span class="string">'sync:dev'</span>]</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  grunt.loadNpmTasks(<span class="string">'grunt-contrib-watch'</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="更新任务流"><a href="#更新任务流" class="headerlink" title="更新任务流"></a>更新任务流</h3><p>修改__register/compileAssets.js 任务流，将 compass 添加到编译流程当中。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">grunt</span>) </span>&#123;</div><div class="line">  grunt.registerTask(<span class="string">'compileAssets'</span>, [</div><div class="line">    <span class="string">'clean:dev'</span>,</div><div class="line">    <span class="string">'jst:dev'</span>,</div><div class="line">    <span class="string">'compass'</span>,</div><div class="line">    <span class="string">'copy:dev'</span>,</div><div class="line">    <span class="string">'coffee:dev'</span></div><div class="line">  ]);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="前端模块化开发"><a href="#前端模块化开发" class="headerlink" title="前端模块化开发"></a>前端模块化开发</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>现在我们的前端模块化开发有如下思路：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails - 前端模块化开发. png" alt="前端模块化开发思路"></p>
+<p>即每个页面的前端逻辑受一个<strong>模块(module)</strong>控制，且该模块暴露一个<strong>run()</strong>方法，当该页面加载成功时，<strong>模块</strong>的<strong>run()</strong>方法会被执行。该模块也可引用其他一些模块，只是这些模块对页面透明，这样就做到页面和其对应逻辑的一一对应，方便前端开发者的分工协作。</p>
+<h3 id="利用-requirejs-进行模块化开发"><a href="#利用-requirejs-进行模块化开发" class="headerlink" title="利用 requirejs 进行模块化开发"></a>利用 requirejs 进行模块化开发</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">bower install requirejs --save</div></pre></td></tr></table></figure>
+<h4 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h4><p>在<strong>views/partial/scripts.swig</strong>下声明 requirejs, 注意相应路径写绝对路径：</p>
+<figure class="highlight twig"><table><tr><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">data-main</span>=<span class="string">"</span></span></span><span class="template-variable">&#123;&#123; path.script &#125;&#125;</span><span class="xml"><span class="tag"><span class="string">/common/main"</span> <span class="attr">src</span>=<span class="string">"</span></span></span><span class="template-variable">&#123;&#123; path.bower &#125;&#125;</span><span class="xml"><span class="tag"><span class="string">/requirejs/require.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div></pre></td></tr></table></figure>
+<p>其中，path 是我们定义好的 swig 扩展。</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>在<strong>assets/js/common</strong>下新建<strong>main.js</strong>, 并添加如下内容，注意，baseURL 写绝对路径:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 第三方模块声明</span></div><div class="line"><span class="built_in">require</span>.config(&#123;</div><div class="line">    <span class="attr">baseUrl</span>: <span class="string">'/bower_components/'</span>,</div><div class="line">    <span class="attr">paths</span>: &#123;</div><div class="line">        </div><div class="line">    &#125;&#125;);</div></pre></td></tr></table></figure>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>然而每次需要我们手动在<strong>main.js</strong>中维护 bower 下载的库并不是一种优雅的做法，我们现在需要借助 <a href="https://github.com/yeoman/bower-requirejs" target="_blank" rel="external">bower-requirejs</a> 这个插件来帮助我们在 main.js 中自动维护 bower 下载下的相关库。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">npm install bower-requirejs --save-dev</div></pre></td></tr></table></figure>
+<p>通过 bower 的 hook 机制，我们将 bower-requejs 任务绑定到每次<strong>bower install</strong>之后，亦即每次通过 bower 安装了插件之后，我们的库会被自动添加到 main.js 中，在<strong>.bowerrc</strong>中添加如下内容：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"directory"</span>:<span class="string">"assets/bower_components"</span>,</div><div class="line">  <span class="attr">"scripts"</span>:&#123;</div><div class="line">    <span class="attr">"postinstall"</span>: <span class="string">".node_modules/.bin/bower-requirejs/bin/bower-requirejs -c assets/js/common/main.js -b assets/bower_components/"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>现在我们安装</p>
+<ul>
+<li><a href="http://www.semantic-ui.cn/" target="_blank" rel="external">semantic-ui</a>– 将来我们用来完善页面显示的前端样式框架，</li>
+<li><a href="http://backbonejs.org/" target="_blank" rel="external">Backbone.js</a>– 前端 MVC 框架。</li>
+<li>观察 bower-requirejs 是否配置成功。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">bower install semantic-ui --save</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">bower install backbone --save</div></pre></td></tr></table></figure>
+<blockquote>
+<p>backbone 的依赖项<strong>undersocre</strong>，bower 会为我们解决</p>
+</blockquote>
+<p>可以看到，main.js 中已经自动生成了相关配置。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">require</span>.config(&#123;</div><div class="line">    <span class="attr">baseUrl</span>: <span class="string">'/bower_components/'</span>,</div><div class="line">    <span class="attr">paths</span>: &#123;</div><div class="line">        <span class="attr">jquery</span>: <span class="string">'jquery/dist/jquery'</span>,</div><div class="line">        <span class="attr">requirejs</span>: <span class="string">'requirejs/require'</span>,</div><div class="line">        <span class="string">'semantic-ui'</span>: <span class="string">'semantic-ui/dist/semantic'</span>,</div><div class="line">        <span class="attr">underscore</span>: <span class="string">'underscore/underscore'</span>,</div><div class="line">        <span class="attr">backbone</span>: <span class="string">'backbone/backbone'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">packages</span>: [</div><div class="line"></div><div class="line">    ]</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>接下来，我们新建<strong>assets/js/default/index.js</strong>, 随便写入点内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 每个模块暴露一个 run()方法执行</span></div><div class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">run</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            $(<span class="string">'body'</span>).css(<span class="string">'background-color'</span>,<span class="string">'black'</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="配置页面和模块的映射关系："><a href="#配置页面和模块的映射关系：" class="headerlink" title="配置页面和模块的映射关系："></a>配置页面和模块的映射关系：</h4><p><strong>_views/scripts.swig</strong>:</p>
+<figure class="highlight twig"><table><tr><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span></div><div class="line">    <span class="keyword">var</span> app = &#123;&#125;;</div><div class="line">    <span class="comment">//    如果指明了预调用模块，则为 app 设置动作</span></div><div class="line">    <span class="template-tag">&#123;% <span class="name"><span class="keyword">if</span></span> module -%&#125;</span><span class="xml"><span class="undefined"></span></span></div><div class="line">    app.action = '<span class="template-variable">&#123;&#123; module &#125;&#125;</span><span class="xml"><span class="undefined">';</span></span></div><div class="line">    <span class="template-tag">&#123;%- <span class="name"><span class="keyword">endif</span></span>  %&#125;</span><span class="xml"><span class="undefined"></span></span></div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">data-main</span>=<span class="string">"</span></span><span class="template-variable">&#123;&#123; path.script &#125;&#125;</span><span class="xml"><span class="tag"><span class="string">/common/main"</span> <span class="attr">src</span>=<span class="string">"</span></span></span><span class="template-variable">&#123;&#123; path.bower &#125;&#125;</span><span class="xml"><span class="tag"><span class="string">/requirejs/require.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div></pre></td></tr></table></figure>
+<p>我们新建<strong>assets/js/common/app.js</strong>来调用我们的模块方法, 当 app 模块初始化时，会调用 module 的 run()方法:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">define([<span class="string">'jquery'</span>,<span class="string">'underscore'</span>,<span class="string">'backbone'</span>,<span class="string">'/js/'</span>+app.action+<span class="string">'.js'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">$,_,Backbone,module</span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">init</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="built_in">module</span>.run();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>修改<strong>assets/js/common/main.js</strong>，让其加载 app:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">require</span>.config(&#123;</div><div class="line">    <span class="attr">baseUrl</span>: <span class="string">'/bower_components/'</span>,</div><div class="line">    <span class="attr">paths</span>: &#123;</div><div class="line">        <span class="attr">jquery</span>: <span class="string">'jquery/dist/jquery'</span>,</div><div class="line">        <span class="attr">requirejs</span>: <span class="string">'requirejs/require'</span>,</div><div class="line">        <span class="string">'semantic-ui'</span>: <span class="string">'semantic-ui/dist/semantic'</span>,</div><div class="line">        <span class="attr">underscore</span>: <span class="string">'underscore/underscore'</span>,</div><div class="line">        <span class="attr">backbone</span>: <span class="string">'backbone/backbone'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">packages</span>: [</div><div class="line"></div><div class="line">    ]</div><div class="line">&#125;);</div><div class="line"><span class="comment">// 加载 app，并运行</span></div><div class="line"><span class="built_in">require</span>([<span class="string">'/js/common/app.js'</span>],<span class="function"><span class="keyword">function</span>(<span class="params">app</span>)</span>&#123;</div><div class="line">    app.init();</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>在<strong>views/index.swig</strong>中通过 swig 的<strong>set</strong>标签来制定该页面对应的前端控制逻辑：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&#123;% extends 'partial/layout.swig' %&#125;</div><div class="line">&#123;# 声明本页面调用的模块 #&#125;</div><div class="line">&#123;% set module = 'default/index' -%&#125;</div><div class="line"></div><div class="line">&#123;% block title -%&#125;Woo 的博客 &#123;%- endblock %&#125;</div><div class="line">&#123;% block content -%&#125;</div><div class="line">    &lt;div&gt;</div><div class="line">        &lt;p&gt;</div><div class="line">            这是 Woo 的博客?</div><div class="line">        &lt;/p&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&#123;%- endblock %&#125;</div></pre></td></tr></table></figure>
+<p>OK, 接下来我们执行</p>
+<figure class="highlight plain"><figcaption><span>lift```</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line">并访问 [http://localhost:1337](http://localhost:1337), 如果页面背景为黑色就代表控制逻辑成功被调用</div><div class="line"></div><div class="line">![sails lift](http://7pulhb.com1.z0.glb.clouddn.com/sails-black.png)</div><div class="line"></div><div class="line">## 利用 semantic-ui 来做界面展示</div><div class="line"></div><div class="line"> 关于 bootstrap 和 semantic-ui 选择纯粹是出于个人爱好了，我更喜欢 semantic-ui 的语义化 css 控制以及其自带一些控件风格，最暖心的是，semantic-ui 的模态框不会抖动有木有！！</div><div class="line"></div><div class="line">之前我们已经在__assets/js/common/main.js__中声明了对 semantic-ui 相应 js 控制逻辑的依赖，接下来再__views/partial/stylesheets.swig__中添加 semantic-ui 的 css 调用：</div><div class="line"></div><div class="line">```twig</div><div class="line">&#123;# semantic #&#125;</div><div class="line">&lt;link href=&quot;&#123;&#123; path.bower &#125;&#125;/semantic-ui/dist/semantic.min.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;</div></pre></td></tr></table></figure>
+<h2 id="产品（Production）环境下的访问优化"><a href="#产品（Production）环境下的访问优化" class="headerlink" title="产品（Production）环境下的访问优化:"></a>产品（Production）环境下的访问优化:</h2><p>sails 通过：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sails lift --prod</div></pre></td></tr></table></figure>
+<p>来将应用部署到产品环境，在其基础上，我们希望产品环境的访问速度能够得到更大的优化，因而就要考虑对我们自定义的 js，css 模块进行压缩，这里就会修改<strong>uglify.js</strong>及<strong>cssmin.js</strong>两个 grunt 压缩任务，并相应地修改<strong>prod.js</strong>任务流，如下所示:</p>
+<p><strong>tasks/config/uglify.js</strong>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">grunt</span>) </span>&#123;</div><div class="line"></div><div class="line">  grunt.config.set(<span class="string">'uglify'</span>, &#123;</div><div class="line"></div><div class="line">    <span class="attr">dist</span>: &#123;</div><div class="line"></div><div class="line">      <span class="attr">src</span>: [<span class="string">'.tmp/public/concat/production.js'</span>],</div><div class="line">      <span class="attr">dest</span>: <span class="string">'.tmp/public/min/production.min.js'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="comment">// 压缩各个自定义模块 js</span></div><div class="line">    modules: &#123;</div><div class="line">      <span class="attr">files</span>:[&#123;</div><div class="line">        <span class="attr">expand</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">cwd</span>: <span class="string">'.tmp/public/js'</span>,</div><div class="line">        <span class="attr">src</span>: <span class="string">'**/*.js'</span>,</div><div class="line">        <span class="attr">dest</span>: <span class="string">'.tmp/public/js'</span></div><div class="line">      &#125;]</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  grunt.loadNpmTasks(<span class="string">'grunt-contrib-uglify'</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>tasks/config/cssmin.js</strong>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">grunt</span>) </span>&#123;</div><div class="line"></div><div class="line">  grunt.config.set(<span class="string">'cssmin'</span>, &#123;</div><div class="line">    <span class="attr">dist</span>: &#123;</div><div class="line">      <span class="attr">src</span>: [<span class="string">'.tmp/public/concat/production.css'</span>],</div><div class="line">      <span class="attr">dest</span>: <span class="string">'.tmp/public/min/production.min.css'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">modules</span>: &#123;</div><div class="line">      <span class="attr">files</span>:[&#123;</div><div class="line">        <span class="attr">expand</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">cwd</span>: <span class="string">'.tmp/public/styles'</span>,</div><div class="line">        <span class="attr">src</span>: <span class="string">'**/*.css'</span>,</div><div class="line">        <span class="attr">dest</span>: <span class="string">'.tmp/public/styles'</span></div><div class="line">      &#125;]</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  grunt.loadNpmTasks(<span class="string">'grunt-contrib-cssmin'</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>tasks/register/prod.js</strong>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">grunt</span>) </span>&#123;</div><div class="line">  grunt.registerTask(<span class="string">'prod'</span>, [</div><div class="line">    <span class="string">'compileAssets'</span>,</div><div class="line">    <span class="string">'concat'</span>,</div><div class="line">    <span class="string">'uglify:dist'</span>,</div><div class="line">    <span class="string">'uglify:modules'</span>, <span class="comment">// 压缩自定义模块</span></div><div class="line">    <span class="string">'cssmin:dist'</span>,</div><div class="line">    <span class="string">'cssmin:modules'</span>, <span class="comment">// 压缩自定义 css</span></div><div class="line">    <span class="string">'sails-linker:prodJs'</span>,</div><div class="line">    <span class="string">'sails-linker:prodStyles'</span>,</div><div class="line">    <span class="string">'sails-linker:devTpl'</span>,</div><div class="line">    <span class="string">'sails-linker:prodJsJade'</span>,</div><div class="line">    <span class="string">'sails-linker:prodStylesJade'</span>,</div><div class="line">    <span class="string">'sails-linker:devTplJade'</span></div><div class="line">  ]);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>OK, 现在执行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sails lift --prod</div></pre></td></tr></table></figure>
+<p>我们看到在<strong>.tmp/public</strong>目录下，我们之前撰写的 css 及 js 文件都被压缩:</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-css_compressed.png" alt="css_compressed"></p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-js_compressed.png" alt="js_compressed"></p>
+<hr>
+<h2 id="章节预告"><a href="#章节预告" class="headerlink" title="章节预告"></a>章节预告</h2><p>下一章中，我们将正式进入博客系统的开发，我们先会实现我们的账户系统。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Sails_Tutorial/利用sails.js+mongodb开发博客系统(2)--框架完善/">http://yoyoyohamapi.me/2017/03/08/Sails_Tutorial/利用sails.js+mongodb开发博客系统(2)--框架完善/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/sails-mongodb-nodejs/">sails,mongodb,nodejs</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Image_Processing/数字图像处理（15）-- 颜色知识(2)：颜色模型/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">数字图像处理（15）-- 颜色知识 (2)：颜色模型</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Image_Processing/数字图像处理（18）-- 颜色知识(5)：图像金字塔/">
+        <span class="next-text nav-default">数字图像处理（18）-- 颜色知识 (5)：图像金字塔</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  </body>
+</html>

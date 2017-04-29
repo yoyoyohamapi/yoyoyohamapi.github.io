@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="数字图像处理（17）-- 颜色知识 (4)：全彩色图像处理"/>
+
+
+
+
+  <meta name="keywords" content="数字图像处理," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（17）-- 颜色知识(4)：全彩色图像处理/"/>
+
+
+<meta name="description" content="全彩色（full color）图像的处理通常有以下两种策略：  对每一个颜色分量（通道）进行处理，得到各个分量的处理结果，最后进行叠加操作。  对整个像素的颜色向量进行处理，得到整个图的处理结果。   先看一个对每个分量进行线性变换的处理，在该例子中，分别在 RGB 颜色模型和 HSV 颜色模型中对全彩色图像进行处理。 在 RGB 颜色模型中，变换函数为： $s_i=kr_i$  $(i=1,2,">
+<meta name="keywords" content="数字图像处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字图像处理（17）-- 颜色知识 (4)：全彩色图像处理">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（17）-- 颜色知识(4)：全彩色图像处理/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="全彩色（full color）图像的处理通常有以下两种策略：  对每一个颜色分量（通道）进行处理，得到各个分量的处理结果，最后进行叠加操作。  对整个像素的颜色向量进行处理，得到整个图的处理结果。   先看一个对每个分量进行线性变换的处理，在该例子中，分别在 RGB 颜色模型和 HSV 颜色模型中对全彩色图像进行处理。 在 RGB 颜色模型中，变换函数为： $s_i=kr_i$  $(i=1,2,">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 对 V 通道最线性变换. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 彩色分割. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直方图处理. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直方图对比. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 彩色图像锐化. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直接对 RGB 图像锐化. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-HSV 颜色分割. png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-HSV 颜色分割 2.png">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 全彩色图像边缘检测. png">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字图像处理（17）-- 颜色知识 (4)：全彩色图像处理">
+<meta name="twitter:description" content="全彩色（full color）图像的处理通常有以下两种策略：  对每一个颜色分量（通道）进行处理，得到各个分量的处理结果，最后进行叠加操作。  对整个像素的颜色向量进行处理，得到整个图的处理结果。   先看一个对每个分量进行线性变换的处理，在该例子中，分别在 RGB 颜色模型和 HSV 颜色模型中对全彩色图像进行处理。 在 RGB 颜色模型中，变换函数为： $s_i=kr_i$  $(i=1,2,">
+<meta name="twitter:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip - 对 V 通道最线性变换. png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 数字图像处理（17）-- 颜色知识 (4)：全彩色图像处理 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          数字图像处理（17）-- 颜色知识 (4)：全彩色图像处理
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#彩色分割"><span class="toc-text">彩色分割</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#直方图处理："><span class="toc-text">直方图处理：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#彩色图像模糊与锐化："><span class="toc-text">彩色图像模糊与锐化：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全彩色图像的边缘检测："><span class="toc-text">全彩色图像的边缘检测：</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>全彩色（full color）图像的处理通常有以下两种策略：</p>
+<ol>
+<li><p>对每一个颜色分量（通道）进行处理，得到各个分量的处理结果，最后进行叠加操作。</p>
+</li>
+<li><p>对整个像素的颜色向量进行处理，得到整个图的处理结果。</p>
+</li>
+</ol>
+<p>先看一个对每个分量进行线性变换的处理，在该例子中，分别在 RGB 颜色模型和 HSV 颜色模型中对全彩色图像进行处理。</p>
+<p>在 RGB 颜色模型中，变换函数为：</p>
+<p>$s_i=kr_i$  $(i=1,2,3)$</p>
+<p>其中，$s_i$ 为目标颜色分量 i 强度，$r_i$ 为原图像颜色分量 i 强度。</p>
+<p>在 HSV 颜色模型中，变换函数为：</p>
+<p>$s_3=kr_3$</p>
+<p>即在 HSV 颜色模型中，只对强度 V 做线性变化。</p>
+<p>当 $K=0.75$ 时，有如下处理结果：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 对 V 通道最线性变换. png" alt="对 V 通道做线性变换"></p>
+<p>代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui/highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/imgproc/imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv/cv.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"></div><div class="line"><span class="comment">// 图像处理基础素材路径</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BASEPATH <span class="meta-string">"/Users/feiyu06/Pictures/img_processing/"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE unsigned char</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 图像路径</span></div><div class="line">    <span class="built_in">string</span> img_path = <span class="string">"DIP3E_Original_Images_CH06/Fig0631(a)(strawberries_coffee_full_color).tif"</span>;</div><div class="line">    Mat img = imread(BASEPATH+img_path, <span class="number">1</span>);</div><div class="line">    <span class="comment">//img_rgb_processed 为 rgb 颜色模型处理后的图像</span></div><div class="line">    Mat img_rgb_processed;</div><div class="line">    <span class="comment">//img</span></div><div class="line">    Mat img_hsv_processed;</div><div class="line">    cvtColor(img, img_hsv_processed,CV_BGR2HSV);</div><div class="line">    img_hsv_processed.convertTo(img_hsv_processed, CV_32F);</div><div class="line">    img.convertTo(img, CV_32F);</div><div class="line">    <span class="comment">// 原图像大小</span></div><div class="line">    Size size = img.size();</div><div class="line">    <span class="comment">// 原图像通道数</span></div><div class="line">    <span class="keyword">int</span> channels_num = img.channels();</div><div class="line">    <span class="comment">// 拆分用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; s_channels(channels_num);</div><div class="line">    <span class="comment">// 合并用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; m_channels(channels_num);</div><div class="line">    <span class="comment">//************************ 开始进行 RGB 颜色空间的亮度降低 ***************************</span></div><div class="line">    split(img,s_channels);</div><div class="line">    <span class="comment">// 线性变化的 k 值</span></div><div class="line">    <span class="keyword">double</span> k = <span class="number">0.75</span>;</div><div class="line">    <span class="keyword">int</span> i,j;</div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;channels_num;i++)&#123;</div><div class="line">        <span class="comment">// 灰度归一化处理</span></div><div class="line">        normalize(s_channels[i], s_channels[i],<span class="number">1.0</span>,<span class="number">0</span>,NORM_MINMAX);</div><div class="line">        m_channels[i] = s_channels[i]*k;</div><div class="line">    &#125;</div><div class="line">    merge(m_channels,img_rgb_processed);</div><div class="line">    <span class="comment">//****************************************************************************</span></div><div class="line">    </div><div class="line">    <span class="comment">//*********************** 开始进行 HSV 颜色空间的亮度降低 ****************************</span></div><div class="line">    split(img_hsv_processed,s_channels);</div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;channels_num;i++)&#123;</div><div class="line">        <span class="keyword">if</span>(i==<span class="number">2</span>)&#123;</div><div class="line">            <span class="comment">// 灰度归一化处理</span></div><div class="line">            m_channels[i] = s_channels[i]*k;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">            m_channels[i] = s_channels[i];</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    merge(m_channels,img_hsv_processed);</div><div class="line">    <span class="comment">// 将 HSV 图像转换为 BGR 图像，方便显示</span></div><div class="line">    convertScaleAbs(img_hsv_processed, img_hsv_processed);</div><div class="line">    cvtColor(img_hsv_processed, img_hsv_processed, CV_HSV2BGR);</div><div class="line">    <span class="comment">//*****************************************************************************</span></div><div class="line">    <span class="comment">// 接下来是图像显示</span></div><div class="line">    convertScaleAbs(img, img);</div><div class="line">    namedWindow(<span class="string">"src pic"</span>, WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"rgb processed pic"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"hsv processed pic"</span>,WINDOW_AUTOSIZE);</div><div class="line">    imshow(<span class="string">"src pic"</span>, img);</div><div class="line">    imshow(<span class="string">"rgb processed pic"</span>,img_rgb_processed);</div><div class="line">    imshow(<span class="string">"hsv processed pic"</span>,img_hsv_processed);</div><div class="line">    waitKey(<span class="number">0</span>);</div><div class="line">    <span class="comment">//return</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，在 RGB 颜色模型和 HSV 颜色模型中，达到了相同的降低亮度的效果，然而 HSV 中只需对强度 V 这一个分量进行操作即可，这也体现出了 HSV 的<strong>“分离了灰度（亮度）和颜色信息”</strong>这一优势。</p>
+<h2 id="彩色分割"><a href="#彩色分割" class="headerlink" title="彩色分割"></a>彩色分割</h2><p>进行彩色分割的目的就在于突出图像中感兴趣的区域，由于彩色图像多是定义在三维空间，所以感兴趣的区域不再是平面线段，而是空间立体区域，通常有：</p>
+<p>立方体区域：</p>
+<p>$s_i=\begin{cases}0.5&amp;\text{if }[|r_j-a<em>j|&gt; \frac{w}{2}]</em>{any 1\leq{j}\leq{n}}\r_i&amp;\text{otherwise}\end{cases}$  $i=1,2,3….,n$</p>
+<p>其中，$a_j$ 为感兴趣的颜色分量 $j$,$W$ 为感兴趣颜色立方体边长,$W$ 也可看做是最大不能偏离兴趣颜色分量的距离。考虑某颜色分量与感兴趣的颜色分量间的差值关系，若有任意一对分量差超过 $\frac{W}{2}$, 则输出的颜色分量被标定为 $0.5$。</p>
+<p>例如，若感兴趣的颜色分量为(0.2,0.3,0.5),W=0.2, 则 $\frac{W}{2}$=0.1; 考虑某像素的颜色为(0,1,0,4,0.3)，那么颜色分量 $r_2=0.4$ 的输出应为多少？</p>
+<p>因为：</p>
+<p>$|0.1-0.2|=0.1\leq\frac{W}{2}$</p>
+<p>$|0.4-0.3|=0.1\leq\frac{W}{2}$</p>
+<p>$|0.3-0.5|=0.2\gt\frac{W}{2}$</p>
+<p>故颜色分量 $r_2=0.4$ 的输出应为 $s_2=0.5$</p>
+<p>球体区域：</p>
+<p>$s<em>i=\begin{cases}0.5&amp;\text{if }\sum\limits</em>{j=1}^n(r_j-a_j)^2\gt R_0^2\r_i&amp;\text{otherwise}\end{cases}$</p>
+<p>其中，$R_0$ 为球体半径</p>
+<p>如下图所示，采用的 $W=0.1049$，突出显示了草莓区域：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 彩色分割. png" alt="彩色图像分割"></p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui/highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/imgproc/imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv/cv.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"></div><div class="line"><span class="comment">// 图像处理基础素材路径</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BASEPATH <span class="meta-string">"/Users/feiyu06/Pictures/img_processing/"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE unsigned char</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 图像路径</span></div><div class="line">    <span class="built_in">string</span> img_path = <span class="string">"DIP3E_Original_Images_CH06/Fig0631(a)(strawberries_coffee_full_color).tif"</span>;</div><div class="line">    Mat img = imread(BASEPATH+img_path, <span class="number">1</span>);</div><div class="line">    img.convertTo(img, CV_32FC3);</div><div class="line">    Mat img_dst = img.clone();</div><div class="line">    </div><div class="line">    <span class="comment">// 设定立方体边长</span></div><div class="line">    <span class="keyword">float</span> W = <span class="number">0.1049</span>;</div><div class="line">    <span class="comment">// 感兴趣的颜色</span></div><div class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">float</span>&gt; itst = &#123;<span class="number">0.1922</span>,<span class="number">0.1608</span>,<span class="number">0.6863</span>&#125;;</div><div class="line">    <span class="function">Mat <span class="title">interest</span><span class="params">(itst)</span></span>;</div><div class="line">    <span class="comment">// 用于分离通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; s_channels(img.channels());</div><div class="line">    split(img,s_channels);</div><div class="line">    <span class="keyword">int</span> i,j,k;</div><div class="line">    <span class="comment">// 标定每一个通道</span></div><div class="line">    <span class="keyword">for</span>(k=<span class="number">0</span>;k&lt;img.channels();k++)&#123;</div><div class="line">        normalize(s_channels[k],s_channels[k],<span class="number">1.0</span>,<span class="number">0.0</span>,NORM_MINMAX);</div><div class="line">    &#125;    <span class="comment">// 遍历像素</span></div><div class="line">    merge(s_channels, img);</div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;img.rows;i++)</div><div class="line">        <span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;img.cols;j++)&#123;</div><div class="line">            Mat r = interest.clone();</div><div class="line">            r.at&lt;<span class="keyword">float</span>&gt;(<span class="number">0</span>,<span class="number">0</span>) = img.at&lt;Vec3f&gt;(i,j)[<span class="number">0</span>];</div><div class="line">            r.at&lt;<span class="keyword">float</span>&gt;(<span class="number">1</span>,<span class="number">0</span>) = img.at&lt;Vec3f&gt;(i,j)[<span class="number">1</span>];</div><div class="line">            r.at&lt;<span class="keyword">float</span>&gt;(<span class="number">2</span>,<span class="number">0</span>) = img.at&lt;Vec3f&gt;(i,j)[<span class="number">2</span>];</div><div class="line">            <span class="keyword">double</span> max,min;</div><div class="line">            <span class="comment">// 获得距离矩阵</span></div><div class="line">            Mat distance = <span class="built_in">abs</span>(r-interest);</div><div class="line">            minMaxLoc(distance, &amp;min, &amp;max);</div><div class="line">            <span class="keyword">for</span>(k=<span class="number">0</span>;k&lt;img.channels();k++)&#123;</div><div class="line">                <span class="keyword">if</span>( min &gt; (W/<span class="number">2.0</span>) )</div><div class="line">                    img_dst.at&lt;Vec3f&gt;(i,j)[k]=<span class="number">0.5</span>;</div><div class="line">                <span class="keyword">else</span></div><div class="line">                    img_dst.at&lt;Vec3f&gt;(i,j)[k]=r.at&lt;<span class="keyword">float</span>&gt;(k,<span class="number">0</span>);</div><div class="line">                </div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    namedWindow(<span class="string">"src image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"dst image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    imshow(<span class="string">"src image"</span>,img);</div><div class="line">    imshow(<span class="string">"dst image"</span>, img_dst);</div><div class="line">    waitKey(<span class="number">0</span>);</div><div class="line">    <span class="comment">//return</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="直方图处理："><a href="#直方图处理：" class="headerlink" title="直方图处理："></a>直方图处理：</h2><p>彩色图像的直方图处理通常只需要在灰度级完成，而非对每个颜色通道都进行直方图操作，故而我们在彩色图像的直方图处理中考虑使用 HSI（HSV）颜色模型。</p>
+<p>下面我们看一则例子, 这则例子中，原图像亮度偏暗，操作其 V 通道进行直方图均衡化处理，加强了亮度：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直方图处理. png" alt="V 通道直方图均衡化"></p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直方图对比. png" alt="直方图对比"></p>
+<h2 id="彩色图像模糊与锐化："><a href="#彩色图像模糊与锐化：" class="headerlink" title="彩色图像模糊与锐化："></a>彩色图像模糊与锐化：</h2><p>在 RGB 颜色空间中，一般的线性处理（如均值滤波）分别作用在各通道的结果等于直接作用在颜色向量的结果，然而，如统计排序滤波（如中值滤波等）这些非线性操作就不适用了，你很难衡量向量间的大小关系。</p>
+<p>通常，为了不影响彩色图像的颜色信息，我们更乐意在 HSV 图像下的 V 通道（即灰度图）下进行图像的模糊处理。下面是一则例子，在这则例子中，分别对 RGB 图像的三个通道做均值滤波处理，而在 HSV 图像的 V 通道做均值滤波，在第四幅图（用对数进行过对比度增强，实际差异较小）中可以看到，二者的模糊效果还是有所差异：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 彩色图像锐化. png" alt="彩色图像模糊"></p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui/highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/imgproc/imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv/cv.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"></div><div class="line"><span class="comment">// 图像处理基础素材路径</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BASEPATH <span class="meta-string">"/Users/feiyu06/Pictures/img_processing/"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE unsigned char</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 图像路径</span></div><div class="line">    <span class="built_in">string</span> img_path = <span class="string">"DIP3E_Original_Images_CH06/Fig0638(a)(lenna_RGB).tif"</span>;</div><div class="line">    Mat img = imread(BASEPATH+img_path, <span class="number">1</span>);</div><div class="line">    Mat img_bgr = img.clone();</div><div class="line">    <span class="comment">// 将图像转换到 HSV 颜色空间</span></div><div class="line">    Mat img_hsv;</div><div class="line">    cvtColor(img, img_hsv, CV_BGR2HSV);</div><div class="line">    <span class="comment">// 分离用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt;  s_channels(img.channels());</div><div class="line">    <span class="comment">// 合并用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; m_channels(img.channels());</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="comment">//********************************* 完成 RGB 图像的模糊处理 ***********************************************</span></div><div class="line">    split(img_bgr,s_channels);</div><div class="line">    <span class="comment">// 对各通道进行均值滤波</span></div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;img_bgr.channels();i++)&#123;</div><div class="line">        blur(s_channels[i], m_channels[i],&#123;<span class="number">3</span>,<span class="number">3</span>&#125;);</div><div class="line">    &#125;</div><div class="line">    merge(m_channels,img_bgr);</div><div class="line">    <span class="comment">//********************************* 完成 HSV 图像的模糊处理 ***********************************************</span></div><div class="line">    split(img_hsv,s_channels);</div><div class="line">    <span class="comment">// 仅对 V 通道进行均值滤波</span></div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;img_hsv.channels();i++)&#123;</div><div class="line">        <span class="keyword">if</span>(i==<span class="number">2</span>)</div><div class="line">            blur(s_channels[i], m_channels[i], &#123;<span class="number">3</span>,<span class="number">3</span>&#125;);</div><div class="line">        <span class="keyword">else</span></div><div class="line">            m_channels[i] = s_channels[i];</div><div class="line">    &#125;</div><div class="line">    merge(m_channels,img_hsv);</div><div class="line">    <span class="comment">// 讲 HSV 图像转换为 RGB 图像，方便显示</span></div><div class="line">    cvtColor(img_hsv, img_hsv, CV_HSV2BGR);</div><div class="line">    <span class="comment">//HSV 模糊处理与 RGB 模糊处理的差异图像</span></div><div class="line">    Mat diff = img_bgr - img_hsv;</div><div class="line">    cvtColor(diff,diff,CV_BGR2GRAY);</div><div class="line">    diff.convertTo(diff, CV_32F);</div><div class="line">    <span class="built_in">log</span>(diff, diff);</div><div class="line">    namedWindow(<span class="string">"src image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"RGB image blured"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"HSV image blured"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"The difference of bluring"</span>,WINDOW_AUTOSIZE);</div><div class="line">    imshow(<span class="string">"src image"</span>,img);</div><div class="line">    imshow(<span class="string">"RGB image blured"</span>, img_bgr);</div><div class="line">    imshow(<span class="string">"HSV image blured"</span>,img_hsv);</div><div class="line">    imshow(<span class="string">"The difference of bluring"</span>,diff);</div><div class="line">    waitKey(<span class="number">0</span>);</div><div class="line">    <span class="comment">//return</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下例是锐化操作，锐化滤波器为拉普拉斯滤波器，直接对 RGB 图像进行滤波：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 直接对 RGB 图像锐化. png" alt="彩色图像锐化"></p>
+<p>##HSV 颜色空间的颜色分割（突出颜色区域）：</p>
+<p>在<strong>冈萨雷斯的《数字图像处理》</strong>中其实还有提到 RGB 颜色空间的颜色分离，但实现起来比较复杂，在此不讨论，HSV 颜色空间通过色调 (hue) 和饱和度 (saturation) 就能很好地确定颜色信息，相当方便。</p>
+<p>在 HSV 颜色空间的颜色分割的实现经历如下步骤：</p>
+<ol>
+<li><p>分离出 Hue 通道（首先，颜色参与提名“需要突出颜色”）</p>
+</li>
+<li><p>分离出 Saturation 通道，并且二值化为 0、1，用二值化后的饱和度图像作为掩膜，与色度图像做点积（淘汰那些饱和度不够的提名色）</p>
+</li>
+</ol>
+<p>下面是例子，该例子中，原图像色泽较为浓郁的区域被突出（最右下角图片）：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-HSV 颜色分割. png" alt="HSV 颜色分割"></p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-HSV 颜色分割 2.png" alt="HSV 颜色分割 2"></p>
+<p>(a)原图像 (b)Hue 通道 (c)饱和度通道</p>
+<p>(d)二值化的饱和度通道 (e)分割后图像</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui/highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/imgproc/imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv/cv.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"></div><div class="line"><span class="comment">// 图像处理基础素材路径</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BASEPATH <span class="meta-string">"/Users/feiyu06/Pictures/img_processing/"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE unsigned char</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 图像路径</span></div><div class="line">    <span class="built_in">string</span> img_path = <span class="string">"DIP3E_Original_Images_CH06/Fig0642(a)(jupiter_moon_original).tif"</span>;</div><div class="line">    Mat img = imread(BASEPATH+img_path, <span class="number">1</span>);</div><div class="line">    <span class="comment">// 将图像转换到 HSV 颜色空间</span></div><div class="line">    Mat img_hsv;</div><div class="line">    cvtColor(img, img_hsv, CV_BGR2HSV);</div><div class="line">    <span class="comment">// 分离用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt;  s_channels(img.channels());</div><div class="line">    <span class="comment">// 合并用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; m_channels(img.channels());</div><div class="line">    <span class="comment">// 分离 HSV 图像各个通道</span></div><div class="line">    split(img_hsv,s_channels);</div><div class="line">    <span class="comment">// 设置饱和度阈值</span></div><div class="line">    s_channels[<span class="number">1</span>].convertTo(m_channels[<span class="number">1</span>], CV_32F);</div><div class="line">    m_channels[<span class="number">0</span>] = s_channels[<span class="number">0</span>];</div><div class="line">    <span class="keyword">double</span> min,max;</div><div class="line">    minMaxLoc(m_channels[<span class="number">1</span>],&amp;min,&amp;max);</div><div class="line">    <span class="built_in">cout</span>&lt;&lt;max&lt;&lt;<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">double</span> thresh = max*<span class="number">0.3</span>;</div><div class="line">    <span class="comment">// 二值化饱和度图像</span></div><div class="line">    threshold(m_channels[<span class="number">1</span>], m_channels[<span class="number">1</span>], thresh,<span class="number">1.0</span>, THRESH_BINARY);</div><div class="line">    m_channels[<span class="number">1</span>].convertTo(m_channels[<span class="number">1</span>], CV_8U);</div><div class="line">    <span class="comment">// 二值化后的饱和度图像与色度图像点积获得最终颜色分割图像</span></div><div class="line">    Mat img_dst;</div><div class="line">    multiply(m_channels[<span class="number">0</span>], m_channels[<span class="number">1</span>], img_dst);</div><div class="line">    m_channels[<span class="number">1</span>].convertTo(m_channels[<span class="number">1</span>],CV_32F);</div><div class="line">    namedWindow(<span class="string">"Src image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"Hue image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"Saturation image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"Binary Saturation mask"</span>,WINDOW_AUTOSIZE);</div><div class="line">    namedWindow(<span class="string">"Dst image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    imshow(<span class="string">"Src image"</span>,img);</div><div class="line">    imshow(<span class="string">"Hue image"</span>, m_channels[<span class="number">0</span>]);</div><div class="line">    imshow(<span class="string">"Saturation image"</span>,s_channels[<span class="number">1</span>]);</div><div class="line">    imshow(<span class="string">"Binary Saturation mask"</span>,m_channels[<span class="number">1</span>]);</div><div class="line">    imshow(<span class="string">"Dst image"</span>, img_dst);</div><div class="line">    waitKey(<span class="number">0</span>);</div><div class="line">    <span class="comment">//return</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="全彩色图像的边缘检测："><a href="#全彩色图像的边缘检测：" class="headerlink" title="全彩色图像的边缘检测："></a>全彩色图像的边缘检测：</h2><p>因为梯度（反映图像灰度变化）在向量中的定义不同于标量中的定义，故而在灰度图像中的梯度算法并不能直接作用于全彩色图像。通常，在 RGB 颜色模型中，我们会对各分量进行边缘检测后再叠加。</p>
+<p>如下例子所示，我们对彩色图像的各分量图像做边缘检测后进行叠加，在这里，所用到边缘检测算法是 Canny 边缘检测。注意到：</p>
+<blockquote>
+<p>Canny 算法中减少假边缘数量的方法是采用双阈值法。选择两个阈值（关于阈值的选取方法在扩展中进行讨论），根据高阈值得到一个边缘图像，这样一个图像含有很少的假边缘，但是由于阈值较高，产生的图像边缘可能不闭合，未解决这样一个问题采用了另外一个低阈值。</p>
+<p>在高阈值图像中把边缘链接成轮廓，当到达轮廓的端点时，该算法会在断点的 8 邻域点中寻找满足低阈值的点，再根据此点收集新的边缘，直到整个图像边缘闭合。</p>
+</blockquote>
+<p>在此，我们通过滑动条来控制高、低阈值：</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip - 全彩色图像边缘检测. png" alt="彩色图像边缘检测"></p>
+<p>代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui/highgui.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/imgproc/imgproc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv/cv.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</div><div class="line"></div><div class="line"><span class="comment">// 图像处理基础素材路径</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BASEPATH <span class="meta-string">"/Users/feiyu06/Pictures/img_processing/"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE unsigned char</span></div><div class="line"></div><div class="line"><span class="comment">// 定义滑动条基本参数</span></div><div class="line"><span class="keyword">int</span> high_thresh = <span class="number">255</span>;</div><div class="line"><span class="keyword">int</span> low_thresh = <span class="number">0</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> max_val = <span class="number">255</span>;</div><div class="line"><span class="built_in">string</span> winname = <span class="string">"Edges Detecting...."</span>;</div><div class="line"><span class="comment">// 原图像</span></div><div class="line">Mat img;</div><div class="line"><span class="comment">// 边缘图像</span></div><div class="line">Mat edges_img;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">edgesDetecting</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">void</span>*)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 图像路径</span></div><div class="line">    <span class="built_in">string</span> img_path = <span class="string">"DIP3E_Original_Images_CH06/Fig0638(a)(lenna_RGB).tif"</span>;</div><div class="line">    img = imread(BASEPATH+img_path, <span class="number">1</span>);</div><div class="line">    namedWindow(winname,WINDOW_AUTOSIZE);</div><div class="line">    createTrackbar(<span class="string">"High Threshold"</span>, winname, &amp;high_thresh, max_val,edgesDetecting);</div><div class="line">    createTrackbar(<span class="string">"Low Threshold"</span>, winname, &amp;low_thresh,max_val, edgesDetecting);</div><div class="line">    edgesDetecting(<span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    namedWindow(<span class="string">"Src Image"</span>,WINDOW_AUTOSIZE);</div><div class="line">    imshow(<span class="string">"Src Image"</span>,img);</div><div class="line">    waitKey(<span class="number">0</span>);</div><div class="line">    <span class="comment">//return</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 定义根据滑动条参数设定来完成边缘检测</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">edgesDetecting</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">void</span>*)</span></span>&#123;</div><div class="line">    <span class="comment">// 分离用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; s_channels(img.channels());</div><div class="line">    <span class="comment">// 合并用通道</span></div><div class="line">    <span class="built_in">vector</span>&lt;Mat&gt; m_channels(img.channels());</div><div class="line">    split(img,s_channels);</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="comment">// 对各通道进行边缘检测</span></div><div class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;img.channels();i++)</div><div class="line">        Canny(s_channels[i], m_channels[i], high_thresh, low_thresh);</div><div class="line">    merge(m_channels, edges_img);</div><div class="line">    imshow(winname, edges_img);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（17）-- 颜色知识(4)：全彩色图像处理/">http://yoyoyohamapi.me/2017/03/08/Image_Processing/数字图像处理（17）-- 颜色知识(4)：全彩色图像处理/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/数字图像处理/">数字图像处理</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Web/RMM Level -- 对于REST的层级划分模型/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">RMM Level -- 对于 REST 的层级划分模型</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/04/29/斯坦福机器学习笔记/">
+        <span class="next-text nav-default">斯坦福机器学习笔记</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

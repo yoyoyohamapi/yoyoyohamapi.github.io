@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Flux下的组件化开发"/>
+
+
+
+
+  <meta name="keywords" content="react,todomvc,flux," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/React/Flux与面向组件化开发/"/>
+
+
+<meta name="description" content="首先要明确的是，Flux并不是一个前端框架，而是前端的一个设计模式，其把前端的一个交互流程简单的模拟成了一个单向数据流。  在上图中，我们可以看到Flux的四个核心构成： Action一个交互动作,更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个Action往往由如下两个部分组成：  交互类型 ，例如创建、删除、更新等 交">
+<meta name="keywords" content="react,todomvc,flux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flux下的组件化开发">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/React/Flux与面向组件化开发/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="首先要明确的是，Flux并不是一个前端框架，而是前端的一个设计模式，其把前端的一个交互流程简单的模拟成了一个单向数据流。  在上图中，我们可以看到Flux的四个核心构成： Action一个交互动作,更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个Action往往由如下两个部分组成：  交互类型 ，例如创建、删除、更新等 交">
+<meta property="og:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png">
+<meta property="og:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-with-client-action-1300w.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-Todo%E4%BA%A4%E4%BA%92%E5%8E%9F%E5%9E%8B.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoApp.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoHeader.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoFooter.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/TodoMainSection.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/TodoItem.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/%E5%8F%8C%E5%87%BB%E8%BF%9B%E5%85%A5%E7%BC%96%E8%BE%91.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/0f5014ca-ef30-4eac-8e6a-74a76dfc18d6/image.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/1c6988eb-cb2c-4092-8f7f-2cbc11e07c9e/image.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/210b9a7b-f8db-4642-bee0-62b8a62dbb33/image.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/0140d060-b037-4ab8-9357-61029d6a14ef/image.png">
+<meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/49534565-8e62-4836-a6ca-e616269ba094/image.png">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flux下的组件化开发">
+<meta name="twitter:description" content="首先要明确的是，Flux并不是一个前端框架，而是前端的一个设计模式，其把前端的一个交互流程简单的模拟成了一个单向数据流。  在上图中，我们可以看到Flux的四个核心构成： Action一个交互动作,更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个Action往往由如下两个部分组成：  交互类型 ，例如创建、删除、更新等 交">
+<meta name="twitter:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Flux下的组件化开发 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Flux下的组件化开发
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action"><span class="toc-text">Action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dispatcher"><span class="toc-text">Dispatcher</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store"><span class="toc-text">Store</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#View"><span class="toc-text">View</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TODO栗子"><span class="toc-text">TODO栗子</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TodoApp"><span class="toc-text">TodoApp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Header"><span class="toc-text">Header</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Footer"><span class="toc-text">Footer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MainSection"><span class="toc-text">MainSection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TodoItem"><span class="toc-text">TodoItem</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TodoTextInput"><span class="toc-text">TodoTextInput</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#组件结构："><span class="toc-text">组件结构：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#状态维护-仅展示部分-："><span class="toc-text">状态维护(仅展示部分)：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#封装"><span class="toc-text">封装</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Dispatcher-1"><span class="toc-text">Dispatcher</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Store实现"><span class="toc-text">Store实现</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Actions"><span class="toc-text">Actions</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Components"><span class="toc-text">Components</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#工作流程"><span class="toc-text">工作流程</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>首先要明确的是，Flux并不是一个前端框架，而是前端的一个设计模式，其把前端的一个交互流程简单的模拟成了一个单向数据流。</p>
+<p><img src="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png" alt="Flux"></p>
+<p>在上图中，我们可以看到Flux的四个核心构成：</p>
+<h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p>一个交互动作,更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个Action往往由如下两个部分组成：</p>
+<ul>
+<li>交互类型 ，例如创建、删除、更新等</li>
+<li>交互体，或者说交互的携带信息， 例如创建的文本</li>
+</ul>
+<h3 id="Dispatcher"><a href="#Dispatcher" class="headerlink" title="Dispatcher"></a>Dispatcher</h3><p>Action分发器，从上图的数据流中，我们可以看到，用户每次产生的Action将被送入Dispatcher，Dispatcher对Action进行简单的包裹之后将其派发到<strong>所有</strong>Store中。</p>
+<blockquote>
+<p>！注意，Dispatcher的这种广播行为有别于<strong>Pub/Sub</strong>模型，在<strong>Pub/Sub</strong>模型中，需要声明订阅的消息类型，然后发布者会像订阅者广播特定类型的消息。而在Dispatcher中，Store向其注册的任意回调接口都不要声明订阅的Action类型，即Store只告诉Dispatcher“如果Action到来，请你把它发送给我”。当Dispatcher派发Action时，所有注册到Dispatcher的callback都会得到响应。回调可以通过简单的switch-case来针对不对类型的Action做出不同的行为。</p>
+</blockquote>
+<h3 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h3><p>数据仓库，保存了我们某个前端App的数据以及对数据的操作。Store会向Dispatcher注册一个回调函数，该回调函数接受一个action作为参数。当Action被派发到Store时，该回调函数被调用，借由Action中描述的<strong>交互类型（type）</strong>，Store进行不同处理，这些处理都将被持久化到Store维护的数据对象上。</p>
+<p>Store完成数据的变更后，由于Flux并不是双向数据绑定的，因而即便我们已经持久化了Store中的数据，但组件（View）的数据并未得到更新，组件也不会重新渲染。所以，每次数据变动后，为了告知组件去更新数据，Store会emit一个change事件。当监听到change事件发生，注册到监听器上的回调去完成各个组件的状态更新。</p>
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><p>顾名思义，这就是用户所能看到的视图，有别于传统的MVC，在Flux中，View并不会和数据模型（Model）产生交互，其只会产生各种交互行为（Actions），这些行为将会被送到Dispatcher中，如下图所示：</p>
+<p><img src="http://facebook.github.io/flux/img/flux-simple-f8-diagram-with-client-action-1300w.png" alt="Action被送入Dispatcher"></p>
+<p>当View中维护的状态变动时，View需要被重新渲染。</p>
+<h3 id="TODO栗子"><a href="#TODO栗子" class="headerlink" title="TODO栗子"></a>TODO栗子</h3><p>下面我们分析一个用React+Flux实现的一个Flux栗子，其源码托管在<a href="https://github.com/facebook/flux/tree/master/examples/flux-todomvc" target="_blank" rel="external">github</a>上。</p>
+<p>在项目实践中，面向组件化开发的最佳场景我认为是 <strong>交互驱动型的开发</strong>，可能描述不够准确，准确点说就是一旦一个完善的交互设计稿产生时，我们就可以去<strong>分割</strong>和<strong>分析</strong>组件了，我们现在来分析Todo的交互原型：</p>
+<p><img src="http://7pulhb.com2.z0.glb.clouddn.com/Flux-Todo%E4%BA%A4%E4%BA%92%E5%8E%9F%E5%9E%8B.png" alt="Todo交互"></p>
+<blockquote>
+<p>这是交互设计师的给我们的原稿，并且，原稿可能远不止这样一幅简单的图像，可能还包括更多的交互效果</p>
+</blockquote>
+<p>我们将会把这个应用拆分为如下组件：</p>
+<h4 id="TodoApp"><a href="#TodoApp" class="headerlink" title="TodoApp"></a>TodoApp</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoApp.png" alt="TodoApp"></p>
+<p>通常，在前端面向组件化的开发过程中，我们往往需要一个顶部容器包裹住我们的组件，一个页面可以存在若干个这样的顶部容器，这个容器类似一个集装箱或者盒子，封装了某个页面应用的所有组件和状态。例如，在某视频网站中，视频播放窗口可以作为一个顶部容器，其包裹了播放窗口，进度条，播放选项等各个组件，同时，评论部分也可以作为一个顶部容器，其包裹了评论列表，评论框等组件。</p>
+<p>在Todo例子中，TodoApp作为一个顶部容器，包裹了所有Todo应用需要的组件，这样，我们在应用入口只需要从TodoApp开始渲染，进而逐个渲染其子组件。但更为重要的是，TodoApp将会封装其下各个组件需要用到的状态，通过数据流，各个组件将会收到状态，并且在状态改变时，重新渲染自己，最终更新页面内容。</p>
+<hr>
+<h4 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoHeader.png" alt="TodoHeader"></p>
+<p>这是一个头部组件，根据交互设计，他除了将保有静态的“todos”文字标题以外，还将会具有如下行为：</p>
+<ul>
+<li>右侧输入框失焦或者按下回车键：创建新的todo</li>
+</ul>
+<p>因此，Header是一个<strong>无状态（Stateless）</strong>的组件</p>
+<hr>
+<h4 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/Flux-TodoFooter.png" alt="TodoFooter"></p>
+<p>这是一个底部组件，它将显示未完成todo数，并能删除所有已完成todo，故而，首先他需要获得如下<strong>状态</strong>:</p>
+<ul>
+<li><p>所有任务：</p>
+<ul>
+<li>通过遍历任务的完成情况，能获得未完成任务数</li>
+<li>通过遍历任务的完成情况，统计已完成任务的信息</li>
+<li>如果当前无任务，隐藏Footer</li>
+</ul>
+</li>
+</ul>
+<p>因此，在初步的设计中，Footer是一个<strong>有状态（Stateful）</strong>的组件。后面我们会谈到该做法的不恰当。</p>
+<p>并且，他具有如下行为：</p>
+<ul>
+<li>单击右侧按钮（Clear completed）: 清除所有已完成任务</li>
+</ul>
+<hr>
+<h4 id="MainSection"><a href="#MainSection" class="headerlink" title="MainSection"></a>MainSection</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/TodoMainSection.png" alt="MainSection"></p>
+<p>该组件将会负责渲染所有的以创建任务，因而他需要维护的状态为：</p>
+<ul>
+<li>所有任务</li>
+</ul>
+<p>其具有的行为：</p>
+<ul>
+<li>点击顶部左侧图标按钮：完成/取消完成所有任务，具体根据<strong>所有任务</strong>是否都完成了决定</li>
+</ul>
+<p>因此， MainSection也是一个有状态的组件。</p>
+<hr>
+<h4 id="TodoItem"><a href="#TodoItem" class="headerlink" title="TodoItem"></a>TodoItem</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/TodoItem.png" alt="TodoItem"></p>
+<p>这是Todo项，其Todo对象来源于MainSection的迭代，并且该组件具有如下行为：</p>
+<ul>
+<li>单击左侧按钮：完成/取消完成该任务</li>
+<li>单击右侧按钮：删除该Todo</li>
+<li>双击Todo文本：进入如下的编辑模式</li>
+</ul>
+<p><img src="http://7pulhb.com2.z0.glb.clouddn.com/%E5%8F%8C%E5%87%BB%E8%BF%9B%E5%85%A5%E7%BC%96%E8%BE%91.png" alt="编辑模式"></p>
+<p>我们不难发现，“是否处于编辑模式”实际上可作为该组件的一个状态，该状态的切换直接影响了该组件的展示和行为，所以，组件应当维护一个状态：</p>
+<ul>
+<li>是否编辑模式</li>
+</ul>
+<p>在编辑模式中，具有如下行为：</p>
+<ul>
+<li>输入框失焦或者按下回车键：更新任务</li>
+</ul>
+<p>可以看到，在<strong>Header</strong>组件及<strong>TodoItem</strong>组件的输入框组件具有一致的交互行为，所以，我们可以将其提出来作为单独的组件，这也侧面体现了，一份完善的交互设计原型将预测到实现过程中的复用和抽象，避免了一些代码重构的时间。</p>
+<hr>
+<h4 id="TodoTextInput"><a href="#TodoTextInput" class="headerlink" title="TodoTextInput"></a>TodoTextInput</h4><p>现在，我们抽象出一个可复用的输入组件TodoTextInput供Header和TodoItem使用，他需要维护如下状态：</p>
+<ul>
+<li>输入值</li>
+</ul>
+<p>他具有如下行为：</p>
+<ul>
+<li>输入框失焦或者按下回车键：调用存储过程（创建，更新等等）</li>
+</ul>
+<hr>
+<p>综上，我们以一个简单的示意图表示如上的划分：</p>
+<h4 id="组件结构："><a href="#组件结构：" class="headerlink" title="组件结构："></a>组件结构：</h4><p><img src="https://www.lucidchart.com/publicSegments/view/0f5014ca-ef30-4eac-8e6a-74a76dfc18d6/image.png" alt="组件结构"></p>
+<h4 id="状态维护-仅展示部分-："><a href="#状态维护-仅展示部分-：" class="headerlink" title="状态维护(仅展示部分)："></a>状态维护(仅展示部分)：</h4><p><img src="https://www.lucidchart.com/publicSegments/view/1c6988eb-cb2c-4092-8f7f-2cbc11e07c9e/image.png" alt="状态维护"></p>
+<p>通过上图，我们发现在<strong>MainSection</strong>和<strong>Footer</strong>组件中都需要维护<strong>所有todo</strong>（allTodos）这一状态，由于MainSection与Footer属于平级的组件，所以，当MainSection中的<strong>allTodos</strong>这一状态发生改变时，为使Footer中的状态也发生改变，MainSection中需要保存有Footer的引用才能更新到Footer的状态，同理，Footer中也需要保存有MainSection的引用。这样，两个组件将会是强耦合的，如下图所示：</p>
+<p><img src="https://www.lucidchart.com/publicSegments/view/210b9a7b-f8db-4642-bee0-62b8a62dbb33/image.png" alt="状态不共享"></p>
+<p>设想，如果以后还有更多的组件需要<strong>allTodos</strong>这一状态，这一设计模式将会是十分糟糕的，任何一个组件的脱离将可能导致整个引用网络的崩溃。</p>
+<p>既然<strong>allTodos</strong>被多个组件共享，那么我们可以将该状态提升到更上一次的组件中，然后通过props传递给子组件。所以，在本例中，最终将状态提到了顶部容器TodoApp中进行维护，这样，通过TodoApp的<strong>setState()</strong>方法，所有绑定到TodoApp的组件都获得了状态更新，避免了组件间的相互引用，如下图所示：</p>
+<p><img src="https://www.lucidchart.com/publicSegments/view/0140d060-b037-4ab8-9357-61029d6a14ef/image.png" alt="状态共享"></p>
+<blockquote>
+<p>在React中，我们应当尽量创建多的无状态（Stateless）的组件，而把共享状态放到上层组件中，使上层组件成为一个有状态（Stateful）的组件。这样，有状态组件封装了交互行为以及与行为互动的状态，子组件通过props共享状态并进行数据渲染。更多state与props的关系和区别可以参看<a href="https://facebook.github.io/react/docs/interactivity-and-dynamic-uis-zh-CN.html" target="_blank" rel="external">官方文档</a></p>
+</blockquote>
+<h4 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h4><p><img src="http://7pulhb.com2.z0.glb.clouddn.com/Flux-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png" alt="目录结构"></p>
+<p>其中app.js为应用的入口文件，从入口开始，逐步构造我们的App。</p>
+<p>下面，开始实现我们的逻辑，顺着Flux的单向数据流，逐个分析Todo例子中的实现。</p>
+<h5 id="Dispatcher-1"><a href="#Dispatcher-1" class="headerlink" title="Dispatcher"></a>Dispatcher</h5><p><strong>js/AppDispatcher.js</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> Dispatcher = <span class="built_in">require</span>(<span class="string">'flux'</span>).Dispatcher;</div><div class="line"><span class="built_in">module</span>.exports = <span class="keyword">new</span> Dispatcher();</div></pre></td></tr></table></figure>
+<p>可以看到，TodoMVC中的Dispatcher实现来自于于官方的<a href="https://www.npmjs.com/package/flux" target="_blank" rel="external">实现</a>。我们可以看下flux中的Dispatcher源码，所有解说都放在代码注释中：</p>
+<p>首先看到<strong>Dispatcher</strong>的构造函数：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dispatcher</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    _classCallCheck(<span class="keyword">this</span>, Dispatcher);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>._callbacks = &#123;&#125;; <span class="comment">// 保存向Dispatcher注册回调函数</span></div><div class="line">    <span class="keyword">this</span>._isDispatching = <span class="literal">false</span>; <span class="comment">// 是否正在分派Action</span></div><div class="line">    <span class="keyword">this</span>._isHandled = &#123;&#125;; <span class="comment">// 已经完成执行的回调列表</span></div><div class="line">    <span class="keyword">this</span>._isPending = &#123;&#125;; <span class="comment">// 正在执行中的回调列表</span></div><div class="line">    <span class="keyword">this</span>._lastID = <span class="number">1</span>; <span class="comment">// 回调Id的起始标志</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再看注册方法<strong>register(callback)</strong>,每个向Dispatcher的注册的回调（callback）都拥有唯一Id进行标识：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 向Dispatcher注册回调函数,每个回调函数都有唯一id进行标识</div><div class="line"> * @param callback</div><div class="line"> * @returns &#123;string&#125; 注册回调的id</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype.register = <span class="function"><span class="keyword">function</span> <span class="title">register</span>(<span class="params">callback</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> id = _prefix + <span class="keyword">this</span>._lastID++;</div><div class="line">    <span class="keyword">this</span>._callbacks[id] = callback;</div><div class="line">    <span class="keyword">return</span> id;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 根据id删除回调</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype.unregister = <span class="function"><span class="keyword">function</span> <span class="title">unregister</span>(<span class="params">id</span>) </span>&#123;</div><div class="line">    !<span class="keyword">this</span>._callbacks[id] ? process.env.NODE_ENV !== <span class="string">'production'</span> ? invariant(<span class="literal">false</span>, <span class="string">'Dispatcher.unregister(...): `%s` does not map to a registered callback.'</span>, id) : invariant(<span class="literal">false</span>) : <span class="literal">undefined</span>;</div><div class="line">    <span class="keyword">delete</span> <span class="keyword">this</span>._callbacks[id];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>执行一个注册了的回调函数将经历如下过程：</p>
+<ol>
+<li>标识当前正在执行的回调为进行中（Pending）状态</li>
+<li>将当前待处理的用户行为（payload）送至回调执行</li>
+<li>执行完成,标识该回调已经完成（Handled）</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 执行回调函数,该过程为:</div><div class="line"> * 1. 标识当前正在执行的回调为Pending状态</div><div class="line"> * 2. 将payload送入回调执行</div><div class="line"> * 3. 执行完成,标识该回调已经完成</div><div class="line"> * @internal</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype._invokeCallback = <span class="function"><span class="keyword">function</span> <span class="title">_invokeCallback</span>(<span class="params">id</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>._isPending[id] = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">this</span>._callbacks[id](<span class="keyword">this</span>._pendingPayload);</div><div class="line">    <span class="keyword">this</span>._isHandled[id] = <span class="literal">true</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>派发<strong>dispatch(payload)</strong>指定的用户行为payload到所有的callback将经历如下过程：</p>
+<p>首先，需要明确的是能够进行派发的前提是当前Dispatcher为空闲状态，接下来</p>
+<ol>
+<li><p>派发前的预处理<strong>_startDispatching()</strong></p>
+<ul>
+<li>初始化所有回调的状态</li>
+<li>设置当前正在分发的payload<ul>
+<li>标识当前的Dispatcher状态为”正在进行派发”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>根据注册顺序依次执行回调<strong>_invokeCallback(id)</strong></p>
+</li>
+<li><p>派发结束后的收尾工作<strong>_stopDispatching()</strong></p>
+<ul>
+<li>清除派发对象</li>
+<li>标识当前的Dispatcher状态为”结束派发”</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 派发一个payload到所以已注册的callback中</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype.dispatch = <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">payload</span>) </span>&#123;</div><div class="line">    !!<span class="keyword">this</span>._isDispatching ? process.env.NODE_ENV !== <span class="string">'production'</span> ? invariant(<span class="literal">false</span>, <span class="string">'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'</span>) : invariant(<span class="literal">false</span>) : <span class="literal">undefined</span>;</div><div class="line">    <span class="keyword">this</span>._startDispatching(payload);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> id <span class="keyword">in</span> <span class="keyword">this</span>._callbacks) &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>._isPending[id]) &#123;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">this</span>._invokeCallback(id);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="keyword">this</span>._stopDispatching();</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 分发payload前的初始化:</div><div class="line"> * 1. 初始化所有回调的状态</div><div class="line"> * 2. 设置当前正在分发的payload</div><div class="line"> * 3. 标识当前"正在进行派发"</div><div class="line"> * @internal</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype._startDispatching = <span class="function"><span class="keyword">function</span> <span class="title">_startDispatching</span>(<span class="params">payload</span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> id <span class="keyword">in</span> <span class="keyword">this</span>._callbacks) &#123;</div><div class="line">        <span class="keyword">this</span>._isPending[id] = <span class="literal">false</span>;</div><div class="line">        <span class="keyword">this</span>._isHandled[id] = <span class="literal">false</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">this</span>._pendingPayload = payload;</div><div class="line">    <span class="keyword">this</span>._isDispatching = <span class="literal">true</span>;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 结束派发时的收尾工作</div><div class="line"> * 1. 清除派发对象</div><div class="line"> * 2. 标识当前"结束派发"</div><div class="line"> * @internal</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype._stopDispatching = <span class="function"><span class="keyword">function</span> <span class="title">_stopDispatching</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">delete</span> <span class="keyword">this</span>._pendingPayload;</div><div class="line">    <span class="keyword">this</span>._isDispatching = <span class="literal">false</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>waitFor</strong></p>
+<p>再看Dispatcher中一个很重要的方法:<strong>waitFor(ids)</strong>, 顾名思义，该方法的作用是：等待其他向Dispatcher注册了的回调执行完成。因而，该方法主要保证了dispatch时，待响应的回调函数的执行的<strong>顺序性</strong>。</p>
+<p>例如，在一个航班订票系统中，我们首先要选择完国家（Country），才能选择城市（City），所以，当一个类型为“更新所选国家”的交互被送到CityStore所注册的回调时，为了保证能正确的选择更新后国家的城市，我们需要这样做：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">CityStore.dispatchToken = flightDispatcher.register(<span class="function"><span class="keyword">function</span>(<span class="params">payload</span>) </span>&#123;</div><div class="line">     <span class="keyword">if</span> (payload.actionType === <span class="string">'country-update'</span>) &#123;</div><div class="line">       <span class="comment">/*</span></div><div class="line">        * 如果不执行waitFor(),由于程序的异步性，那么可能CityStore的回调先于ContryStore的回调执行</div><div class="line">        * 此时的国家尚未更新，得到的默认城市是错误的，而并不是最新的</div><div class="line">        * */</div><div class="line">       flightDispatcher.waitFor([CountryStore.dispatchToken]);</div><div class="line">       <span class="comment">// waitFor()保证了ContryStore先响应了'country-update'，即保证了国家更新先于城市更新</span></div><div class="line"></div><div class="line">       <span class="comment">// 此时我们能正确的选择该国家的城市</span></div><div class="line">       CityStore.city = getDefaultCityForCountry(CountryStore.country);</div><div class="line">     &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>下面我们看<strong>waitFor()</strong>的源码实现：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 等待指定的回调完成</div><div class="line"> */</div><div class="line"></div><div class="line">Dispatcher.prototype.waitFor = <span class="function"><span class="keyword">function</span> <span class="title">waitFor</span>(<span class="params">ids</span>) </span>&#123;</div><div class="line">    !<span class="keyword">this</span>._isDispatching ? process.env.NODE_ENV !== <span class="string">'production'</span> ? invariant(<span class="literal">false</span>, <span class="string">'Dispatcher.waitFor(...): Must be invoked while dispatching.'</span>) : invariant(<span class="literal">false</span>) : <span class="literal">undefined</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> ii = <span class="number">0</span>; ii &lt; ids.length; ii++) &#123;</div><div class="line">        <span class="keyword">var</span> id = ids[ii];</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>._isPending[id]) &#123;</div><div class="line">            !<span class="keyword">this</span>._isHandled[id] ? process.env.NODE_ENV !== <span class="string">'production'</span> ? invariant(<span class="literal">false</span>, <span class="string">'Dispatcher.waitFor(...): Circular dependency detected while '</span> + <span class="string">'waiting for `%s`.'</span>, id) : invariant(<span class="literal">false</span>) : <span class="literal">undefined</span>;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        !<span class="keyword">this</span>._callbacks[id] ? process.env.NODE_ENV !== <span class="string">'production'</span> ? invariant(<span class="literal">false</span>, <span class="string">'Dispatcher.waitFor(...): `%s` does not map to a registered callback.'</span>, id) : invariant(<span class="literal">false</span>) : <span class="literal">undefined</span>;</div><div class="line">        <span class="keyword">this</span>._invokeCallback(id);</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h5 id="Store实现"><a href="#Store实现" class="headerlink" title="Store实现"></a>Store实现</h5><p>在<strong>js/stores/TodoStore.js</strong>中：</p>
+<p>首先，我们维护我们的数据对象，并提供若干对于该数据的操作：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 保存TODO列表</span></div><div class="line"><span class="keyword">var</span> _todos = &#123;&#125;;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * 创建一个 Todo</div><div class="line"> * @param text &#123;string&#125; Todo内容</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">create</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 更新一个 TODO item</div><div class="line"> * @param id &#123;string&#125;</div><div class="line"> * @param updates &#123;object&#125; 待更新对象的属性</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params">id, updates</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 根据一个更新属性值对象更新所有 Todo</div><div class="line"> * @param updates &#123;object&#125;</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateAll</span>(<span class="params">updates</span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 删除 Todo</div><div class="line"> * @param id &#123;string&#125;</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">destroy</span>(<span class="params">id</span>) </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 删除所有的已完成的 TODO items</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">destroyCompleted</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后导出一个全局单例，该单例提供了常用的外部访问接口，并且通过node提供的EventEmitter来实现事件的派发和监听：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> TodoStore = assign(&#123;&#125;, EventEmitter.prototype, &#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 是否所有TODO 都已完成</div><div class="line">     * @return &#123;boolean&#125;</div><div class="line">     */</div><div class="line">    areAllComplete: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获得所有的TODO</div><div class="line">     * @returns &#123;object&#125;</div><div class="line">     */</div><div class="line">    getAll: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 发送变更事件</div><div class="line">     */</div><div class="line">    emitChange: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 添加变更事件监听</div><div class="line">     * @param callback</div><div class="line">     */</div><div class="line">    addChangeListener: <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">        <span class="comment">// 一旦受到变更事件, 触发回调</span></div><div class="line">        <span class="comment">/*</span></div><div class="line">         *   例如, 当我们创建一条todo时,</div><div class="line">         *   TodoStore将会发出一条变更事件,</div><div class="line">         *   上游的状态维护器将会调用callback进行状态更新</div><div class="line">         */</div><div class="line">        <span class="keyword">this</span>.on(CHANGE_EVENT, callback);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 删除变更事件监听</div><div class="line">     * @param callback</div><div class="line">     */</div><div class="line">    removeChangeListener: <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</div><div class="line">        <span class="keyword">this</span>.removeListener(CHANGE_EVENT, callback);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>最后，我们需要向<strong>AppDispatcher</strong>注册回调函数，以便在payload被分发到TodoStore时，TodoStore能做出响应：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">AppDispatcher.register(<span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> text;</div><div class="line"></div><div class="line">    <span class="comment">// 根据不同的action类型(即不同的交互逻辑), 执行不同过程</span></div><div class="line">    <span class="keyword">switch</span> (action.actionType) &#123;</div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_CREATE:</div><div class="line">            text = action.text.trim();</div><div class="line">            <span class="keyword">if</span>( text!==<span class="string">''</span>) &#123;</div><div class="line">                create(text);</div><div class="line">                <span class="comment">// 一旦变更,发出变更事件,</span></div><div class="line">                TodoStore.emitChange();</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_TOGGLE_COMPLETE_ALL:</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_UNDO_COMPLETE:</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_COMPLETE:</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_UPDATE_TEXT:</div><div class="line">           <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_DESTROY:</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">        <span class="keyword">case</span> TodoConstants.TODO_DESTROY_COMPLETED:</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">        <span class="comment">// no op</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>!注意, 在回调执行过程中，如果发生状态的变动，需要抛出change事件，这样才能将组建的状态也更新（通过回调）。</p>
+</blockquote>
+<h5 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h5><p>我们将TodoApp中常见的Action都封装到了<strong>js/TodoActions.js</strong>中, 通过其中的<strong>AppDispatcher</strong>单例，我们可以将Action派发出去:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> TodoActions = &#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 创建行为</div><div class="line">     * @param text &#123;string&#125;</div><div class="line">     */</div><div class="line">    create: <span class="function"><span class="keyword">function</span> (<span class="params">text</span>) </span>&#123;</div><div class="line">        <span class="comment">// 将创建行为送到Dispatcher, Dispatcher派发这个行为(action对象)到各个Store</span></div><div class="line">        AppDispatcher.dispatch(&#123;</div><div class="line">            <span class="attr">actionType</span>: TodoConstants.TODO_CREATE,</div><div class="line">            <span class="attr">text</span>: text</div><div class="line">        &#125;);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 更新行为</div><div class="line">     * @param id &#123;string&#125;</div><div class="line">     * @param text &#123;string&#125;</div><div class="line">     */</div><div class="line">    updateText: <span class="function"><span class="keyword">function</span> (<span class="params">id, text</span>) </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 全部设置为完成</div><div class="line">     * @param todo</div><div class="line">     */</div><div class="line">    toggleComplete: <span class="function"><span class="keyword">function</span> (<span class="params">todo</span>) </span>&#123;</div><div class="line">       <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 标记所有的Todo为已完成</div><div class="line">     */</div><div class="line">    toggleCompleteAll: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     *</div><div class="line">     * @param id</div><div class="line">     */</div><div class="line">    destroy: <span class="function"><span class="keyword">function</span> (<span class="params">id</span>) </span>&#123;</div><div class="line">       <span class="comment">// ...</span></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 删除所有已完成的Todo</div><div class="line">     */</div><div class="line">    destroyCompleted: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h5 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h5><p>下面开始实现各个组件， 个人偏向的流程是先在组件目录下创建好各个空白组件，之后再依序进行装填</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> React = <span class="built_in">require</span>(<span class="string">'react'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> Header = React.createClass(&#123;</div><div class="line"></div><div class="line">    <span class="attr">render</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// <span class="doctag">TODO:</span>:render</span></div><div class="line">    &#125;,</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = Header;</div></pre></td></tr></table></figure>
+<p>装填顺序我会选择先装填顶部容器（此例中即为<strong>TodoApp</strong>），之后按照DOM树自底向上的进行装填:<br><strong>TodoApp.react.js</strong>:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> Footer = <span class="built_in">require</span>(<span class="string">'./Footer.react'</span>);</div><div class="line"><span class="keyword">var</span> Header = <span class="built_in">require</span>(<span class="string">'./Header.react'</span>);</div><div class="line"><span class="keyword">var</span> MainSection = <span class="built_in">require</span>(<span class="string">'./MainSection.react'</span>);</div><div class="line"><span class="keyword">var</span> React = <span class="built_in">require</span>(<span class="string">'react'</span>);</div><div class="line"><span class="keyword">var</span> TodoStore = <span class="built_in">require</span>(<span class="string">'../stores/TodoStore'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 在根DOM下维护状态,</span></div><div class="line"><span class="comment">// 这样的状态往往是共享状态(会向下传递的状态)</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTodoState</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">allTodos</span>: TodoStore.getAll(),</div><div class="line">        <span class="attr">areAllComplete</span>: TodoStore.areAllComplete()</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> TodoApp = React.createClass(&#123;</div><div class="line">    <span class="attr">getInitialState</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> getTodoState();</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 绑定生命期--挂载</div><div class="line">     */</div><div class="line">    componentDidMount: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">// 挂载时再为TodoStore添加监听器</span></div><div class="line">        TodoStore.addChangeListener(<span class="keyword">this</span>._onChange);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">componentWillUnmount</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        TodoStore.removeChangeListener(<span class="keyword">this</span>._onChange);</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="attr">render</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> (</div><div class="line">            &lt;div&gt;</div><div class="line">                &lt;Header /&gt;</div><div class="line">                &lt;MainSection</div><div class="line">                    allTodos=&#123;this.state.allTodos&#125;</div><div class="line">                    areAllComplete=&#123;this.state.areAllComplete&#125;</div><div class="line">                /&gt;</div><div class="line">                &lt;Footer allTodos=&#123;this.state.allTodos&#125;/&gt;</div><div class="line">            &lt;/div&gt;</div><div class="line">        );</div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    /**</div><div class="line">     * Event handler for 'change' events coming from the TodoStore</div><div class="line">     */</div><div class="line">    _onChange: function() &#123;</div><div class="line">        this.setState(getTodoState());</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">module.exports = TodoApp;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>为了方便，TodoApp不仅维护<strong>allTodos(所有任务)</strong>这个状态，还维护<strong>areAllComplete(是否所有任务都已完成)</strong>，该状态主要服务于<strong>MainSection</strong>中的—”完成所有/取消完成所有任务“这一用例，避免重复遍历<strong>allTodos</strong>的开销。</p>
+</blockquote>
+<p>我们可以看到，TodoApp提供了一个<strong>_onChange()</strong>方法作为TodoStore的<strong>change</strong>事件的回调，当TodoStore发出change事件时，TodoApp将刷新状态，借此通知其下组件如MainSection等重新渲染。</p>
+<p>更多组件的实现不再赘述。下面着重介绍flux的工作流程</p>
+<h4 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h4><p>我们以<strong>创建新的Todo</strong>这一工作流程为例展示Flux的工作过程。在Flux中，该流程如下图所示：</p>
+<p><img src="https://www.lucidchart.com/publicSegments/view/49534565-8e62-4836-a6ca-e616269ba094/image.png" alt="创建Todo工作流程"></p>
+<p>(1). 我们在TodoTextInput中敲入数据，在输入框上，我们监听了<strong>失焦(onBlur)</strong>和<strong>按下键盘按键(onKeyDown)</strong>的事件</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// js/components/TodoTextInput.react.js</span></div><div class="line"> <span class="comment">/**</span></div><div class="line">   * @return &#123;object&#125;</div><div class="line">   */</div><div class="line">  render: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) /*<span class="title">object</span>*/ </span>&#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="name">input</span></span></span></div><div class="line">        <span class="attr">className</span>=<span class="string">&#123;this.props.className&#125;</span></div><div class="line">        <span class="attr">id</span>=<span class="string">&#123;this.props.id&#125;</span></div><div class="line">        <span class="attr">placeholder</span>=<span class="string">&#123;this.props.placeholder&#125;</span></div><div class="line">        <span class="attr">onBlur</span>=<span class="string">&#123;this._save&#125;</span></div><div class="line">        <span class="attr">onChange</span>=<span class="string">&#123;this._onChange&#125;</span></div><div class="line">        <span class="attr">onKeyDown</span>=<span class="string">&#123;this._onKeyDown&#125;</span></div><div class="line">        <span class="attr">value</span>=<span class="string">&#123;this.state.value&#125;</span></div><div class="line">        <span class="attr">autoFocus</span>=<span class="string">&#123;true&#125;</span></div><div class="line">      /&gt;</div><div class="line">    );</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
+<p>当事件发生时，调用<strong>_save()</strong>方法进行处理：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">_save: function() &#123;</div><div class="line">    this.props.onSave(this.state.value);</div><div class="line">    this.setState(&#123;</div><div class="line">      value: &apos;&apos;</div><div class="line">    &#125;);</div><div class="line"> &#125;,</div></pre></td></tr></table></figure>
+<p>(2). 在<strong>Header</strong>组件中，我们通过为<strong>TodoTextInput</strong>指定<strong>onSave</strong>属性（props）来确定当输入域发生变化后的执行逻辑，使得我们在TodoTextInput的状态发生改变时，能够发出一个<strong>“创建行为”</strong>到Dispatcher</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// js/components/Header.react.js</span></div><div class="line"><span class="comment">/**</span></div><div class="line">   * @return &#123;object&#125;</div><div class="line">   */</div><div class="line">  render: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="name">header</span> <span class="attr">id</span>=<span class="string">"header"</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>todos<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">TodoTextInput</span></span></div><div class="line">          <span class="attr">id</span>=<span class="string">"new-todo"</span></div><div class="line">          <span class="attr">placeholder</span>=<span class="string">"What needs to be done?"</span></div><div class="line">          <span class="attr">onSave</span>=<span class="string">&#123;this._onSave&#125;</span></div><div class="line">        /&gt;</div><div class="line">      <span class="tag">&lt;/<span class="name">header</span>&gt;</span></div><div class="line">    );</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  /**</div><div class="line">   * Event handler called within TodoTextInput.</div><div class="line">   * Defining this here allows TodoTextInput to be used in multiple places</div><div class="line">   * in different ways.</div><div class="line">   * @param &#123;string&#125; text</div><div class="line">   */</div><div class="line">  _onSave: function(text) &#123;</div><div class="line">    if (text.trim())&#123;</div><div class="line">      TodoActions.create(text);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>我们之所以不在TodoTextInput中写死<strong>TodoActions.create(text)</strong>主要是考虑到组件的可扩展性。“输入域变动后的存储逻辑”更应当被设计为一种配置，通过在不同场景下指定其<strong>onSave</strong>属性（prop），使得TodoTextInput更加通用。</p>
+</blockquote>
+<p>(3). 在<strong>TodoActions.create()</strong>中，我们将action送到Dispatcher，并由其派发一个“创建action”到<strong>TodoStore</strong>:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// js/actions/TodoActions.js</span></div><div class="line"> <span class="comment">/**</span></div><div class="line">   * @param  &#123;string&#125; text</div><div class="line">   */</div><div class="line">  create: <span class="function"><span class="keyword">function</span>(<span class="params">text</span>) </span>&#123;</div><div class="line">    AppDispatcher.dispatch(&#123;</div><div class="line">      <span class="attr">actionType</span>: TodoConstants.TODO_CREATE,</div><div class="line">      <span class="attr">text</span>: text</div><div class="line">    &#125;);</div><div class="line">  &#125;,</div></pre></td></tr></table></figure>
+<p>(4). TodoStore在接收到Dispatcher派发来的Action之后，其向Dispatcher注册的回调被调用, 新的todo会被持久化，并因此引起了TodoStore维护的<strong>_todos</strong>的改变，所以TodoStore会抛出一个change事件：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// js/stores/TodoStore.js</span></div><div class="line">AppDispatcher.register(<span class="function"><span class="keyword">function</span>(<span class="params">action</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> text;</div><div class="line"></div><div class="line">  <span class="keyword">switch</span>(action.actionType) &#123;</div><div class="line">    <span class="keyword">case</span> TodoConstants.TODO_CREATE:</div><div class="line">      text = action.text.trim();</div><div class="line">      <span class="keyword">if</span> (text !== <span class="string">''</span>) &#123;</div><div class="line">        create(text);</div><div class="line">        TodoStore.emitChange();</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">  <span class="comment">// ...  </span></div><div class="line"></div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="comment">// no op</span></div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>(5). 由于TodoApp向TodoStore订阅了change事件</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// js/components/TodoApp.react.js</span></div><div class="line">componentDidMount: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    TodoStore.addChangeListener(<span class="keyword">this</span>._onChange);</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
+<p>此时，change事件发生， 回调<strong>_onChange()</strong>被触发, TodoApp维护的状态得到更新:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * Event handler for 'change' events coming from the TodoStore</div><div class="line">  */</div><div class="line"> _onChange: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">   <span class="keyword">this</span>.setState(getTodoState());</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>(6). 由于MainSection及Footer组件中的属性（prop）绑定了TodoApp维护的状态，所以在TodoApp刷新状态（setState()）后，二者将会被重新渲染。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/React/Flux与面向组件化开发/">http://yoyoyohamapi.me/2017/03/08/React/Flux与面向组件化开发/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/react-todomvc-flux/">react,todomvc,flux</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/JavaScript/闭包的一个经典实例和认识误区/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">闭包的一个经典实例和认识误区</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Symfony2/Symfony学习笔记（2）--  View视图/">
+        <span class="next-text nav-default">Symfony学习笔记（2）-- View视图</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  </body>
+</html>

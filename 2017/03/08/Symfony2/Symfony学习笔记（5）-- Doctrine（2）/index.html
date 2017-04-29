@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Symfony学习笔记（5）-- Doctrine（2）"/>
+
+
+
+
+  <meta name="keywords" content="symfony," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（5）-- Doctrine（2）/"/>
+
+
+<meta name="description" content="这节主要描述Doctrine中实体关系（Relation）的设计。 ###创建实体考虑商品Product属于某一分类Category，每个分类下先创建category(注意，id是可以自动创建的): php app/console doctrine:generate:entity --entity=&amp;quot;AcmeStoreBundle:Category&amp;quot; --fields=&amp;quo">
+<meta name="keywords" content="symfony">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Symfony学习笔记（5）-- Doctrine（2）">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（5）-- Doctrine（2）/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="这节主要描述Doctrine中实体关系（Relation）的设计。 ###创建实体考虑商品Product属于某一分类Category，每个分类下先创建category(注意，id是可以自动创建的): php app/console doctrine:generate:entity --entity=&amp;quot;AcmeStoreBundle:Category&amp;quot; --fields=&amp;quo">
+<meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-延迟加载.png">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Symfony学习笔记（5）-- Doctrine（2）">
+<meta name="twitter:description" content="这节主要描述Doctrine中实体关系（Relation）的设计。 ###创建实体考虑商品Product属于某一分类Category，每个分类下先创建category(注意，id是可以自动创建的): php app/console doctrine:generate:entity --entity=&amp;quot;AcmeStoreBundle:Category&amp;quot; --fields=&amp;quo">
+<meta name="twitter:image" content="http://7pulhb.com1.z0.glb.clouddn.com/ip-延迟加载.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Symfony学习笔记（5）-- Doctrine（2） · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Symfony学习笔记（5）-- Doctrine（2）
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>这节主要描述Doctrine中实体关系（Relation）的设计。</p>
+<p>###创建实体<br>考虑商品Product属于某一分类Category，每个分类下先创建category(注意，id是可以自动创建的):</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:generate:entity --entity=&quot;AcmeStoreBundle:Category&quot; --fields=&quot;name:string(255)&quot;</div></pre></td></tr></table></figure>
+<p>###关系映射<br>配置Category:</p>
+<p><strong>Annotations</strong>:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/Category.php</span></div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="keyword">use</span> <span class="title">Doctrine</span>\<span class="title">Common</span>\<span class="title">Collections</span>\<span class="title">ArrayCollection</span>;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Category</span></span></div><div class="line">&#123;</div><div class="line"> <span class="comment">// ...</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\OneToMany(targetEntity="Product", mappedBy="category")//映射到Product中的category对象</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $products;</div><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span>//该方法必不可少</span></div><div class="line"> &#123;</div><div class="line"> <span class="keyword">$this</span>-&gt;products = <span class="keyword">new</span> ArrayCollection();</div><div class="line"> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>YAML</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># src/Acme/StoreBundle/Resources/config/doctrine/Category.orm.yml</span></div><div class="line"><span class="string">Acme\StoreBundle\Entity\Category:</span></div><div class="line"><span class="attr">     type:</span> <span class="string">entity</span></div><div class="line">     <span class="comment"># ...</span></div><div class="line"><span class="attr">     oneToMany:</span></div><div class="line"><span class="attr">                products:</span></div><div class="line"><span class="attr">                          targetEntity:</span> <span class="string">Product</span></div><div class="line"><span class="attr">                         mappedBy:</span> <span class="string">category</span></div><div class="line">      <span class="comment"># don't forget to init the collection in the __construct() method of the entity</span></div></pre></td></tr></table></figure>
+<p>配置Product:</p>
+<p><strong>Annotations</strong>:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/Product.php</span></div><div class="line"><span class="comment">// ...</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span></span></div><div class="line">&#123;</div><div class="line"> <span class="comment">// ...</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@ORM</span>\ManyToOne(targetEntity="Category", inversedBy="products")</div><div class="line"> * <span class="doctag">@ORM</span>\JoinColumn(name="category_id", referencedColumnName="id")</div><div class="line"> */</div><div class="line"> <span class="keyword">protected</span> $category;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>YAML</strong>:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># src/Acme/StoreBundle/Resources/config/doctrine/Product.orm.yml</span></div><div class="line"><span class="string">Acme\StoreBundle\Entity\Product:</span></div><div class="line"><span class="attr">           type:</span> <span class="string">entity</span></div><div class="line">           <span class="comment"># ...</span></div><div class="line"><span class="attr">           manyToOne:</span></div><div class="line"><span class="attr">                  category:</span></div><div class="line"><span class="attr">                           targetEntity:</span> <span class="string">Category</span></div><div class="line"><span class="attr">                          inversedBy:</span> <span class="string">products</span></div><div class="line"><span class="attr">                           joinColumn:</span></div><div class="line"><span class="attr">                          name:</span> <span class="string">category_id</span></div><div class="line"><span class="attr">                          referencedColumnName:</span> <span class="string">id</span></div></pre></td></tr></table></figure>
+<p>别忘了产生相应的getters和setters:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:generate:entities Acme</div></pre></td></tr></table></figure>
+<p>也别忘了其实我们的Category表尚未在数据库中建立:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">php app/console doctrine:schema:update --force</div><div class="line">``` </div><div class="line"></div><div class="line">![Doctrine关系映射](http://7pulhb.com1.z0.glb.clouddn.com/ip-对象关系映射.png)</div><div class="line"></div><div class="line">如图，Product对象中保存有category对象，通过get和set方法获取及设置，而对应的product表中，仅存有category_id.</div><div class="line"></div><div class="line"> </div><div class="line"></div><div class="line">###保存及获取关联对象：</div><div class="line"></div><div class="line">__保存关联对象__：</div><div class="line"></div><div class="line">```php</div><div class="line">// ...</div><div class="line">use Acme\StoreBundle\Entity\Category;</div><div class="line">use Acme\StoreBundle\Entity\Product;</div><div class="line">use Symfony\Component\HttpFoundation\Response;</div><div class="line">class DefaultController extends Controller</div><div class="line">&#123;</div><div class="line">  public function createProductAction()</div><div class="line">  &#123;</div><div class="line">    $category = new Category();</div><div class="line">    $category-&gt;setName(&apos;Main Products&apos;);</div><div class="line">    $product = new Product();</div><div class="line"> 		$product-&gt;setName(&apos;Foo&apos;);</div><div class="line"> 		$product-&gt;setPrice(19.99);</div><div class="line"> 		// relate this product to the category</div><div class="line"> 		$product-&gt;setCategory($category);</div><div class="line">    $em = $this-&gt;getDoctrine()-&gt;getManager();</div><div class="line"> 		$em-&gt;persist($category);</div><div class="line"> 		$em-&gt;persist($product);</div><div class="line"> 		$em-&gt;flush();</div><div class="line">    return new Response(</div><div class="line"> 			&apos;Created product id: &apos;.$product-&gt;getId()</div><div class="line"> .&apos; and category id: &apos;.$category-&gt;getId()</div><div class="line"> 		);</div><div class="line"> 	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>取得关联对象</strong>：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">showAction</span><span class="params">($id)</span></span></div><div class="line">&#123;</div><div class="line"> 	$product = <span class="keyword">$this</span>-&gt;getDoctrine()</div><div class="line"> 				-&gt;getRepository(<span class="string">'AcmeStoreBundle:Product'</span>)</div><div class="line"> 				-&gt;find($id);</div><div class="line">  $categoryName = $product-&gt;getCategory()-&gt;getName();</div><div class="line"><span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>###延迟加载：（lazily load）</p>
+<p><img src="http://7pulhb.com1.z0.glb.clouddn.com/ip-延迟加载.png" alt="延迟加载"></p>
+<p>注意，在第二步中，Doctrine并没有返回category对象，而当你真正调用了getCateory()方法后，Doctrine才真正返回了相应数据。</p>
+<p>###在对应Repository中自写联合查询</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="comment">// src/Acme/StoreBundle/Entity/ProductRepository.php</span></div><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">findOneByIdJoinedToCategory</span><span class="params">($id)</span></span></div><div class="line">&#123;</div><div class="line">  $query = <span class="keyword">$this</span>-&gt;getEntityManager()</div><div class="line"> 				-&gt;createQuery(<span class="string">'SELECT p, c FROM AcmeStoreBundle:Product p JOIN p.category c WHERE p.id = :id'</span>)</div><div class="line"> 				-&gt;setParameter(<span class="string">'id'</span>, $id);</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line"> 		<span class="keyword">return</span> $query-&gt;getSingleResult();</div><div class="line"> 	&#125; <span class="keyword">catch</span> (\Doctrine\ORM\NoResultException $e) &#123;</div><div class="line"> 		<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line"> 	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（5）-- Doctrine（2）/">http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（5）-- Doctrine（2）/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/symfony/">symfony</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Symfony2/Symfony学习笔记（4）-- Doctrine（1）/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Symfony学习笔记（4）-- Doctrine（1）</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Symfony2/Symfony学习笔记（6）-- EventDispatcher(事件调度机制)/">
+        <span class="next-text nav-default">Symfony学习笔记（6）-- EventDispatcher(事件调度机制)</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

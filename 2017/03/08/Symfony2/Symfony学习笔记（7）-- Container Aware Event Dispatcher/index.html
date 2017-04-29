@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Symfony学习笔记（7）-- Container Aware Event Dispatcher"/>
+
+
+
+
+  <meta name="keywords" content="symfony," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（7）-- Container Aware Event Dispatcher/"/>
+
+
+<meta name="description" content="Container Aware Event Dispatcher允许service作为listener来监听事件，这使得EventDispatcher的性能更加卓著。 服务是延迟加载的，这就意味着作为listener的服务只会在事件调度时才被创建。 ##安装：安装仅需要把ContainerInterface注入到ContainerAwareeEventDispatcher中即可： use Symf">
+<meta name="keywords" content="symfony">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Symfony学习笔记（7）-- Container Aware Event Dispatcher">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（7）-- Container Aware Event Dispatcher/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="Container Aware Event Dispatcher允许service作为listener来监听事件，这使得EventDispatcher的性能更加卓著。 服务是延迟加载的，这就意味着作为listener的服务只会在事件调度时才被创建。 ##安装：安装仅需要把ContainerInterface注入到ContainerAwareeEventDispatcher中即可： use Symf">
+<meta property="og:updated_time" content="2017-03-08T02:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Symfony学习笔记（7）-- Container Aware Event Dispatcher">
+<meta name="twitter:description" content="Container Aware Event Dispatcher允许service作为listener来监听事件，这使得EventDispatcher的性能更加卓著。 服务是延迟加载的，这就意味着作为listener的服务只会在事件调度时才被创建。 ##安装：安装仅需要把ContainerInterface注入到ContainerAwareeEventDispatcher中即可： use Symf">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Symfony学习笔记（7）-- Container Aware Event Dispatcher · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Symfony学习笔记（7）-- Container Aware Event Dispatcher
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 8, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>Container Aware Event Dispatcher允许service作为listener来监听事件，这使得EventDispatcher的性能更加卓著。</p>
+<p>服务是延迟加载的，这就意味着作为listener的服务只会在事件调度时才被创建。</p>
+<p>##安装：<br>安装仅需要把<strong>ContainerInterface</strong>注入到<strong>ContainerAwareeEventDispatcher</strong>中即可：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">Symfony</span>\<span class="title">Component</span>\<span class="title">DependencyInjection</span>\<span class="title">ContainerBuilder</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Symfony</span>\<span class="title">Component</span>\<span class="title">EventDispatcher</span>\<span class="title">ContainerAwareEventDispatcher</span>;</div><div class="line"> </div><div class="line">$container = <span class="keyword">new</span> ContainerBuilder();</div><div class="line">$dispatcher = <span class="keyword">new</span> ContainerAwareEventDispatcher($container);</div></pre></td></tr></table></figure>
+<p>##添加监听者：</p>
+<ul>
+<li><strong>添加服务</strong>:</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line">$dispatcher-&gt;addListenerService($eventName, <span class="keyword">array</span>(<span class="string">'foo'</span>, <span class="string">'logListener'</span>));<span class="comment">//foo是服务编号，logListner是方法名</span></div></pre></td></tr></table></figure>
+<ul>
+<li><strong>添加订阅器服务</strong>：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line">$dispatcher-&gt;addSubscriberService( <span class="string">'kernel.store_subscriber'</span>, <span class="string">'StoreSubscriber'</span> );<span class="comment">//参数1为服务器编号，参数2为服务类名</span></div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">Symfony</span>\<span class="title">Component</span>\<span class="title">EventDispatcher</span>\<span class="title">EventSubscriberInterface</span>;</div><div class="line"><span class="comment">// ...</span></div><div class="line"> </div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StoreSubscriber</span> <span class="keyword">implements</span> <span class="title">EventSubscriberInterface</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getSubscribedEvents</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">array</span>(</div><div class="line">            <span class="string">'kernel.response'</span> =&gt; <span class="keyword">array</span>(</div><div class="line">                <span class="keyword">array</span>(<span class="string">'onKernelResponsePre'</span>, <span class="number">10</span>),</div><div class="line">                <span class="keyword">array</span>(<span class="string">'onKernelResponsePost'</span>, <span class="number">0</span>),</div><div class="line">            ),</div><div class="line">            <span class="string">'store.order'</span>     =&gt; <span class="keyword">array</span>(<span class="string">'onStoreOrder'</span>, <span class="number">0</span>),</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onKernelResponsePre</span><span class="params">(FilterResponseEvent $event)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onKernelResponsePost</span><span class="params">(FilterResponseEvent $event)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">onStoreOrder</span><span class="params">(FilterOrderEvent $event)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（7）-- Container Aware Event Dispatcher/">http://yoyoyohamapi.me/2017/03/08/Symfony2/Symfony学习笔记（7）-- Container Aware Event Dispatcher/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/symfony/">symfony</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/03/08/Symfony2/Symfony学习笔记（6）-- EventDispatcher(事件调度机制)/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Symfony学习笔记（6）-- EventDispatcher(事件调度机制)</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/08/Symfony2/Symfony学习笔记（8）-- Container Aware Event Dispatcher/">
+        <span class="next-text nav-default">Symfony学习笔记（8）-- GenericEvent</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
