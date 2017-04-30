@@ -17,7 +17,7 @@
 
 
 
-  <meta name="keywords" content="JavaScript,React,Flux," />
+  <meta name="keywords" content="React,Flux,JavaScript," />
 
 
 
@@ -34,13 +34,13 @@
 <link rel="canonical" href="http://yoyoyohamapi.me/2016/06/20/Flux下的组件化开发/"/>
 
 
-<meta name="description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成： Action一个交互动作, 更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个 Action 往往由如下两个部分组">
-<meta name="keywords" content="JavaScript,React,Flux">
+<meta name="description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成：">
+<meta name="keywords" content="React,Flux,JavaScript">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flux 下的组件化开发">
 <meta property="og:url" content="http://yoyoyohamapi.me/2016/06/20/Flux下的组件化开发/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成： Action一个交互动作, 更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个 Action 往往由如下两个部分组">
+<meta property="og:description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成：">
 <meta property="og:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png">
 <meta property="og:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-with-client-action-1300w.png">
 <meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-Todo%E4%BA%A4%E4%BA%92%E5%8E%9F%E5%9E%8B.png">
@@ -56,10 +56,10 @@
 <meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/0140d060-b037-4ab8-9357-61029d6a14ef/image.png">
 <meta property="og:image" content="http://7pulhb.com2.z0.glb.clouddn.com/Flux-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png">
 <meta property="og:image" content="https://www.lucidchart.com/publicSegments/view/49534565-8e62-4836-a6ca-e616269ba094/image.png">
-<meta property="og:updated_time" content="2017-04-29T01:35:31.000Z">
+<meta property="og:updated_time" content="2017-04-30T03:45:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flux 下的组件化开发">
-<meta name="twitter:description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成： Action一个交互动作, 更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个 Action 往往由如下两个部分组">
+<meta name="twitter:description" content="Flux 构成首先要明确的是，Flux 并不是一个前端框架，而是前端的一个设计模式，一个状态管理机制，其把前端的一个交互流程简单的模拟成了一个单向数据流。   在上图中，我们可以看到 Flux 的四个核心构成：">
 <meta name="twitter:image" content="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png">
 
 
@@ -231,6 +231,7 @@
 <div style="text-align:center"><br><img src="http://facebook.github.io/flux/img/flux-simple-f8-diagram-1300w.png" width="500"><br></div>
 
 <p>在上图中，我们可以看到 Flux 的四个核心构成：</p>
+<a id="more"></a>
 <h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p>一个交互动作, 更多的时候代表一个时间，比如用户在页面组件上的点击（click），失焦（blur），双击（doubleclick）等等。一个 Action 往往由如下两个部分组成：</p>
 <ul>
 <li>交互类型（type）：例如创建、删除、更新等</li>
@@ -452,11 +453,11 @@
         
           <div class="post-tags">
             
-              <a href="/tags/JavaScript/">JavaScript</a>
-            
               <a href="/tags/React/">React</a>
             
               <a href="/tags/Flux/">Flux</a>
+            
+              <a href="/tags/JavaScript/">JavaScript</a>
             
           </div>
         

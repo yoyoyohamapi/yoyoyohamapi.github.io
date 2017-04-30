@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://yoyoyohamapi.me/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
 <meta property="og:description" content="原文：Going Async With ES6 Generators本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞">
-<meta property="og:updated_time" content="2017-04-29T03:04:05.000Z">
+<meta property="og:updated_time" content="2017-04-30T03:44:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 ES6 中的 generator 来优化异步过程">
 <meta name="twitter:description" content="原文：Going Async With ES6 Generators本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞">
@@ -217,6 +217,7 @@
 <p>ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞尽脑汁的去维护异步代码。</p>
 <p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会想同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
 <p>说了那么多，仍然有些抽象，现在我们由浅入深地看看到底怎么通过 ES6 来优化异步过程。</p>
+<a id="more"></a>
 <h2 id="一个最简单的异步"><a href="#一个最简单的异步" class="headerlink" title="一个最简单的异步"></a>一个最简单的异步</h2><p>假设我们的程序原来拥有这样的异步代码，这是最为朴实和原始的 JavaScript 异步流程控制：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeAjaxCall</span>(<span class="params">url,cb</span>) </span>&#123;</div><div class="line">    <span class="comment">// do some ajax fun</span></div><div class="line">    <span class="comment">// call `cb(result)` when complete</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">makeAjaxCall( <span class="string">"http://some.url.1"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">result1</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> data = <span class="built_in">JSON</span>.parse( result1 );</div><div class="line"></div><div class="line">    makeAjaxCall( <span class="string">"http://some.url.2/?id="</span> + data.id, <span class="function"><span class="keyword">function</span>(<span class="params">result2</span>)</span>&#123;</div><div class="line">        <span class="keyword">var</span> resp = <span class="built_in">JSON</span>.parse( result2 );</div><div class="line">        <span class="built_in">console</span>.log( <span class="string">"The value you asked for:"</span> + resp.value );</div><div class="line">    &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>可以看到，对于一次异步请求，我们获取异步结果的过程放到了回调当中。然而，借助 generator 来完成相同的任务：</p>
