@@ -136,7 +136,7 @@
           <a class="menu-item-link" href="/">
             
             
-              首页
+              Home
             
           </a>
         </li>
@@ -145,7 +145,7 @@
           <a class="menu-item-link" href="/archives/">
             
             
-              归档
+              Archives
             
           </a>
         </li>
@@ -154,7 +154,7 @@
           <a class="menu-item-link" href="/tags">
             
             
-              标签
+              Tags
             
           </a>
         </li>
@@ -163,7 +163,7 @@
           <a class="menu-item-link" href="/categories">
             
             
-              分类
+              Categories
             
           </a>
         </li>
@@ -252,7 +252,7 @@
 <p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</div></pre></td></tr></table></figure>
           <div class="read-more">
-            <a href="/2017/02/03/一步步写一个-co/" class="read-more-link">阅读更多</a>
+            <a href="/2017/02/03/一步步写一个-co/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -305,7 +305,7 @@
 </li>
 </ul>
           <div class="read-more">
-            <a href="/2017/01/01/underscore-源码分析/" class="read-more-link">阅读更多</a>
+            <a href="/2017/01/01/underscore-源码分析/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -348,7 +348,7 @@
           <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</div><div class="line">  <span class="comment">// ....</span></div><div class="line">  <span class="comment">// 一切完成后会触发回调函数</span></div><div class="line">  cb(<span class="literal">null</span>, errMap);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>出于性能上的考虑，该库被封装为了一个异步函数，需要提供一个回调函数 <code>cb</code> 来获得验证结果，该回调函数是一个满足 node 规范的 <strong>error-first callback</strong>。在其他系统中，该库使用良好，但是，新项目使用了 koa，我在中间件中使用这个库提供的 <code>validate</code> 方法， 却连编译期都没有通过：</p>
           <div class="read-more">
-            <a href="/2016/08/02/thunkify/" class="read-more-link">阅读更多</a>
+            <a href="/2016/08/02/thunkify/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -395,7 +395,7 @@
 <p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会想同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
 <p>说了那么多，仍然有些抽象，现在我们由浅入深地看看到底怎么通过 ES6 来优化异步过程。</p>
           <div class="read-more">
-            <a href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/" class="read-more-link">阅读更多</a>
+            <a href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -443,7 +443,7 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">factorial(<span class="number">70000</span>);</div><div class="line"><span class="comment">// Uncaught RangeError:Maximum call stack size exceeded(…)</span></div></pre></td></tr></table></figure>
 <p>浏览器提示我们 <strong> 栈溢出 </strong> 了（测试环境：chrome 51），究竟发生了什么呢?</p>
           <div class="read-more">
-            <a href="/2016/06/28/JavaScript-中的递归优化/" class="read-more-link">阅读更多</a>
+            <a href="/2016/06/28/JavaScript-中的递归优化/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -486,7 +486,7 @@
           <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：</p>
 <div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png" width="500"></img><br></div>
           <div class="read-more">
-            <a href="/2016/06/23/Redux-的中间件/" class="read-more-link">阅读更多</a>
+            <a href="/2016/06/23/Redux-的中间件/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -531,7 +531,7 @@
 
 <p>在上图中，我们可以看到 Flux 的四个核心构成：</p>
           <div class="read-more">
-            <a href="/2016/06/20/Flux下的组件化开发/" class="read-more-link">阅读更多</a>
+            <a href="/2016/06/20/Flux下的组件化开发/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -574,7 +574,7 @@
           <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>假定我们页面上有 5 个按钮，分别为 按钮 0，…， 按钮 4，如下图所示：</p>
 <div style="text-align:center"><br><img src="http://7pulhb.com2.z0.glb.clouddn.com/%E9%97%AD%E5%8C%85-%E9%A1%B5%E9%9D%A2.png" width="500"></img><br></div>
           <div class="read-more">
-            <a href="/2016/03/18/闭包的一个经典实例和认识误区/" class="read-more-link">阅读更多</a>
+            <a href="/2016/03/18/闭包的一个经典实例和认识误区/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -619,7 +619,7 @@
 <li>利用 skipper 来上传和存储文件。</li>
 </ul>
           <div class="read-more">
-            <a href="/2015/05/05/利用-Sails-js-MongoDB-开发博客系统（5）-个人信息维护/" class="read-more-link">阅读更多</a>
+            <a href="/2015/05/05/利用-Sails-js-MongoDB-开发博客系统（5）-个人信息维护/" class="read-more-link">Read more..</a>
           </div>
         
       
@@ -639,7 +639,7 @@
     
     
       <a class="next" href="/page/2/">
-        <span class="next-text">下一页</span>
+        <span class="next-text">Next</span>
         <i class="iconfont icon-right"></i>
       </a>
     
@@ -697,11 +697,11 @@
 
 <div class="copyright">
   <span class="power-by">
-    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
   </span>
   
   <span class="theme-info">
-    主题 - 
+    Theme - 
     <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
   </span>
 
