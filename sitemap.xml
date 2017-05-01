@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoyoyohamapi.me/2017/02/03/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%86%99%E4%B8%80%E4%B8%AA-co/</loc>
+    
+    <lastmod>2017-05-01T01:29:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoyoyohamapi.me/2017/01/01/underscore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2017-05-01T01:27:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoyoyohamapi.me/2015/04/30/RMM-Level-%E5%AF%B9%E4%BA%8E-REST-%E7%9A%84%E5%B1%82%E7%BA%A7%E5%88%92%E5%88%86%E6%A8%A1%E5%9E%8B/</loc>
     
     <lastmod>2017-04-30T03:45:16.000Z</lastmod>
@@ -26,13 +40,6 @@
     <loc>http://yoyoyohamapi.me/2016/06/20/Flux%E4%B8%8B%E7%9A%84%E7%BB%84%E4%BB%B6%E5%8C%96%E5%BC%80%E5%8F%91/</loc>
     
     <lastmod>2017-04-30T03:45:04.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoyoyohamapi.me/2016/05/29/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-throttle-%E4%B8%8E-debounce/</loc>
-    
-    <lastmod>2017-04-30T03:44:44.000Z</lastmod>
     
   </url>
   
