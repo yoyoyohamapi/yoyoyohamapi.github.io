@@ -34,17 +34,17 @@
 <link rel="canonical" href="http://yoyoyohamapi.me/2017/02/03/一步步写一个-co/"/>
 
 
-<meta name="description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125; 从最传统的回调开始，我们不断优化解决该问题的方式，最后完成了一个简化版的 co V2，实现了用更优雅地方式来组织和">
+<meta name="description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125;">
 <meta name="keywords" content="JavaScript,co,ES6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一步步写一个 co">
 <meta property="og:url" content="http://yoyoyohamapi.me/2017/02/03/一步步写一个-co/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125; 从最传统的回调开始，我们不断优化解决该问题的方式，最后完成了一个简化版的 co V2，实现了用更优雅地方式来组织和">
-<meta property="og:updated_time" content="2017-05-01T01:29:55.000Z">
+<meta property="og:description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125;">
+<meta property="og:updated_time" content="2017-05-01T01:32:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一步步写一个 co">
-<meta name="twitter:description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125; 从最传统的回调开始，我们不断优化解决该问题的方式，最后完成了一个简化版的 co V2，实现了用更优雅地方式来组织和">
+<meta name="twitter:description" content="文章已发布至 GitBook  现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式： &amp;#123;file1: 5384, file2: 2712, file3: 13942&amp;#125;">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
@@ -140,7 +140,7 @@
           <a class="menu-item-link" href="/">
             
             
-              Home
+              首页
             
           </a>
         </li>
@@ -149,7 +149,7 @@
           <a class="menu-item-link" href="/archives/">
             
             
-              Archives
+              归档
             
           </a>
         </li>
@@ -158,7 +158,7 @@
           <a class="menu-item-link" href="/tags">
             
             
-              Tags
+              标签
             
           </a>
         </li>
@@ -167,7 +167,7 @@
           <a class="menu-item-link" href="/categories">
             
             
-              Categories
+              分类
             
           </a>
         </li>
@@ -209,6 +209,7 @@
 </blockquote>
 <p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>从最传统的回调开始，我们不断优化解决该问题的方式，最后完成了一个简化版的 <a href="https://github.com/tj/co/tree/2.0.0" target="_blank" rel="external">co V2</a>，实现了用更优雅地方式来组织和编写异步流程。</p>
 <blockquote>
 <p>本文对应的项目地址，包含了文中所有涉及到的代码片: <a href="https://github.com/yoyoyohamapi/write-a-co" target="_blank" rel="external">戳我</a></p>
@@ -267,13 +268,13 @@
       <a class="prev" href="/2017/01/01/underscore-源码分析/">
         <i class="iconfont icon-left"></i>
         <span class="prev-text nav-default">underscore 源码分析</span>
-        <span class="prev-text nav-mobile">Prev</span>
+        <span class="prev-text nav-mobile">上一篇</span>
       </a>
     
     
       <a class="next" href="/2017/04/29/斯坦福机器学习笔记/">
         <span class="next-text nav-default">斯坦福机器学习笔记</span>
-        <span class="prev-text nav-mobile">Next</span>
+        <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>
     
@@ -340,11 +341,11 @@
 
 <div class="copyright">
   <span class="power-by">
-    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
   </span>
   
   <span class="theme-info">
-    Theme - 
+    主题 - 
     <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
   </span>
 
