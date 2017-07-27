@@ -17,7 +17,7 @@
 
 
 
-  <meta name="keywords" content="JavaScript,ES6," />
+  <meta name="keywords" content="JavaScript - ES6," />
 
 
 
@@ -34,17 +34,17 @@
 <link rel="canonical" href="http://yoyoyohamapi.me/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/"/>
 
 
-<meta name="description" content="原文：Going Async With ES6 Generators本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞">
-<meta name="keywords" content="JavaScript,ES6">
+<meta name="description" content="原文：Going Async With ES6 Generators 本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再">
+<meta name="keywords" content="JavaScript - ES6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 ES6 中的 generator 来优化异步过程">
 <meta property="og:url" content="http://yoyoyohamapi.me/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="原文：Going Async With ES6 Generators本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞">
-<meta property="og:updated_time" content="2017-04-30T03:44:14.000Z">
+<meta property="og:description" content="原文：Going Async With ES6 Generators 本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再">
+<meta property="og:updated_time" content="2017-07-27T04:04:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 ES6 中的 generator 来优化异步过程">
-<meta name="twitter:description" content="原文：Going Async With ES6 Generators本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞">
+<meta name="twitter:description" content="原文：Going Async With ES6 Generators 本文在作者文章的基础上，适当补充了一些代码及说明  ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
@@ -212,10 +212,10 @@
     <div class="post-content">
       
         <blockquote>
-<p>原文：<a href="https://davidwalsh.name/async-generators" target="_blank" rel="external">Going Async With ES6 Generators</a><br>本文在作者文章的基础上，适当补充了一些代码及说明</p>
+<p>原文：<a href="https://davidwalsh.name/async-generators" target="_blank" rel="external">Going Async With ES6 Generators</a> 本文在作者文章的基础上，适当补充了一些代码及说明</p>
 </blockquote>
 <p>ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞尽脑汁的去维护异步代码。</p>
-<p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会想同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
+<p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会向同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
 <p>说了那么多，仍然有些抽象，现在我们由浅入深地看看到底怎么通过 ES6 来优化异步过程。</p>
 <a id="more"></a>
 <h2 id="一个最简单的异步"><a href="#一个最简单的异步" class="headerlink" title="一个最简单的异步"></a>一个最简单的异步</h2><p>假设我们的程序原来拥有这样的异步代码，这是最为朴实和原始的 JavaScript 异步流程控制：</p>
@@ -271,12 +271,7 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">request</span>(<span class="params">url</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve,reject</span>)</span>&#123;</div><div class="line">      <span class="comment">// 现在，`makeAjaxCall(..)` 不再耦合 `it.next(..)`</span></div><div class="line">        makeAjaxCall( url, (result)=&gt;resolve(result));</div><div class="line">    &#125; );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><code>request(..)</code> 构造了一个 Promise 对象并返回，该 Promise 对象将会在 Ajax 请求完成后被 resolved。现在，generator 中的 <code>yield</code> 最终也将产出这个 Promise 对象。我们还需要一个工具函数来控制我们的 generator 的迭代器，完成我们 generator 函数的自动执行。我们暂且将这个工具函数称之为 <code>runGenerator(..)</code>：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// `runGenerator` 函数将运行一个 generator 函数 `g` 直至其完成</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">runGenerator</span>(<span class="params">g</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> it = g(), ret;</div><div class="line">    <span class="comment">// 执行迭代过程的函数，首次立即执行的目的是为了启动 generator</span></div><div class="line">    (<span class="function"><span class="keyword">function</span> <span class="title">iterate</span>(<span class="params">val</span>)</span>&#123;</div><div class="line">        <span class="comment">// 获得最近迭代结果, 启动时 val 是 undefined</span></div><div class="line">        ret = it.next( val );</div><div class="line"></div><div class="line">    <span class="comment">// 如果 generator 没有执行完毕</span></div><div class="line">        <span class="keyword">if</span> (!ret.done) &#123;</div><div class="line">            <span class="comment">// 是否 `ret` 仍然是一个 Promise 对象，如果是，意味着 generator 还在不断 yield</span></div><div class="line">            <span class="keyword">if</span> (<span class="string">"then"</span> <span class="keyword">in</span> ret.value) &#123;</div><div class="line">                <span class="comment">// 将 `iterate(val)` 注册为该 Promise 的 `then(..)` 的回调，</span></div><div class="line">                <span class="comment">// 借此，获得一个 Promise 链</span></div><div class="line">                ret.value.then( iterate );</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 如果不是 Promise 对象，而是立即数, 将该结果返回</span></div><div class="line">            <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// avoid synchronous recursion</span></div><div class="line">                setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">                    iterate( ret.value ); <span class="comment">// 相当于 `it.next(立即数)`</span></div><div class="line">                &#125;, <span class="number">0</span> );</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;)();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>我们可以分析一下该工具函数的执行过程：</p>
-<ol>
-<li>我们首先初始化了传入的 generator 的迭代器 <code>it</code>，并且创建了一个迭代函数 <code>iterate</code>，该迭代函数用来 <strong> 继续 </strong> generator 的流程，从而让 generator 的自动执行至完毕。</li>
-<li>每次我们执行 <code>iterator(val)</code>，就会调用 <code>it.next(val)</code>，并且获得结果 <code>ret</code>。假设我们 generator 中的执行语句是 <code>yield request( &quot;http://some.url.1&quot; )</code>，<code>request(..)</code> 会返回一个 Promise 对象，此时，<code>ret</code> 也就是该 Promise 对象，我们向其 <code>then(..)</code> 方法注册 <code>iterator</code>，使得该 Promise 对象完成后能够进入下一个 Promise 对象的流程，并且每次完成都会继续 generator。</li>
-<li>当 <code>iterator(val)</code> 不停流转，直至 <code>val</code> 是一个立即数时，暗示 Promise 链执行完毕，获得了结果，将其返回到 generator 使 generator 得以继续执行。</li>
-</ol>
+<p>我们可以分析一下该工具函数的执行过程： 1. 我们首先初始化了传入的 generator 的迭代器 <code>it</code>，并且创建了一个迭代函数 <code>iterate</code>，该迭代函数用来 <strong> 继续 </strong> generator 的流程，从而让 generator 的自动执行至完毕。 2. 每次我们执行 <code>iterator(val)</code>，就会调用 <code>it.next(val)</code>，并且获得结果 <code>ret</code>。假设我们 generator 中的执行语句是 <code>yield request( &quot;http://some.url.1&quot; )</code>，<code>request(..)</code> 会返回一个 Promise 对象，此时，<code>ret</code> 也就是该 Promise 对象，我们向其 <code>then(..)</code> 方法注册 <code>iterator</code>，使得该 Promise 对象完成后能够进入下一个 Promise 对象的流程，并且每次完成都会继续 generator。 3. 当 <code>iterator(val)</code> 不停流转，直至 <code>val</code> 是一个立即数时，暗示 Promise 链执行完毕，获得了结果，将其返回到 generator 使 generator 得以继续执行。</p>
 <blockquote>
 <p>简言之，结合了 Promise 的 generator 异步流程就是：每次 <code>yield</code> 一个 Promise 进入暂停态，在 Promise 完成后 generator 得以继续执行。</p>
 </blockquote>
@@ -286,12 +281,7 @@
 <p>设想，如果我们不做 <code>runGenerator</code> 函数，就需要手动控制 generator 的流程：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> it = main(); <span class="comment">// 获得 generator 的迭代器</span></div><div class="line"><span class="comment">// 不断用 `then(..)` 修饰 Promise</span></div><div class="line">it.next().value.then(<span class="function">(<span class="params">result1</span>)=&gt;</span>&#123;</div><div class="line">  it.next(result1).value.then(<span class="function">(<span class="params">result2</span>)=&gt;</span>&#123;</div><div class="line">    <span class="comment">// 最终的结果返回</span></div><div class="line">    it.next(result2);</div><div class="line">  &#125;)</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>如果业务流非常漫长，则撰写的嵌套是非常恐怖的。</p>
-<p>现在，我们已经使用了 Promise 来管理基于 generator 的异步流程，它将我们从充满了诸如回调陷阱（callback hell）中解放了出来。通过 generators+promise 这个设计模式，我们阐述一下如何解决上面提到的三个问题：</p>
-<ol>
-<li>现在，我们拥有内置的错误处理。虽然这点没有在上面的 <code>runGenerator(..)</code> 进行揭示，但是，后文会讲到，在新的设计模式下，从 Promise 中监听所有的错误并不困难。最终通过将错误绑定到 <code>it.throw(..)</code>，我们就可以放心的在 generator 中使用 <code>try..catch</code> 语句来捕获和处理错误。</li>
-<li>我们拥有了 Promise 提供的 <a href="https://blog.getify.com/promises-part-2/#uninversion" target="_blank" rel="external">control/trustability</a>。</li>
-<li>Promise 已经做了大量抽象帮助我们方便的操纵多个 “并行的” 任务。</li>
-</ol>
+<p>现在，我们已经使用了 Promise 来管理基于 generator 的异步流程，它将我们从充满了诸如回调陷阱（callback hell）中解放了出来。通过 generators+promise 这个设计模式，我们阐述一下如何解决上面提到的三个问题： 1. 现在，我们拥有内置的错误处理。虽然这点没有在上面的 <code>runGenerator(..)</code> 进行揭示，但是，后文会讲到，在新的设计模式下，从 Promise 中监听所有的错误并不困难。最终通过将错误绑定到 <code>it.throw(..)</code>，我们就可以放心的在 generator 中使用 <code>try..catch</code> 语句来捕获和处理错误。 2. 我们拥有了 Promise 提供的 <a href="https://blog.getify.com/promises-part-2/#uninversion" target="_blank" rel="external">control/trustability</a>。 3. Promise 已经做了大量抽象帮助我们方便的操纵多个 “并行的” 任务。</p>
 <p>例如，<code>yield Promise.all([..])</code> 将会利用传入的并行的任务数组（数组元素都是 Promise 对象），产出单一的 Promise 对象供 generator 操纵，generator 会等待所有的子 Promise 对象完成（无论完成顺序是怎样的）才继续进行。最后，我们真正返回给 generator 流程的是所有子 Promise 的响应构成的数组，数组元素的顺序会与请求顺序一致。</p>
 <h2 id="generators-promise-下的错误处理"><a href="#generators-promise-下的错误处理" class="headerlink" title="generators+promise 下的错误处理"></a>generators+promise 下的错误处理</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">request</span>(<span class="params">url</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>( <span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</div><div class="line">        makeAjaxCall( url, (err,text)=&gt;&#123;</div><div class="line">            <span class="keyword">if</span> (err) reject( err );</div><div class="line">            <span class="keyword">else</span> resolve( text );</div><div class="line">        &#125; );</div><div class="line">    &#125; );</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">runGenerator</span>(<span class="params">g</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> it = g(), ret;</div><div class="line">    <span class="comment">// 现在，传入了 `err` 作为第一个参数</span></div><div class="line">    (<span class="function"><span class="keyword">function</span> <span class="title">iterate</span>(<span class="params">err, val</span>)</span>&#123;</div><div class="line">        <span class="comment">// generator 迭代过程中遇到错误就 `throw`</span></div><div class="line">        <span class="keyword">if</span>(err) &#123;</div><div class="line">          setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</div><div class="line">            it.throw(err);</div><div class="line">          &#125;,<span class="number">0</span>);</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">      &#125;</div><div class="line">        ret = it.next( val );</div><div class="line"></div><div class="line">    <span class="comment">// 如果 generator 没有执行完毕</span></div><div class="line">        <span class="keyword">if</span> (!ret.done) &#123;</div><div class="line">            <span class="comment">// 是否 `ret` 仍然是一个 Promise 对象，如果是，意味着 generator 还在不断 `yield`</span></div><div class="line">            <span class="keyword">if</span> (<span class="string">"then"</span> <span class="keyword">in</span> ret.value) &#123;</div><div class="line">                <span class="comment">// 将 `iterate(val)` 注册为该 Promise 的 `then(..)` 的回调，</span></div><div class="line">                <span class="comment">// 借此，获得一个 Promise 链</span></div><div class="line">                ret.value.then( iterate );</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 如果不是 Promise 对象，而是立即数，暗示 Promise 链已经获得最终结果，将该结果返回</span></div><div class="line">            <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// avoid synchronous recursion</span></div><div class="line">                setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">                    iterate( ret.value ); <span class="comment">// 相当于 it.next(立即数)</span></div><div class="line">                &#125;, <span class="number">0</span> );</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;)();</div><div class="line">&#125;</div><div class="line"></div><div class="line">runGenerator(<span class="function"><span class="keyword">function</span> *<span class="title">main</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">const</span> result1 = <span class="keyword">yield</span> request( <span class="string">"http://some.url.1"</span> );</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (err) &#123;</div><div class="line">        <span class="built_in">console</span>.log( <span class="string">"Error:"</span> + err );</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse( result1 );</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">const</span> result2 = <span class="keyword">yield</span> request( <span class="string">"http://some.url.2?id="</span> + data.id );</div><div class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</div><div class="line">        <span class="built_in">console</span>.log( <span class="string">"Error:"</span> + err );</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> resp = <span class="built_in">JSON</span>.parse( result2 );</div><div class="line">    <span class="built_in">console</span>.log( <span class="string">"The value you asked for:"</span> + resp.value );</div><div class="line">&#125; );</div></pre></td></tr></table></figure>
 <p>如果一个 Promise 的 reject 发生，那么该 reject 对应到的错误会映射到 generator 中的能够捕获的一个错误，这个映射过程是通过 <code>runGenerator(..)</code> 中声明的 <code>it.throw(..)</code> 来完成的。</p>
@@ -342,9 +332,7 @@
         
           <div class="post-tags">
             
-              <a href="/tags/JavaScript/">JavaScript</a>
-            
-              <a href="/tags/ES6/">ES6</a>
+              <a href="/tags/JavaScript-ES6/">JavaScript - ES6</a>
             
           </div>
         

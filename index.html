@@ -204,6 +204,8 @@
       
         
         
+          
+        
 
         
           <p>从今年三月份开始，我在前端的学习路径是：</p>
@@ -212,22 +214,9 @@
 <li>函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主</li>
 <li>函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主</li>
 </ol>
-<p>期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –<a href="https://github.com/FEPatients" target="_blank" rel="external">前端病人</a> 一起完成的：</p>
-<ol>
-<li><a href="https://github.com/FEPatients/js-functional-programming-minibook" target="_blank" rel="external">JavaScript 函数式编程手札（未完）</a></li>
-<li><a href="https://github.com/FEPatients/with-or-without-fp" target="_blank" rel="external">With or without fp – 用函数式编程重构代码</a></li>
-<li><a href="https://www.gitbook.com/book/fepatients/cycle-js-21" target="_blank" rel="external">Cycle.js 基础 21 讲</a></li>
-<li><a href="https://fepatients.gitbooks.io/-rxjs-subject/content/" target="_blank" rel="external">深入 RxJS 的 Subject</a></li>
-<li><a href="https://github.com/yoyoyohamapi/cyclejs-modal-demo" target="_blank" rel="external">Cycle.js 实现一个 Modal</a></li>
-<li><a href="https://github.com/yoyoyohamapi/cyclejs-todomvc" target="_blank" rel="external">Cycle.js 实现一个 TodoMvc</a></li>
-<li>使用 Cycle.js 完成了鹅厂封陪 Mini 项目中 Web 前端部分，算是一个有体积的应用了</li>
-</ol>
-<p>这五个月的产出的内容达到了我预设的目标，毕竟在此期间，我还要照顾自己的硕士毕业论文，以及填坑自己的另外一本 Gitbook：<a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml/details" target="_blank" rel="external">斯坦福机器学习笔记</a></p>
-<p>去年分析 underscore 源码、redux 源码，算是把我带入了 JavaScript 函数式编程的大门。函数式编程起码从语法风格来说，会是大势，它未必需要深入的 <a href="https://www.gitbook.com/book/drboolean/mostly-adequate-guide" target="_blank" rel="external">mostly-adequate-guide</a> 中的定义各个 Functor 或者 Monad，但是 pure function，pointfree，curring，compose 这些优良特性带来了 Eric Elliot 大神提出的 <strong> 组合式软件编写 </strong>。在目前的一些工程中，我都受益于组合式软件编写，逻辑和副作用开始分离，更多的函数通过基本的函数线性组合产生，我的业务代码，我的工具函数包都变得更加可靠和易于测试。逐渐，我开始用 pointfree 的 ramda 替换掉 pointful 的 lodash。</p>
-<p>七月份最大的兴奋除了正式入职，就是看到了 Cycle.js 中文社区的建立，自己也能加入进去。我一直都更喜欢团队作战，一方面，团队能够约束我个人，不浮躁，另一方面，团队的技术圈子可以带来交流，可以带来目标。技术本就不应该冷静，因为团队，它会变得像人一样火热，即便它会遭受潮水般的质疑，那也胜过人变得冷漠，技术被不闻不问，在冷静中死掉。</p>
-<p>接下来，会首先总结一下这次 Cycle.js 在 Mini 项目中的实战记录，不同于从 jQuery 过渡到 Vue 或者 React 时的小激动，Cycle.js 给了我更多的兴奋点，在使用 Cycle.js 构建前端应用的时候，思路和实现都可以说是颠覆式的。我需要记录下这次过程，希望能分享给他人，也防止记性不好的我再踩一些同样的坑。</p>
-<p>之后，会一直跟进 Cycle.js，跟进 stalz 的动作，跟进 Cycle 中文社区其他的小伙伴，加油。</p>
-
+          <div class="read-more">
+            <a href="/2017/07/27/2017_03-2017_08学习总结/" class="read-more-link">Read more..</a>
+          </div>
         
       
     </div>
@@ -433,6 +422,53 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/">使用 ES6 中的 generator 来优化异步过程</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Aug 1, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>原文：<a href="https://davidwalsh.name/async-generators">Going Async With ES6 Generators</a> 本文在作者文章的基础上，适当补充了一些代码及说明</p>
+</blockquote>
+<p>ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞尽脑汁的去维护异步代码。</p>
+<p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会向同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
+<p>说了那么多，仍然有些抽象，现在我们由浅入深地看看到底怎么通过 ES6 来优化异步过程。</p>
+          <div class="read-more">
+            <a href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2016/06/28/JavaScript-中的递归优化/">JavaScript 中的递归优化</a>
         
       </h1>
@@ -569,13 +605,13 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2016/03/18/闭包的一个经典实例和认识误区/">闭包的一个经典实例和认识误区</a>
+          <a class="post-link" href="/2016/05/29/深入理解-throttle-与-debounce/">深入理解 throttle 与 debounce</a>
         
       </h1>
 
       <div class="post-meta">
         <span class="post-time">
-          Mar 18, 2016
+          May 29, 2016
         </span>
       </div>
     </header>
@@ -591,55 +627,13 @@
         
 
         
-          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>假定我们页面上有 5 个按钮，分别为 按钮 0，…， 按钮 4，如下图所示：</p>
-<div style="text-align:center"><br><img src="http://7pulhb.com2.z0.glb.clouddn.com/%E9%97%AD%E5%8C%85-%E9%A1%B5%E9%9D%A2.png" width="500"></img><br></div>
+          <p>我们先来看一个前端开发中遇到的场景：</p>
+<blockquote>
+<p>在页面中，我们有一个 “查询” 按钮，单击该按钮，会通过 <strong>ajax</strong> 异步查询一些数据</p>
+</blockquote>
+<p>假设这个查询是耗时的，并且会给后端造成一定压力，那么如果短时间内我们频繁点击该按钮，请求就会不断发出，这样给后端造成的压力是难以想象的。因此，我们会想到控制我们的查询速率。</p>
           <div class="read-more">
-            <a href="/2016/03/18/闭包的一个经典实例和认识误区/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2015/05/05/利用-Sails-js-MongoDB-开发博客系统（5）-个人信息维护/">利用 Sails.js + MongoDB 开发博客系统（5） -- 个人信息维护</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          May 5, 2015
-        </span>
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="章节概述"><a href="#章节概述" class="headerlink" title="章节概述"></a>章节概述</h2><p>在本章中，你将能学到如下知识:</p>
-<ul>
-<li>利用 skipper 来上传和存储文件。</li>
-</ul>
-          <div class="read-more">
-            <a href="/2015/05/05/利用-Sails-js-MongoDB-开发博客系统（5）-个人信息维护/" class="read-more-link">Read more..</a>
+            <a href="/2016/05/29/深入理解-throttle-与-debounce/" class="read-more-link">Read more..</a>
           </div>
         
       
