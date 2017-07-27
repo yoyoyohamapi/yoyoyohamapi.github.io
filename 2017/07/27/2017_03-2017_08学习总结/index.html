@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="2017.03 - 2017.08 的学习总结"/>
+
+
+
+
+  <meta name="keywords" content="JavaScript,函数式编程," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/"/>
+
+
+<meta name="description" content="从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主 函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主  期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –前端病人 一起完成的：  JavaScript 函数式编程手札（">
+<meta name="keywords" content="JavaScript,函数式编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017.03 - 2017.08 的学习总结">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/index.html">
+<meta property="og:site_name" content="吴小蛆的巣">
+<meta property="og:description" content="从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主 函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主  期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –前端病人 一起完成的：  JavaScript 函数式编程手札（">
+<meta property="og:updated_time" content="2017-07-27T04:00:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2017.03 - 2017.08 的学习总结">
+<meta name="twitter:description" content="从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主 函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主  期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –前端病人 一起完成的：  JavaScript 函数式编程手札（">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: false,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 2017.03 - 2017.08 的学习总结 · 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              Tags
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              Categories
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          2017.03 - 2017.08 的学习总结
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jul 27, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <p>从今年三月份开始，我在前端的学习路径是：</p>
+<ol>
+<li>JavaScript 函数式编程（Lisp、Haskell 开发者轻喷）</li>
+<li>函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主</li>
+<li>函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主</li>
+</ol>
+<p>期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –<a href="https://github.com/FEPatients" target="_blank" rel="external">前端病人</a> 一起完成的：</p>
+<ol>
+<li><a href="https://github.com/FEPatients/js-functional-programming-minibook" target="_blank" rel="external">JavaScript 函数式编程手札（未完）</a></li>
+<li><a href="https://github.com/FEPatients/with-or-without-fp" target="_blank" rel="external">With or without fp – 用函数式编程重构代码</a></li>
+<li><a href="https://www.gitbook.com/book/fepatients/cycle-js-21" target="_blank" rel="external">Cycle.js 基础 21 讲</a></li>
+<li><a href="https://fepatients.gitbooks.io/-rxjs-subject/content/" target="_blank" rel="external">深入 RxJS 的 Subject</a></li>
+<li><a href="https://github.com/yoyoyohamapi/cyclejs-modal-demo" target="_blank" rel="external">Cycle.js 实现一个 Modal</a></li>
+<li><a href="https://github.com/yoyoyohamapi/cyclejs-todomvc" target="_blank" rel="external">Cycle.js 实现一个 TodoMvc</a></li>
+<li>使用 Cycle.js 完成了鹅厂封陪 Mini 项目中 Web 前端部分，算是一个有体积的应用了</li>
+</ol>
+<p>这五个月的产出的内容达到了我预设的目标，毕竟在此期间，我还要照顾自己的硕士毕业论文，以及填坑自己的另外一本 Gitbook：<a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml/details" target="_blank" rel="external">斯坦福机器学习笔记</a></p>
+<p>去年分析 underscore 源码、redux 源码，算是把我带入了 JavaScript 函数式编程的大门。函数式编程起码从语法风格来说，会是大势，它未必需要深入的 <a href="https://www.gitbook.com/book/drboolean/mostly-adequate-guide" target="_blank" rel="external">mostly-adequate-guide</a> 中的定义各个 Functor 或者 Monad，但是 pure function，pointfree，curring，compose 这些优良特性带来了 Eric Elliot 大神提出的 <strong> 组合式软件编写 </strong>。在目前的一些工程中，我都受益于组合式软件编写，逻辑和副作用开始分离，更多的函数通过基本的函数线性组合产生，我的业务代码，我的工具函数包都变得更加可靠和易于测试。逐渐，我开始用 pointfree 的 ramda 替换掉 pointful 的 lodash。</p>
+<p>七月份最大的兴奋除了正式入职，就是看到了 Cycle.js 中文社区的建立，自己也能加入进去。我一直都更喜欢团队作战，一方面，团队能够约束我个人，不浮躁，另一方面，团队的技术圈子可以带来交流，可以带来目标。技术本就不应该冷静，因为团队，它会变得像人一样火热，即便它会遭受潮水般的质疑，那也胜过人变得冷漠，技术被不闻不问，在冷静中死掉。</p>
+<p>接下来，会首先总结一下这次 Cycle.js 在 Mini 项目中的实战记录，不同于从 jQuery 过渡到 Vue 或者 React 时的小激动，Cycle.js 给了我更多的兴奋点，在使用 Cycle.js 构建前端应用的时候，思路和实现都可以说是颠覆式的。我需要记录下这次过程，希望能分享给他人，也防止记性不好的我再踩一些同样的坑。</p>
+<p>之后，会一直跟进 Cycle.js，跟进 stalz 的动作，跟进 Cycle 中文社区其他的小伙伴，加油。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>吴晓军</span>
+    </p>
+    <p class="copyright-item">
+      <span>来源: </span>
+      <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/">http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/</a>
+    </p>
+
+    <p class="copyright-item lincese">
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/JavaScript/">JavaScript</a>
+            
+              <a href="/tags/函数式编程/">函数式编程</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/04/29/斯坦福机器学习笔记/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">斯坦福机器学习笔记</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/';
+        this.page.identifier = '2017/07/27/2017_03-2017_08学习总结/';
+        this.page.title = '2017.03 - 2017.08 的学习总结';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//yoyoyohamapi.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  </body>
+</html>
