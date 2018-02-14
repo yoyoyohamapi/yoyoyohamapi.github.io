@@ -29,20 +29,20 @@
 
 
 
-<link rel="canonical" href="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/"/>
+<link rel="canonical" href="http://yoyoyohamapi.me/2017/07/30/Cycle.js 项目实战/"/>
 
 
-<meta name="description" content="title: 2017.03 - 2017.08 的学习总结 date: 2017-07-27 10:48:00 tags:  JavaScript 函数式编程  categories:  JavaScript 函数式编程 从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主">
+<meta name="description" content="title: Cycle.js 项目实战 date: 2017-07-30 15:43 tags:  函数式编程 JavaScript Cycle.js  categories: Cycle.js Cycle.js 回顾Cycle.js 是一个函数响应式（FRP）前端框架，出来也算有些年头了，但函数式编程、响应式编程抬升了一些 Cycle.js 的入门门槛，所以即便 stalz 这几年都在各地做推">
 <meta name="keywords">
 <meta property="og:type" content="article">
 <meta property="og:title" content="吴小蛆的巣">
-<meta property="og:url" content="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/index.html">
+<meta property="og:url" content="http://yoyoyohamapi.me/2017/07/30/Cycle.js 项目实战/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="title: 2017.03 - 2017.08 的学习总结 date: 2017-07-27 10:48:00 tags:  JavaScript 函数式编程  categories:  JavaScript 函数式编程 从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主">
-<meta property="og:updated_time" content="2018-02-14T11:13:09.280Z">
+<meta property="og:description" content="title: Cycle.js 项目实战 date: 2017-07-30 15:43 tags:  函数式编程 JavaScript Cycle.js  categories: Cycle.js Cycle.js 回顾Cycle.js 是一个函数响应式（FRP）前端框架，出来也算有些年头了，但函数式编程、响应式编程抬升了一些 Cycle.js 的入门门槛，所以即便 stalz 这几年都在各地做推">
+<meta property="og:updated_time" content="2018-02-14T11:08:53.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="吴小蛆的巣">
-<meta name="twitter:description" content="title: 2017.03 - 2017.08 的学习总结 date: 2017-07-27 10:48:00 tags:  JavaScript 函数式编程  categories:  JavaScript 函数式编程 从今年三月份开始，我在前端的学习路径是：  JavaScript 函数式编程（Lisp、Haskell 开发者轻喷） 函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主">
+<meta name="twitter:description" content="title: Cycle.js 项目实战 date: 2017-07-30 15:43 tags:  函数式编程 JavaScript Cycle.js  categories: Cycle.js Cycle.js 回顾Cycle.js 是一个函数响应式（FRP）前端框架，出来也算有些年头了，但函数式编程、响应式编程抬升了一些 Cycle.js 的入门门槛，所以即便 stalz 这几年都在各地做推">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
@@ -192,47 +192,57 @@
 
       <div class="post-meta">
         <span class="post-time">
-          Jul 27, 2017
+          Jul 30, 2017
         </span>
       </div>
     </header>
 
     
     
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Cycle-js-回顾"><span class="toc-text">Cycle.js 回顾</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-cycle-onionify-来管理应用状态"><span class="toc-text">使用 cycle-onionify 来管理应用状态</span></a></li></ol>
+    </div>
+  </div>
+
 
     <div class="post-content">
       
-        <p>title: 2017.03 - 2017.08 的学习总结</p>
-<p>date: 2017-07-27 10:48:00</p>
+        <p>title: Cycle.js 项目实战</p>
+<p>date: 2017-07-30 15:43</p>
 <p>tags:</p>
 <ul>
-<li>JavaScript</li>
 <li>函数式编程</li>
+<li>JavaScript</li>
+<li>Cycle.js</li>
 </ul>
-<p>categories:  JavaScript 函数式编程</p>
-<p>从今年三月份开始，我在前端的学习路径是：</p>
-<ol>
-<li>JavaScript 函数式编程（Lisp、Haskell 开发者轻喷）</li>
-<li>函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主</li>
-<li>函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主</li>
-</ol>
-<a id="more"></a>
-<p>期间完成过、或者正在完成的一些内容有，这当中有一部分是和我所在前端学习小组 –<a href="https://github.com/FEPatients" target="_blank" rel="external">前端病人</a> 一起完成的：</p>
-<ol>
-<li><a href="https://github.com/FEPatients/js-functional-programming-minibook" target="_blank" rel="external">JavaScript 函数式编程手札（未完）</a></li>
-<li><a href="https://github.com/FEPatients/with-or-without-fp" target="_blank" rel="external">With or without fp – 用函数式编程重构代码</a></li>
-<li><a href="https://www.gitbook.com/book/fepatients/cycle-js-21" target="_blank" rel="external">Cycle.js 基础 21 讲</a></li>
-<li><a href="https://fepatients.gitbooks.io/-rxjs-subject/content/" target="_blank" rel="external">深入 RxJS 的 Subject</a></li>
-<li><a href="https://github.com/yoyoyohamapi/cyclejs-modal-demo" target="_blank" rel="external">Cycle.js 实现一个 Modal</a></li>
-<li><a href="https://github.com/yoyoyohamapi/cyclejs-todomvc" target="_blank" rel="external">Cycle.js 实现一个 TodoMvc</a></li>
-<li>使用 Cycle.js 完成了鹅厂封陪 Mini 项目中 Web 前端部分，算是一个有体积的应用了</li>
-</ol>
-<p>这五个月的产出的内容达到了我预设的目标，毕竟在此期间，我还要照顾自己的硕士毕业论文，以及填坑自己的另外一本 Gitbook：<a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml/details" target="_blank" rel="external">斯坦福机器学习笔记</a></p>
-<p>去年分析 underscore 源码、redux 源码，算是把我带入了 JavaScript 函数式编程的大门。函数式编程起码从语法风格来说，会是大势，它未必需要深入的 <a href="https://www.gitbook.com/book/drboolean/mostly-adequate-guide" target="_blank" rel="external">mostly-adequate-guide</a> 中的定义各个 Functor 或者 Monad，但是 pure function，pointfree，curring，compose 这些优良特性带来了 Eric Elliot 大神提出的 <strong> 组合式软件编写 </strong>。在目前的一些工程中，我都受益于组合式软件编写，逻辑和副作用开始分离，更多的函数通过基本的函数线性组合产生，我的业务代码，我的工具函数包都变得更加可靠和易于测试。逐渐，我开始用 pointfree 的 ramda 替换掉 pointful 的 lodash。</p>
-<p>七月份最大的兴奋除了正式入职，就是看到了 Cycle.js 中文社区的建立，自己也能加入进去。我一直都更喜欢团队作战，一方面，团队能够约束我个人，不浮躁，另一方面，团队的技术圈子可以带来交流，可以带来目标。技术本就不应该冷静，因为团队，它会变得像人一样火热，即便它会遭受潮水般的质疑，那也胜过人变得冷漠，技术被不闻不问，在冷静中死掉。</p>
-<p>接下来，会首先总结一下这次 Cycle.js 在 Mini 项目中的实战记录，不同于从 jQuery 过渡到 Vue 或者 React 时的小激动，Cycle.js 给了我更多的兴奋点，在使用 Cycle.js 构建前端应用的时候，思路和实现都可以说是颠覆式的。我需要记录下这次过程，希望能分享给他人，也防止记性不好的我再踩一些同样的坑。</p>
-<p>之后，会一直跟进 Cycle.js，跟进 stalz 的动作，跟进 Cycle 中文社区其他的小伙伴，加油。</p>
-
+<p>categories: Cycle.js</p>
+<h2 id="Cycle-js-回顾"><a href="#Cycle-js-回顾" class="headerlink" title="Cycle.js 回顾"></a>Cycle.js 回顾</h2><p>Cycle.js 是一个函数响应式（FRP）前端框架，出来也算有些年头了，但函数式编程、响应式编程抬升了一些 Cycle.js 的入门门槛，所以即便 stalz 这几年都在各地做推广，其提出的理念和模型也获得了许多大牛开发者的认可，该框架的热度也只是尚可。</p>
+<p>Cycle.js 定义了一个环形的应用模型，这也是 Cycle.js 的由来：</p>
+<p><img src="" alt=""></p>
+<p>环形模型只有两个元素：</p>
+<ul>
+<li>外部世界（External World），这里充斥着副作用（Side Effect），比如 HTTP，DOM，hash history，localstorage 等等。</li>
+<li>逻辑部分（Logic），在 Cycle.js 中，逻辑部分被装入一个 main 函数中，开发者应当尽可能让 main 成为一个纯函数（pure function）。</li>
+</ul>
+<p>因此，环形模型中，也就只存在 <strong> 逻辑 </strong> 和 <strong> 外部世界 </strong> 的交互。对于逻辑部分来说，它的输入输出分别为：</p>
+<ul>
+<li>输入：逻辑需要接收外部世界信息，因此，逻辑的输入被称为 <strong> 读副作用（Read Effects）</strong>。在 Cycle.js 中，习惯以 <strong>sources</strong> 命名读副作用。</li>
+<li>输出：逻辑需要向外部世界反馈信息，因此，逻辑的输出被称为 <strong> 写副作用（Write Effects）</strong>。在 Cycle.js 中，习惯以 <strong>sinks</strong> 命名写副作用。</li>
+</ul>
+<p>如果用代码描述这个关系就是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line"><span class="keyword">const</span> sources = effects(sinks)</div></pre></td></tr></table></figure>
+<p>Cycle.js 用 driver 来描述逻辑和副作用的沟通接口，sinks 送入不同的 driver，将拿到对应的 sources：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line"><span class="keyword">const</span> DOMSource = drivers.DOM(sinks)</div><div class="line"><span class="keyword">const</span> HTTPSources = drivers.HTTP(sinks)</div></pre></td></tr></table></figure>
+<p>这个循环依赖会使我们的代码无法运行起来，亦即这个模型无法运动。因此，Cycle.js 引入了 driver 这个桥梁来沟通副作用和 <code>main</code>，并通过 <code>Cycle.run</code> 来解决循环依赖：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line">Cycle.run(main, drivers)</div></pre></td></tr></table></figure>
+<p>以一个简单的例子再回顾下 Cycle.js 的使用。</p>
+<p>页面上有一个输入框，输入的内容我们可以存入 localstorage:</p>
+<p><img src="" alt=""></p>
+<p>例如，我们有一个逻辑，它含有一个周期流，它每秒会派发当前的周期值。也有一个沟通了 localstorage 副作用的 driver 以及沟通了 DOM 副作用的 driver：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">import xs from 'xstream'</div><div class="line">import run from '@cycle/run'</div><div class="line">import DOM from '</div><div class="line">function main(sources) &#123;</div><div class="line">  const DOM</div><div class="line">  const timer$ = xs.periodic(1000)</div><div class="line">  return &#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function DOMDriver(sinks) &#123;</div><div class="line">  const </div><div class="line">&#125;</div><div class="line"></div><div class="line">function storageDriver() &#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">run(main, &#123;</div><div class="line">  DOM: DOMDriver,</div><div class="line">  storage: storageDriver</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h2 id="使用-cycle-onionify-来管理应用状态"><a href="#使用-cycle-onionify-来管理应用状态" class="headerlink" title="使用 cycle-onionify 来管理应用状态"></a>使用 cycle-onionify 来管理应用状态</h2>
       
     </div>
 
@@ -251,7 +261,7 @@
     </p>
     <p class="copyright-item">
       <span>Link: </span>
-      <a href="http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/">http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/</a>
+      <a href="http://yoyoyohamapi.me/2017/07/30/Cycle.js 项目实战/">http://yoyoyohamapi.me/2017/07/30/Cycle.js 项目实战/</a>
     </p>
 
     <p class="copyright-item lincese">
@@ -273,14 +283,14 @@
         
   <nav class="post-nav">
     
-      <a class="prev" href="/2017/05/01/一步步写一个-co/">
+      <a class="prev" href="/2017/07/27/2017_03-2017_08学习总结/">
         <i class="iconfont icon-left"></i>
         <span class="prev-text nav-default"></span>
         <span class="prev-text nav-mobile">Prev</span>
       </a>
     
     
-      <a class="next" href="/2017/07/30/Cycle.js 项目实战/">
+      <a class="next" href="/2017/07/30/Cycle.js 基础 21 讲/">
         <span class="next-text nav-default"></span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
@@ -391,8 +401,8 @@
   
   <script type="text/javascript">
     var disqus_config = function () {
-        this.page.url = 'http://yoyoyohamapi.me/2017/07/27/2017_03-2017_08学习总结/';
-        this.page.identifier = '2017/07/27/2017_03-2017_08学习总结/';
+        this.page.url = 'http://yoyoyohamapi.me/2017/07/30/Cycle.js 项目实战/';
+        this.page.identifier = '2017/07/30/Cycle.js 项目实战/';
         this.page.title = '';
     };
     (function() {
