@@ -186,7 +186,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2018/02/14/callbag/"></a>
+          <a class="post-link" href="/2018/02/14/callbag/">callbag，一个有趣的规范</a>
         
       </h1>
 
@@ -204,17 +204,11 @@
       
         
         
+          
+        
 
         
-          <p>title: callbag 规范及使用</p>
-<p>date: 2018-02-14 17:23</p>
-<p>tags:</p>
-<ul>
-<li>函数式编程</li>
-<li>JavaScript</li>
-</ul>
-<p>categories: JavaScript 函数式编程</p>
-<h2 id="push-和-pull-模型"><a href="#push-和-pull-模型" class="headerlink" title="push 和 pull 模型"></a>push 和 pull 模型</h2><p>如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：</p>
+          <h2 id="push-和-pull-模型"><a href="#push-和-pull-模型" class="headerlink" title="push 和 pull 模型"></a>push 和 pull 模型</h2><p>如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：</p>
 <p><img src="https://i.stack.imgur.com/HwvQv.png" alt=""></p>
 <ul>
 <li><strong>Pull（<code>f(): B</code>）</strong>：返回一个值。</li>
@@ -242,179 +236,10 @@
 <li><strong> 延迟执行 </strong>：可观察对象只有被观察者订阅，才会派发数据。</li>
 <li><strong> 声明式、描述未来的代码 </strong>：我们只用声明数据源和数据消费方式，而不用关心数据交付时的细节。</li>
 </ul>
-<p><a href="https://cycle.js.org/" target="_blank" rel="external">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream" target="_blank" rel="external">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581" target="_blank" rel="external">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
-<h2 id="push-与-pull-可以是同型的"><a href="#push-与-pull-可以是同型的" class="headerlink" title="push 与 pull 可以是同型的"></a>push 与 pull 可以是同型的</h2><p>stalz 看到，我们的 Observable 和 Observer：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">interface</span> Observer &#123;</div><div class="line">  next(x): <span class="built_in">void</span>;</div><div class="line">  error(e): <span class="built_in">void</span>;</div><div class="line">  complete(): <span class="built_in">void</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">interface</span> Observable &#123;</div><div class="line">  subscribe(observer): Subscription;</div><div class="line">  unsubsribe(): <span class="built_in">void</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以通过函数进行描述：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">observable</span>(<span class="params">msgType, msgPayload</span>) </span>&#123;&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li><code>msgType == 0</code>：payload 是 observer，意味着 observer 向 observable 问好，需要订阅这个 observerble。（subscribe）</li>
-<li><code>msgType == 1</code>：意味着 observer 将取消对 observable 的订阅。（unsubscribe）</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">msgType, msgPayload</span>) </span>&#123;&#125;</div></pre></td></tr></table></figure>
-<p>当：</p>
-<ul>
-<li><code>msgType == 1</code>：对应 <code>observer.next(payload)</code>，即 observable 交付数据给 observer，此时 payload 携带了数据。</li>
-<li><code>msgType == 2</code> 且 payload 为 <code>undefined</code>：对应于 <code>observer.complete()</code>。</li>
-<li><code>msgType == 2</code> 且 payload 含有值：对应于 <code>observer.error(payload)</code>，此时 payload 描述了错误。</li>
-</ul>
-<p>进一步概括就是：</p>
-<p><strong>Observer</strong>:</p>
-<ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">observer(1, data): void</div></pre></td></tr></table></figure>
-<ul>
-<li>数据交付 ：observable 将数据交付给 observer</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">observer(2, err): void</div></pre></td></tr></table></figure>
-<ul>
-<li>出错：observable 将错误告知 observer</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">observer(2): void</div></pre></td></tr></table></figure>
-<ul>
-<li>完成：observable 不再有数据，告知 observer 任务完成</li>
-</ul>
-</li>
-</ul>
-<p><strong>Observable</strong>:</p>
-<ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">observable(0, observer): void</div></pre></td></tr></table></figure>
-<ul>
-<li>问好：observer 订阅了 observable</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">observable(2): void</div></pre></td></tr></table></figure>
-<ul>
-<li>结束：observer 取消对 observable 的订阅</li>
-</ul>
-</li>
-</ul>
-<p>这么概括下来，我们发现，pull 模型也可以进行类似的概括：</p>
-<p><strong>Consumer</strong>：</p>
-<ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">consumer(0, producer): void</div></pre></td></tr></table></figure>
-<ul>
-<li>问好：<strong> 在 pull 模型中，producer 需要向 consumer 问好，告诉 consumer 有需要时，从哪里取值 </strong></li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">consumer(1, data): void</div></pre></td></tr></table></figure>
-<ul>
-<li>数据交付：producer 将数据交付给 consumer</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">consumer(2, err): void</div></pre></td></tr></table></figure>
-<ul>
-<li>出错：producer 将错误告知 consumer</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">consumer(2): void</div></pre></td></tr></table></figure>
-<ul>
-<li>完成：producer 告知 consumer 任务已完成</li>
-</ul>
-</li>
-</ul>
-<p><strong>Producer</strong>：</p>
-<ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">producer(0, consumer): void</div></pre></td></tr></table></figure>
-<ul>
-<li>问好：consumer 确定和哪个 producer 交互</li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">producer(1, data): void</div></pre></td></tr></table></figure>
-<ul>
-<li>数据交付：<strong> 在 pull 模型中，consumer 需要主动向 producer 取值 </strong></li>
-</ul>
-</li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">producer(2): void</div></pre></td></tr></table></figure>
-<ul>
-<li>结束：consumer 结束了和 producer 的交互</li>
-</ul>
-</li>
-</ul>
-<p>综上，我们发现，push 和 pull 模型是同型的（具有一样的角色和函数签名），因此，可以通过一个规范同时定义二者。</p>
-<h2 id="callbag"><a href="#callbag" class="headerlink" title="callbag"></a>callbag</h2><p>staltz 为 push 和 pull 模型创建了一个名为 callbag 的 <a href="https://github.com/callbag/callbag" target="_blank" rel="external">规范</a>，这个规范的内容如下：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><div class="line">(<span class="keyword">type</span>: <span class="built_in">number</span>, payload?: <span class="built_in">any</span>) =&gt; <span class="built_in">void</span></div></pre></td></tr></table></figure>
-<h3 id="定义（Defination）"><a href="#定义（Defination）" class="headerlink" title="定义（Defination）"></a>定义（Defination）</h3><ul>
-<li>Callbag：一个函数，函数签名为： <code>(type: 0 | 1 | 2, payload?: any) =&gt; void</code></li>
-<li>Greet：如果一个 callbag 以 <code>0</code> 为第一个参数被调用，我们就说 <code>该 callbag 被问好了</code>。此时函数执行的操作是： “向这个 callbag 问好”。</li>
-<li>Deliver：如果一个 callbag 以 <code>1</code> 为第一个参数被调用，我们就说 “这个 callbag 正被交付数据”。此时函数执行的操作是：“交付数据给这个 callbag”。</li>
-<li>Terminate：如果一个 callbag 以 <code>2</code> 为第一个参数被调用，我们就说 “这个 callbag 被终止了”。此时函数执行的操作是：“终止这个 callbag”。</li>
-<li>Source：一个负责交付数据的 callbag。</li>
-<li>Sink：一个负责接收（消费）数据的 callbag。</li>
-</ul>
-<h3 id="协议（Protocal）"><a href="#协议（Protocal）" class="headerlink" title="协议（Protocal）"></a>协议（Protocal）</h3><p><strong> 问好（Greets）</strong>: <code>(type: 0, cb: Callbag) =&gt; void</code></p>
-<p>当第一个参数是 <code>0</code>，而第二个参数是另外一个 callbag（即一个函数）的时候，这个 callbag 就被问好了。</p>
-<p><strong> 握手（Handshake）</strong></p>
-<p>当一个 source 被问好，并被作为 payload 传递给了某个 sink，sink <strong> 必须 </strong> 使用一个 callbag payload 进行问好，这个 callbag 可以是他自己，也可以是另外的 callbag。换言之，问好是相互的。相互间的问好被称为 <strong> 握手 </strong>。</p>
-<p><strong> 终止（Termination）</strong>: <code>(type: 2, err?: any) =&gt; void</code></p>
-<p>当第一个参数是 <code>0</code>，而第二个参数要么是 undefined（由于成功引起的终止），要么是任何的真实值（由于失败引起的终止），这个 callbag 就被终止了。</p>
-<p>在握手之后，source <strong> 可能 </strong> 终止掉 sink，sink 也 <strong> 可能 </strong> 会终止掉 source。如果 source 终止了 sink，则 sink <strong> 不应当 </strong> 终止 source，反之亦然。换言之，终止行为 <strong> 不应该 </strong> 是相互的。</p>
-<p><strong> 数据交付（Data delivery）</strong> <code>(type: 1, data: any) =&gt; void</code></p>
-<p>交付次数：</p>
-<ul>
-<li>一个 callbag（source 或者 sink）<strong> 可能 </strong> 会被一次或多次交付数据</li>
-</ul>
-<p>有效交付的窗口：</p>
-<ul>
-<li>一个 callbag <strong> 一定不能 </strong> 在被问好之前被交付数据</li>
-<li>一个 callbag <strong> 一定不能 </strong> 在终止后被交付数据</li>
-<li>一个 sink <strong> 一定不能 </strong> 在其终止了它的 source 后被交付数据</li>
-</ul>
-<h2 id="创建自己的-callbag"><a href="#创建自己的-callbag" class="headerlink" title="创建自己的 callbag"></a>创建自己的 callbag</h2><p>callbag 的组成可以简单归纳为：</p>
-<ul>
-<li>handshake：一次握手过程，source 和 sink 如何握手</li>
-<li>talkback：对讲对象，sink 和 source 正在和谁沟通</li>
-</ul>
-<h3 id="listener（observer）sink"><a href="#listener（observer）sink" class="headerlink" title="listener（observer）sink"></a>listener（observer）sink</h3><ul>
-<li><p><strong> 定义问好过程 </strong>：在问好阶段，可以知道在和谁对讲：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// sink 收到了来自 source 的问好 </span></div><div class="line">    <span class="comment">// 问好的时候确定 source 和 sink 的对讲方式 </span></div><div class="line">    <span class="keyword">const</span> talkback = data;</div><div class="line">    <span class="comment">// 3s 后，sink 终止和 source 的对讲 </span></div><div class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> talkback(<span class="number">2</span>), <span class="number">3000</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<ul>
-<li><p><strong> 定义数据处理过程 </strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">const</span> talkback = data;</div><div class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> talkback(<span class="number">2</span>), <span class="number">3000</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">        <span class="built_in">console</span>.log(data);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong> 定义结束过程 </strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> handle;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">const</span> talkback = data;</div><div class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> talkback(<span class="number">2</span>), <span class="number">3000</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">        <span class="built_in">console</span>.log(data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">        clearTimeout(handle);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以再用工厂函数让代码干净一些：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeSink</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> handle;</div><div class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">      <span class="keyword">const</span> talkback = data;</div><div class="line">      handle = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> talkback(<span class="number">2</span>), <span class="number">3000</span>);</div><div class="line">    &#125; </div><div class="line">    <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">      <span class="built_in">console</span>.log(data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">      clearTimeout(handle);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="puller（consumer）sink"><a href="#puller（consumer）sink" class="headerlink" title="puller（consumer）sink"></a>puller（consumer）sink</h3><p>puller sink 则可以向 source 主动请求数据：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> handle;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">const</span> talkback = data;</div><div class="line">        setInterval(<span class="function"><span class="params">()</span> =&gt;</span> talkback(<span class="number">1</span>), <span class="number">1000</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">        <span class="built_in">console</span>.log(data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">        clearTimeout(handle);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="listenable（observable）source"><a href="#listenable（observable）source" class="headerlink" title="listenable（observable）source"></a>listenable（observable）source</h3><ul>
-<li><p>定义问好过程：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">source</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 如果 source 收到 sink 的问好，</span></div><div class="line">    <span class="comment">// 则 payload 即为 sink，source 可以向 sink 发送数据了 </span></div><div class="line">    <span class="keyword">const</span> sink = data;</div><div class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">      sink(<span class="number">1</span>, <span class="literal">null</span>);</div><div class="line">    &#125;, <span class="number">1000</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// 让 source 也和 sink 问好，完成一次握手 </span></div><div class="line">  sink(<span class="number">0</span>, <span class="comment">/* talkback callbag here */</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>当 sink 想要停止观察，需要让 source 有处理停止的能力，另外，listenable 的 source 不会理会 sink 主动的数据索取。因此，我们这么告知 sink 沟通方式：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">source</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">const</span> sink = data;</div><div class="line">        <span class="keyword">let</span> handle = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">            sink(<span class="number">1</span>, <span class="literal">null</span>);</div><div class="line">        &#125;, <span class="number">1000</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">const</span> talkback = <span class="function">(<span class="params">type, data</span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">            clearInterval(handle);</div><div class="line">        &#125; </div><div class="line">    &#125;</div><div class="line">    sink(<span class="number">0</span>, talkback);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>优化一下代码可读性：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">source</span>(<span class="params">start, sink</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (start !== <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">  <span class="keyword">let</span> handle = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    sink(<span class="number">1</span>, <span class="literal">null</span>);</div><div class="line">  &#125;, <span class="number">1000</span>);</div><div class="line">  <span class="keyword">const</span> talkback = <span class="function">(<span class="params">t, d</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">if</span> (t === <span class="number">2</span>) clearInterval(handle);</div><div class="line">  &#125;;</div><div class="line">  sink(<span class="number">0</span>, talkback);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="pullable（iterable）source"><a href="#pullable（iterable）source" class="headerlink" title="pullable（iterable）source"></a>pullable（iterable）source</h3><p>pullable source 中，值时按照 sink 的需要获取的，因此，只有在 sink 索取值时，source 才需要交付数据：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">source</span>(<span class="params">start, sink</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (start !== <span class="number">0</span>) retrun;</div><div class="line">    <span class="keyword">let</span> i = <span class="number">10</span>;</div><div class="line">    <span class="keyword">const</span> talkback = <span class="function">(<span class="params">t, d</span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (t == <span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (i &lt;= <span class="number">20</span>) sink(<span class="number">1</span>, i++);</div><div class="line">            <span class="keyword">else</span> sink(<span class="number">2</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    sink(<span class="number">0</span>, talkback)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建运算子"><a href="#创建运算子" class="headerlink" title="创建运算子"></a>创建运算子</h2><p>借助于 operator，能够不断的构建新的 source，operator 的一般范式为：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> myOperator = <span class="function"><span class="params">args</span> =&gt;</span> inputSource =&gt; outputSource</div></pre></td></tr></table></figure>
-<p>借助于管道技术，我们能一步步的声明新的 source：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">pipe(</div><div class="line">  source,</div><div class="line">  myOperator(args),</div><div class="line">  iterate(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x))</div><div class="line">)</div><div class="line"><span class="comment">// same as...</span></div><div class="line">pipe(</div><div class="line">  source,</div><div class="line">  inputSource =&gt; outputSource,</div><div class="line">  iterate(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x))</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>下面我们创建了一个乘法 operator：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> multiplyBy = <span class="function"><span class="params">factor</span> =&gt;</span> inputSource =&gt; &#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">outputSource</span>(<span class="params">start, outputSink</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (start !== <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">        inputSource(start, (type, data) =&gt; &#123;</div><div class="line">            <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">                outputSink(<span class="number">1</span>, data * factor);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                outputSink(<span class="number">1</span>, data * factor);</div><div class="line">            &#125; </div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">source</span>(<span class="params">start, sink</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (start !== <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">let</span> i = <span class="number">0</span>;</div><div class="line">    <span class="keyword">const</span> handle = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> sink(<span class="number">1</span>, i++), <span class="number">3000</span>);</div><div class="line">    <span class="keyword">const</span> talkback = <span class="function">(<span class="params">type, data</span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">            clearInterval(handle);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    sink(<span class="number">0</span>, talkback);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> timeout;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sink</span>(<span class="params">type, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">const</span> talkback = data;</div><div class="line">        timetout = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> talback(<span class="number">2</span>), <span class="number">9000</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">1</span>) &#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'data is'</span>, data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (type === <span class="number">2</span>) &#123;</div><div class="line">        clearTimeout(handle);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> newSource = multiplyBy(<span class="number">3</span>)(source);</div><div class="line">newSource(<span class="number">0</span>, sink);</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过 callbag ，我们可以近乎一致的处理 <strong> 数据源和数据源的消费 </strong>：</p>
-<p>例如，下面是 listenable 数据源，我们用 <code>forEach</code> 消费：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> &#123;forEach, fromEvent, map, filter, pipe&#125; = <span class="built_in">require</span>(<span class="string">'callbag-basics'</span>);</div><div class="line"></div><div class="line">pipe(</div><div class="line">  fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>),</div><div class="line">  filter(<span class="function"><span class="params">ev</span> =&gt;</span> ev.target.tagName === <span class="string">'BUTTON'</span>),</div><div class="line">  map(<span class="function"><span class="params">ev</span> =&gt;</span> (&#123;<span class="attr">x</span>: ev.clientX, <span class="attr">y</span>: ev.clientY&#125;)),</div><div class="line">  forEach(<span class="function"><span class="params">coords</span> =&gt;</span> <span class="built_in">console</span>.log(coords))</div><div class="line">);</div></pre></td></tr></table></figure>
-<p>下面则是 pullable 数据源，我们仍可以用 <code>forEach</code> 进行消费：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> &#123;forEach, fromIter, take, map, pipe&#125; = <span class="built_in">require</span>(<span class="string">'callbag-basics'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">getRandom</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</div><div class="line">    <span class="keyword">yield</span> <span class="built_in">Math</span>.random();</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">pipe(</div><div class="line">  fromIter(getRandom()),</div><div class="line">  take(<span class="number">5</span>),</div><div class="line">  forEach(<span class="function"><span class="params">x</span> =&gt;</span> <span class="built_in">console</span>.log(x))</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://staltz.com/why-we-need-callbags.html" target="_blank" rel="external">WHY WE NEED CALLBAGS</a></li>
-<li><a href="https://github.com/callbag/callbag" target="_blank" rel="external">callbag</a></li>
-<li><a href="https://github.com/callbag/callbag/blob/master/getting-started.md" target="_blank" rel="external">Creating your own utilities</a></li>
-</ul>
-
+<p><a href="https://cycle.js.org/">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
+          <div class="read-more">
+            <a href="/2018/02/14/callbag/" class="read-more-link">Read more..</a>
+          </div>
         
       
     </div>
@@ -431,7 +256,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2017/07/30/Cycle.js 基础 21 讲/"></a>
+          <a class="post-link" href="/2017/07/30/Cycle.js 基础 21 讲/">Cycle.js 基础 21 讲</a>
         
       </h1>
 
@@ -451,15 +276,7 @@
         
 
         
-          <p>title: Cycle.js 基础 21 讲</p>
-<p>date: 2017-07-30 13.43</p>
-<p>tags:</p>
-<ul>
-<li>函数式编程</li>
-<li>JavaScript</li>
-<li>Cycle.js</li>
-</ul>
-<p>categories: Cycle.js</p>
+          <p><a href="https://www.gitbook.com/book/fepatients/cycle-js-21/details" target="_blank" rel="external">Gitbook</a></p>
 
         
       
@@ -477,77 +294,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2017/07/30/Cycle.js 项目实战/"></a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          Jul 30, 2017
-        </span>
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <p>title: Cycle.js 项目实战</p>
-<p>date: 2017-07-30 15:43</p>
-<p>tags:</p>
-<ul>
-<li>函数式编程</li>
-<li>JavaScript</li>
-<li>Cycle.js</li>
-</ul>
-<p>categories: Cycle.js</p>
-<h2 id="Cycle-js-回顾"><a href="#Cycle-js-回顾" class="headerlink" title="Cycle.js 回顾"></a>Cycle.js 回顾</h2><p>Cycle.js 是一个函数响应式（FRP）前端框架，出来也算有些年头了，但函数式编程、响应式编程抬升了一些 Cycle.js 的入门门槛，所以即便 stalz 这几年都在各地做推广，其提出的理念和模型也获得了许多大牛开发者的认可，该框架的热度也只是尚可。</p>
-<p>Cycle.js 定义了一个环形的应用模型，这也是 Cycle.js 的由来：</p>
-<p><img src="" alt=""></p>
-<p>环形模型只有两个元素：</p>
-<ul>
-<li>外部世界（External World），这里充斥着副作用（Side Effect），比如 HTTP，DOM，hash history，localstorage 等等。</li>
-<li>逻辑部分（Logic），在 Cycle.js 中，逻辑部分被装入一个 main 函数中，开发者应当尽可能让 main 成为一个纯函数（pure function）。</li>
-</ul>
-<p>因此，环形模型中，也就只存在 <strong> 逻辑 </strong> 和 <strong> 外部世界 </strong> 的交互。对于逻辑部分来说，它的输入输出分别为：</p>
-<ul>
-<li>输入：逻辑需要接收外部世界信息，因此，逻辑的输入被称为 <strong> 读副作用（Read Effects）</strong>。在 Cycle.js 中，习惯以 <strong>sources</strong> 命名读副作用。</li>
-<li>输出：逻辑需要向外部世界反馈信息，因此，逻辑的输出被称为 <strong> 写副作用（Write Effects）</strong>。在 Cycle.js 中，习惯以 <strong>sinks</strong> 命名写副作用。</li>
-</ul>
-<p>如果用代码描述这个关系就是：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line"><span class="keyword">const</span> sources = effects(sinks)</div></pre></td></tr></table></figure>
-<p>Cycle.js 用 driver 来描述逻辑和副作用的沟通接口，sinks 送入不同的 driver，将拿到对应的 sources：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line"><span class="keyword">const</span> DOMSource = drivers.DOM(sinks)</div><div class="line"><span class="keyword">const</span> HTTPSources = drivers.HTTP(sinks)</div></pre></td></tr></table></figure>
-<p>这个循环依赖会使我们的代码无法运行起来，亦即这个模型无法运动。因此，Cycle.js 引入了 driver 这个桥梁来沟通副作用和 <code>main</code>，并通过 <code>Cycle.run</code> 来解决循环依赖：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sinks = main(sources)</div><div class="line">Cycle.run(main, drivers)</div></pre></td></tr></table></figure>
-<p>以一个简单的例子再回顾下 Cycle.js 的使用。</p>
-<p>页面上有一个输入框，输入的内容我们可以存入 localstorage:</p>
-<p><img src="" alt=""></p>
-<p>例如，我们有一个逻辑，它含有一个周期流，它每秒会派发当前的周期值。也有一个沟通了 localstorage 副作用的 driver 以及沟通了 DOM 副作用的 driver：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">import xs from 'xstream'</div><div class="line">import run from '@cycle/run'</div><div class="line">import DOM from '</div><div class="line">function main(sources) &#123;</div><div class="line">  const DOM</div><div class="line">  const timer$ = xs.periodic(1000)</div><div class="line">  return &#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function DOMDriver(sinks) &#123;</div><div class="line">  const </div><div class="line">&#125;</div><div class="line"></div><div class="line">function storageDriver() &#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">run(main, &#123;</div><div class="line">  DOM: DOMDriver,</div><div class="line">  storage: storageDriver</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<h2 id="使用-cycle-onionify-来管理应用状态"><a href="#使用-cycle-onionify-来管理应用状态" class="headerlink" title="使用 cycle-onionify 来管理应用状态"></a>使用 cycle-onionify 来管理应用状态</h2>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/07/27/2017_03-2017_08学习总结/"></a>
+          <a class="post-link" href="/2017/07/27/2017_03-2017_08学习总结/">2017.03 - 2017.08 的学习总结</a>
         
       </h1>
 
@@ -569,15 +316,7 @@
         
 
         
-          <p>title: 2017.03 - 2017.08 的学习总结</p>
-<p>date: 2017-07-27 10:48:00</p>
-<p>tags:</p>
-<ul>
-<li>JavaScript</li>
-<li>函数式编程</li>
-</ul>
-<p>categories:  JavaScript 函数式编程</p>
-<p>从今年三月份开始，我在前端的学习路径是：</p>
+          <p>从今年三月份开始，我在前端的学习路径是：</p>
 <ol>
 <li>JavaScript 函数式编程（Lisp、Haskell 开发者轻喷）</li>
 <li>函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主</li>
@@ -602,62 +341,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2017/05/01/一步步写一个-co/"></a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          May 1, 2017
-        </span>
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>title: 一步步写一个 co</p>
-<p>date: 2017-02-03 19:29:34</p>
-<p>tags:</p>
-<ul>
-<li>co</li>
-<li>JavaScript</li>
-<li>ES6</li>
-</ul>
-<p>categories: 一步步写一个 co</p>
-<blockquote>
-<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/-co/details">GitBook</a></p>
-</blockquote>
-<p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</div></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/05/01/一步步写一个-co/" class="read-more-link">Read more..</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/04/29/斯坦福机器学习笔记/"></a>
+          <a class="post-link" href="/2017/04/29/斯坦福机器学习笔记/">斯坦福机器学习笔记</a>
         
       </h1>
 
@@ -679,14 +363,7 @@
         
 
         
-          <p>title: 斯坦福机器学习笔记</p>
-<p>date: 2017-04-29 11:45:13</p>
-<p>tags:</p>
-<ul>
-<li>机器学习</li>
-</ul>
-<p>categories: 机器学习</p>
-<blockquote>
+          <blockquote>
 <p>系列文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml">Gitbook</a></p>
 </blockquote>
 <p>本书为斯坦福吴恩达教授的在 coursera 上的 <a href="https://zh.coursera.org/learn/machine-learning">机器学习公开课</a> 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。</p>
@@ -706,11 +383,294 @@
   </article>
 
     
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/02/03/一步步写一个-co/">一步步写一个 co</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Feb 3, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/-co/details">GitBook</a></p>
+</blockquote>
+<p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</div></pre></td></tr></table></figure>
+          <div class="read-more">
+            <a href="/2017/02/03/一步步写一个-co/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2017/01/01/underscore-源码分析/">underscore 源码分析</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jan 1, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/undersercore-analysis">GitBook</a></p>
+</blockquote>
+<h2 id="写作意图"><a href="#写作意图" class="headerlink" title="写作意图"></a>写作意图</h2><p>起初，我分析 underscore 的源码只是想更深入的了解 <strong> 函数式编程（Functional Programming）</strong>，但分析结束后，我就觉得单纯的源码注释不足以记录我的收获、理解和感悟，所以我想把这些写下来，我粗略地将写作意图概括如下：</p>
+<ul>
+<li><p>函数式编程近些年非常火爆，诸如 haskwell 这样的纯函数式编程语言获得了非常高的社区活跃度。JavaScript 支持多范式编程，抛开 underscore 和 lodash 这样的生来为了函数编程的库不谈，诸如 <a href="https://github.com/reactjs/redux">redux</a> 这样的库也大量运用了函数式编程，即便作为一个 react+redux 的业务开发者，想要深入理解的 redux 的实现机制，也不得不学习函数式编程。因此，学习函数式编程，将会成为 JavaScript 开发者的必须。</p>
+<p>   在阅读 underscore 的源码期间，被作者 jashkenas（他同时也是 backbone 和 coffee 的作者）的功力深深折服，一些功能可能我也能写出，但绝对写不了如此健壮。所以，深入学习 underscore 源码，不仅有助于我们认识函数式编程，也能深化我们对于 JavaScript 中一些基础知识的理解和掌握。</p>
+<p>   随着 backbone 的衰落和 lodash 的崛起，underscore 的热度已经不及当年，但是截止这篇文章的开始前的一个月，underscore 仍然有最新的 bug 修复，可见作者 jashkenas 仍然没有放弃 underscore 的维护。所以现在分析 underscore 的源码仍然不显得过时。相较于 lodash，underscore 的源码更加短小，也不太涉及 JavaScript 中的一些奇淫巧技，所以，分析 underscore 更加适合 JavaScript 开发者的进阶。在完成了 underscore 的源码分析后，希望我自己有时间，也希望读者有意愿再去分析 lodash 的源码，后者在性能和功能上都已经超越了 underscore，并且长时间霸占了 npm 了最热 package 的位置。</p>
+</li>
+</ul>
+          <div class="read-more">
+            <a href="/2017/01/01/underscore-源码分析/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/08/02/thunkify/">thunkify</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Aug 2, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</div><div class="line">  <span class="comment">// ....</span></div><div class="line">  <span class="comment">// 一切完成后会触发回调函数</span></div><div class="line">  cb(<span class="literal">null</span>, errMap);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>出于性能上的考虑，该库被封装为了一个异步函数，需要提供一个回调函数 <code>cb</code> 来获得验证结果，该回调函数是一个满足 node 规范的 <strong>error-first callback</strong>。在其他系统中，该库使用良好，但是，新项目使用了 koa，我在中间件中使用这个库提供的 <code>validate</code> 方法， 却连编译期都没有通过：</p>
+          <div class="read-more">
+            <a href="/2016/08/02/thunkify/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/">使用 ES6 中的 generator 来优化异步过程</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Aug 1, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <blockquote>
+<p>原文：<a href="https://davidwalsh.name/async-generators">Going Async With ES6 Generators</a> 本文在作者文章的基础上，适当补充了一些代码及说明</p>
+</blockquote>
+<p>ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞尽脑汁的去维护异步代码。</p>
+<p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会向同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
+<p>说了那么多，仍然有些抽象，现在我们由浅入深地看看到底怎么通过 ES6 来优化异步过程。</p>
+          <div class="read-more">
+            <a href="/2016/08/01/使用-ES6-中的-generator-来优化异步过程（翻译及补充）/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/06/28/JavaScript-中的递归优化/">JavaScript 中的递归优化</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jun 28, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>说到递归，我们先来看一个最常见的递归用例：<strong> 计算阶乘 </strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(n==<span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">  <span class="keyword">return</span> n*factorial(n<span class="number">-1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>测试一下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">factorial(<span class="number">5</span>); <span class="comment">// =&gt; 120</span></div></pre></td></tr></table></figure>
+<p>似乎一切正常，5 的阶乘 120 被正确计算出来了，我们试着把数字调大一些：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">factorial(<span class="number">70000</span>);</div><div class="line"><span class="comment">// Uncaught RangeError:Maximum call stack size exceeded(…)</span></div></pre></td></tr></table></figure>
+<p>浏览器提示我们 <strong> 栈溢出 </strong> 了（测试环境：chrome 51），究竟发生了什么呢?</p>
+          <div class="read-more">
+            <a href="/2016/06/28/JavaScript-中的递归优化/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2016/06/23/Redux-的中间件/">Redux 中间件的实现</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jun 23, 2016
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：</p>
+<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png" width="500"></img><br></div>
+          <div class="read-more">
+            <a href="/2016/06/23/Redux-的中间件/" class="read-more-link">Read more..</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
   </section>
 
   
   <nav class="pagination">
     
+    
+      <a class="next" href="/page/2/">
+        <span class="next-text">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
     
   </nav>
 

@@ -12,10 +12,12 @@
 
 
 
-  <meta name="description" content="只要努力，蛆虫也能变成苍蝇翱翔于天际"/>
+  <meta name="description" content="斯坦福机器学习笔记"/>
 
 
 
+
+  <meta name="keywords" content="机器学习," />
 
 
 
@@ -32,18 +34,18 @@
 <link rel="canonical" href="http://yoyoyohamapi.me/2017/04/29/斯坦福机器学习笔记/"/>
 
 
-<meta name="description" content="title: 斯坦福机器学习笔记 date: 2017-04-29 11:45:13 tags:  机器学习  categories: 机器学习  系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知">
-<meta name="keywords">
+<meta name="description" content="系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。 本书涉及到的程序代码均放在了我个人的 github 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有">
+<meta name="keywords" content="机器学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="吴小蛆的巣">
+<meta property="og:title" content="斯坦福机器学习笔记">
 <meta property="og:url" content="http://yoyoyohamapi.me/2017/04/29/斯坦福机器学习笔记/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="title: 斯坦福机器学习笔记 date: 2017-04-29 11:45:13 tags:  机器学习  categories: 机器学习  系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知">
+<meta property="og:description" content="系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。 本书涉及到的程序代码均放在了我个人的 github 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有">
 <meta property="og:image" content="https://yoyoyohamapi.gitbooks.io/mit-ml/content/%E8%AF%81%E4%B9%A6.jpg">
-<meta property="og:updated_time" content="2018-02-14T11:12:10.425Z">
+<meta property="og:updated_time" content="2018-02-14T17:01:25.708Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="吴小蛆的巣">
-<meta name="twitter:description" content="title: 斯坦福机器学习笔记 date: 2017-04-29 11:45:13 tags:  机器学习  categories: 机器学习  系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知">
+<meta name="twitter:title" content="斯坦福机器学习笔记">
+<meta name="twitter:description" content="系列文章已发布至 Gitbook  本书为斯坦福吴恩达教授的在 coursera 上的 机器学习公开课 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。 本书涉及到的程序代码均放在了我个人的 github 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有">
 <meta name="twitter:image" content="https://yoyoyohamapi.gitbooks.io/mit-ml/content/%E8%AF%81%E4%B9%A6.jpg">
 
 
@@ -71,7 +73,7 @@
 
 
 
-    <title>  · 吴小蛆的巣 </title>
+    <title> 斯坦福机器学习笔记 · 吴小蛆的巣 </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -188,7 +190,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          
+          斯坦福机器学习笔记
         
       </h1>
 
@@ -204,14 +206,7 @@
 
     <div class="post-content">
       
-        <p>title: 斯坦福机器学习笔记</p>
-<p>date: 2017-04-29 11:45:13</p>
-<p>tags:</p>
-<ul>
-<li>机器学习</li>
-</ul>
-<p>categories: 机器学习</p>
-<blockquote>
+        <blockquote>
 <p>系列文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml" target="_blank" rel="external">Gitbook</a></p>
 </blockquote>
 <p>本书为斯坦福吴恩达教授的在 coursera 上的 <a href="https://zh.coursera.org/learn/machine-learning" target="_blank" rel="external">机器学习公开课</a> 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。</p>
@@ -304,13 +299,25 @@
     
       <footer class="post-footer">
         
+          <div class="post-tags">
+            
+              <a href="/tags/机器学习/">机器学习</a>
+            
+          </div>
+        
         
         
   <nav class="post-nav">
     
+      <a class="prev" href="/2017/02/03/一步步写一个-co/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">一步步写一个 co</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
     
-      <a class="next" href="/2017/05/01/一步步写一个-co/">
-        <span class="next-text nav-default"></span>
+    
+      <a class="next" href="/2017/07/27/2017_03-2017_08学习总结/">
+        <span class="next-text nav-default">2017.03 - 2017.08 的学习总结</span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
       </a>
@@ -422,7 +429,7 @@
     var disqus_config = function () {
         this.page.url = 'http://yoyoyohamapi.me/2017/04/29/斯坦福机器学习笔记/';
         this.page.identifier = '2017/04/29/斯坦福机器学习笔记/';
-        this.page.title = '';
+        this.page.title = '斯坦福机器学习笔记';
     };
     (function() {
     var d = document, s = d.createElement('script');

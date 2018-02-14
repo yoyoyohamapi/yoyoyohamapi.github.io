@@ -12,10 +12,12 @@
 
 
 
-  <meta name="description" content="只要努力，蛆虫也能变成苍蝇翱翔于天际"/>
+  <meta name="description" content="callbag，一个有趣的规范"/>
 
 
 
+
+  <meta name="keywords" content="JavaScript,函数式编程," />
 
 
 
@@ -32,18 +34,18 @@
 <link rel="canonical" href="http://yoyoyohamapi.me/2018/02/14/callbag/"/>
 
 
-<meta name="description" content="title: callbag 规范及使用 date: 2018-02-14 17:23 tags:  函数式编程 JavaScript  categories: JavaScript 函数式编程 push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一">
-<meta name="keywords">
+<meta name="description" content="push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一个值。 Push（f(x: A): void）：响应式的，当有值产生时，会发出一个事件，并携带上这个值。订阅了该事件的观察者（Observer）将获得反馈。  JavaScript 中的 Math">
+<meta name="keywords" content="JavaScript,函数式编程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="吴小蛆的巣">
+<meta property="og:title" content="callbag，一个有趣的规范">
 <meta property="og:url" content="http://yoyoyohamapi.me/2018/02/14/callbag/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
-<meta property="og:description" content="title: callbag 规范及使用 date: 2018-02-14 17:23 tags:  函数式编程 JavaScript  categories: JavaScript 函数式编程 push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一">
+<meta property="og:description" content="push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一个值。 Push（f(x: A): void）：响应式的，当有值产生时，会发出一个事件，并携带上这个值。订阅了该事件的观察者（Observer）将获得反馈。  JavaScript 中的 Math">
 <meta property="og:image" content="https://i.stack.imgur.com/HwvQv.png">
-<meta property="og:updated_time" content="2018-02-14T16:51:26.509Z">
+<meta property="og:updated_time" content="2018-02-14T17:05:28.507Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="吴小蛆的巣">
-<meta name="twitter:description" content="title: callbag 规范及使用 date: 2018-02-14 17:23 tags:  函数式编程 JavaScript  categories: JavaScript 函数式编程 push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一">
+<meta name="twitter:title" content="callbag，一个有趣的规范">
+<meta name="twitter:description" content="push 和 pull 模型如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：   Pull（f(): B）：返回一个值。 Push（f(x: A): void）：响应式的，当有值产生时，会发出一个事件，并携带上这个值。订阅了该事件的观察者（Observer）将获得反馈。  JavaScript 中的 Math">
 <meta name="twitter:image" content="https://i.stack.imgur.com/HwvQv.png">
 
 
@@ -71,7 +73,7 @@
 
 
 
-    <title>  · 吴小蛆的巣 </title>
+    <title> callbag，一个有趣的规范 · 吴小蛆的巣 </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -188,7 +190,7 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          
+          callbag，一个有趣的规范
         
       </h1>
 
@@ -211,15 +213,7 @@
 
     <div class="post-content">
       
-        <p>title: callbag 规范及使用</p>
-<p>date: 2018-02-14 17:23</p>
-<p>tags:</p>
-<ul>
-<li>函数式编程</li>
-<li>JavaScript</li>
-</ul>
-<p>categories: JavaScript 函数式编程</p>
-<h2 id="push-和-pull-模型"><a href="#push-和-pull-模型" class="headerlink" title="push 和 pull 模型"></a>push 和 pull 模型</h2><p>如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：</p>
+        <h2 id="push-和-pull-模型"><a href="#push-和-pull-模型" class="headerlink" title="push 和 pull 模型"></a>push 和 pull 模型</h2><p>如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：</p>
 <p><img src="https://i.stack.imgur.com/HwvQv.png" alt=""></p>
 <ul>
 <li><strong>Pull（<code>f(): B</code>）</strong>：返回一个值。</li>
@@ -248,6 +242,7 @@
 <li><strong> 声明式、描述未来的代码 </strong>：我们只用声明数据源和数据消费方式，而不用关心数据交付时的细节。</li>
 </ul>
 <p><a href="https://cycle.js.org/" target="_blank" rel="external">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream" target="_blank" rel="external">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581" target="_blank" rel="external">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
+<a id="more"></a>
 <h2 id="push-与-pull-可以是同型的"><a href="#push-与-pull-可以是同型的" class="headerlink" title="push 与 pull 可以是同型的"></a>push 与 pull 可以是同型的</h2><p>stalz 看到，我们的 Observable 和 Observer：</p>
 <figure class="highlight typescript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">interface</span> Observer &#123;</div><div class="line">  next(x): <span class="built_in">void</span>;</div><div class="line">  error(e): <span class="built_in">void</span>;</div><div class="line">  complete(): <span class="built_in">void</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">interface</span> Observable &#123;</div><div class="line">  subscribe(observer): Subscription;</div><div class="line">  unsubsribe(): <span class="built_in">void</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>可以通过函数进行描述：</p>
@@ -456,13 +451,21 @@
     
       <footer class="post-footer">
         
+          <div class="post-tags">
+            
+              <a href="/tags/JavaScript/">JavaScript</a>
+            
+              <a href="/tags/函数式编程/">函数式编程</a>
+            
+          </div>
+        
         
         
   <nav class="post-nav">
     
       <a class="prev" href="/2017/07/30/Cycle.js 基础 21 讲/">
         <i class="iconfont icon-left"></i>
-        <span class="prev-text nav-default"></span>
+        <span class="prev-text nav-default">Cycle.js 基础 21 讲</span>
         <span class="prev-text nav-mobile">Prev</span>
       </a>
     
@@ -574,7 +577,7 @@
     var disqus_config = function () {
         this.page.url = 'http://yoyoyohamapi.me/2018/02/14/callbag/';
         this.page.identifier = '2018/02/14/callbag/';
-        this.page.title = '';
+        this.page.title = 'callbag，一个有趣的规范';
     };
     (function() {
     var d = document, s = d.createElement('script');

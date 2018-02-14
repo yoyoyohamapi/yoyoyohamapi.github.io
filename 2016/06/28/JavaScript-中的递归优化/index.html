@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://yoyoyohamapi.me/2016/06/28/JavaScript-中的递归优化/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
 <meta property="og:description" content="引子说到递归，我们先来看一个最常见的递归用例： 计算阶乘  function factorial(n) &amp;#123;  if(n==1) return 1;  return n*factorial(n-1);&amp;#125; 测试一下： factorial(5); // =&amp;gt; 120 似乎一切正常，5 的阶乘 120 被正确计算出来了，我们试着把数字调大一些： factorial(70000);">
-<meta property="og:updated_time" content="2017-04-30T03:45:10.000Z">
+<meta property="og:updated_time" content="2018-02-14T17:02:05.633Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript 中的递归优化">
 <meta name="twitter:description" content="引子说到递归，我们先来看一个最常见的递归用例： 计算阶乘  function factorial(n) &amp;#123;  if(n==1) return 1;  return n*factorial(n-1);&amp;#125; 测试一下： factorial(5); // =&amp;gt; 120 似乎一切正常，5 的阶乘 120 被正确计算出来了，我们试着把数字调大一些： factorial(70000);">
@@ -223,8 +223,7 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(n==<span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">  <span class="keyword">var</span> total = factorial(n<span class="number">-1</span>);</div><div class="line">  <span class="keyword">return</span> n*total;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这个函数有个什么特点呢，就是该函数中的调用 <code>factorial(n-1)</code> 并没有发生在函数最后。因此，为了在执行完该调用还能返回到函数中执行后续操作:</p>
 <ol>
-<li>赋值给局部变量 <code>total</code>：<code>var total = factorial(n-1)</code></li>
-<li>计算 <code>n*total</code> 并返回。</li>
+<li>赋值给局部变量 <code>total</code>：<code>var total = factorial(n-1)</code><br>.    计算 <code>n*total</code> 并返回。</li>
 </ol>
 <p>那么，当前的运行环境在进入这个调用前，会先将 <strong> 调用位置 </strong> 以及周围的一些环境保存成一个 <strong> 调用帧（call frame）</strong> ，并将该调用帧 <strong> 压入（push）</strong> 一个栈空间中，这个栈被称为 <strong> 调用栈（call stack）</strong>。当再无调用帧入栈时，就开始逐个 <strong> 压出（pop）</strong> 调用帧，调用取值。比如上面的 <code>factorial(5)</code> 的执行过程就是一个呈 <strong> 金字塔形 </strong> 的过程，金字塔的峰值就反应了 <code>factorial</code> 对栈空间需求的峰值：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">push factorial(<span class="number">5</span>)</div><div class="line">push <span class="number">5</span>*factorial(<span class="number">4</span>)</div><div class="line">push <span class="number">5</span>*(<span class="number">4</span>*factorial(<span class="number">3</span>) )</div><div class="line">push <span class="number">5</span>*(<span class="number">4</span>* (<span class="number">3</span>*factorial(<span class="number">2</span>)) )</div><div class="line">push <span class="number">5</span>*(<span class="number">4</span>*( <span class="number">3</span>* (<span class="number">2</span>*factorial(<span class="number">1</span>)) ) )</div><div class="line">pop  <span class="number">5</span>*<span class="number">4</span>*<span class="number">3</span>*(<span class="number">2</span>*<span class="number">1</span>)</div><div class="line">pop  <span class="number">5</span>*<span class="number">4</span>*(<span class="number">3</span>*<span class="number">2</span>)</div><div class="line">pop  <span class="number">5</span>*(<span class="number">4</span>*<span class="number">6</span>)</div><div class="line">pop  <span class="number">5</span>*<span class="number">24</span></div><div class="line">pop  <span class="number">120</span></div></pre></td></tr></table></figure>
@@ -271,11 +270,7 @@
 </blockquote>
 <p>早先版本的 Babel 对于尾递归的优化可以参看这篇文章：<a href="https://taylodl.wordpress.com/2015/08/09/functional-javascript-tail-call-optimization-and-babel/" target="_blank" rel="external">Functional JavaScript – Tail Call Optimization and Babel</a></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="http://raganwald.com/2013/03/28/trampolines-in-javascript.html" target="_blank" rel="external">Tramponline in Javascript</a></li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%B0%BE%E8%B0%83%E7%94%A8" target="_blank" rel="external">Wiki 尾调用</a></li>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%B0%BE%E8%B0%83%E7%94%A8" target="_blank" rel="external">阮一峰 - 尾调用优化</a></li>
-<li><a href="http://www.integralist.co.uk/posts/js-recursion.html" target="_blank" rel="external">Understanding recursion in functional JavaScript programming</a></li>
-<li><a href="https://taylodl.wordpress.com/2015/08/09/functional-javascript-tail-call-optimization-and-babel/" target="_blank" rel="external">Functional JavaScript – Tail Call Optimization and Babel</a></li>
+<li><a href="http://raganwald.com/2013/03/28/trampolines-in-javascript.html" target="_blank" rel="external">Tramponline in Javascript</a><br>   <a href="https://zh.wikipedia.org/wiki/%E5%B0%BE%E8%B0%83%E7%94%A8" target="_blank" rel="external">Wiki 尾调用</a><br>   <a href="https://zh.wikipedia.org/wiki/%E5%B0%BE%E8%B0%83%E7%94%A8" target="_blank" rel="external">阮一峰 - 尾调用优化</a><br>   <a href="http://www.integralist.co.uk/posts/js-recursion.html" target="_blank" rel="external">Understanding recursion in functional JavaScript programming</a><br>   <a href="https://taylodl.wordpress.com/2015/08/09/functional-javascript-tail-call-optimization-and-babel/" target="_blank" rel="external">Functional JavaScript – Tail Call Optimization and Babel</a></li>
 </ul>
 <hr>
 
@@ -288,15 +283,15 @@
 
   <div class="post-copyright">
     <p class="copyright-item">
-      <span>作者: </span>
+      <span>Author: </span>
       <span>吴晓军</span>
     </p>
     <p class="copyright-item">
-      <span>来源: </span>
+      <span>Origin: </span>
       <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
     </p>
     <p class="copyright-item">
-      <span>链接: </span>
+      <span>Link: </span>
       <a href="http://yoyoyohamapi.me/2016/06/28/JavaScript-中的递归优化/">http://yoyoyohamapi.me/2016/06/28/JavaScript-中的递归优化/</a>
     </p>
 
@@ -424,7 +419,7 @@
      
       2015 - 
     
-    2017
+    2018
 
     <span class="heart">
       <i class="iconfont icon-heart"></i>
