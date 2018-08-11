@@ -41,8 +41,9 @@
 <meta property="og:url" content="http://yoyoyohamapi.me/2015/05/05/利用-Sails-js-MongoDB-开发博客系统（5）-个人信息维护/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
 <meta property="og:description" content="章节概述在本章中，你将能学到如下知识:  利用 skipper 来上传和存储文件。">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-5_article_profile.png">
-<meta property="og:updated_time" content="2017-04-30T03:44:22.000Z">
+<meta property="og:updated_time" content="2018-08-11T14:19:27.101Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用 Sails.js + MongoDB 开发博客系统（5） -- 个人信息维护">
 <meta name="twitter:description" content="章节概述在本章中，你将能学到如下知识:  利用 skipper 来上传和存储文件。">
@@ -225,8 +226,8 @@
 </ul>
 <p>其他诸如密码修改等功能留给读者自行完成。</p>
 <h2 id="配置路由"><a href="#配置路由" class="headerlink" title="配置路由"></a>配置路由</h2><p>config/routes.js 添加:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="comment">//---------------User Profile</span></div><div class="line">    <span class="string">'/user/profile'</span>: <span class="string">'UserController.index'</span>,</div><div class="line"></div><div class="line">    <span class="string">'/user/profile/avatar'</span>: <span class="string">'UserController.setAvatar'</span>,</div></pre></td></tr></table></figure>
-<h2 id="业务逻辑撰写"><a href="#业务逻辑撰写" class="headerlink" title="业务逻辑撰写"></a>业务逻辑撰写</h2><p>Sails 中通过 <a href="https://github.com/balderdashy/skipper" target="_blank" rel="external"> skipper </a> 实现了<a href="http://www.sailsjs.org/documentation/concepts/file-uploads" target="_blank" rel="external">文件上传</a>，其核心函数是 <code>upload()</code>，其第一个参数可接受如下配置:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//---------------User Profile</span></span><br><span class="line">    <span class="string">'/user/profile'</span>: <span class="string">'UserController.index'</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">'/user/profile/avatar'</span>: <span class="string">'UserController.setAvatar'</span>,</span><br></pre></td></tr></table></figure>
+<h2 id="业务逻辑撰写"><a href="#业务逻辑撰写" class="headerlink" title="业务逻辑撰写"></a>业务逻辑撰写</h2><p>Sails 中通过 <a href="https://github.com/balderdashy/skipper" target="_blank" rel="noopener"> skipper </a> 实现了<a href="http://www.sailsjs.org/documentation/concepts/file-uploads" target="_blank" rel="noopener">文件上传</a>，其核心函数是 <code>upload()</code>，其第一个参数可接受如下配置:</p>
 <ul>
 <li><code>dirname</code>：上传文件保存目录</li>
 <li><code>maxBytes</code>：总的上传（不是单个文件）大小限制</li>
@@ -234,11 +235,11 @@
 <li><code>onProcess</code>：每此上传过程中的回调逻辑</li>
 </ul>
 <p>api/controllers/UserController.js：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="comment">// 个人信息修改首页</span></div><div class="line">    index: <span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</div><div class="line">        <span class="keyword">if</span>(req.method === <span class="string">'GET'</span>)&#123;</div><div class="line">            <span class="keyword">return</span> res.view(<span class="string">'user/index'</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;,</div><div class="line"></div><div class="line">    <span class="comment">// 跳转到设置头像页面</span></div><div class="line">    setAvatar: <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (req.method === <span class="string">'GET'</span>)</div><div class="line">            <span class="keyword">return</span> res.view(<span class="string">'user/avatar'</span>);</div><div class="line"></div><div class="line">        <span class="comment">// POST 请求进行文件上传</span></div><div class="line">        <span class="comment">// 判断是否有文件上传</span></div><div class="line">        <span class="keyword">if</span> (!req.file(<span class="string">'avatar'</span>)._files[<span class="number">0</span>]) &#123;</div><div class="line">            <span class="keyword">return</span> res.badRequest(<span class="string">'No file was uploaded'</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 判断文件类型是否争取</span></div><div class="line">        <span class="keyword">var</span> fileType = req.file(<span class="string">'avatar'</span>)._files[<span class="number">0</span>].stream.headers[<span class="string">'content-type'</span>];</div><div class="line">        <span class="keyword">if</span> (fileType != <span class="string">'image/jpeg'</span>) &#123;</div><div class="line">            <span class="keyword">return</span> res.badRequest(<span class="string">'文件类型错误, 仅支持 JPG 文件格式'</span>);</div><div class="line">        &#125;</div><div class="line">        req.file(<span class="string">'avatar'</span>).upload(&#123;</div><div class="line">            <span class="attr">maxBytes</span>: <span class="number">10000000</span>,</div><div class="line">            <span class="attr">dirname</span>: <span class="string">'../../assets/images'</span>,</div><div class="line">            <span class="attr">saveAs</span>: <span class="string">'avatar.jpg'</span></div><div class="line">        &#125;, <span class="function"><span class="keyword">function</span> <span class="title">whenDone</span>(<span class="params">err, uploadedFiles</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (err) &#123;</div><div class="line">                <span class="keyword">return</span> res.negotiate(err);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> res.redirect(<span class="string">'/'</span>);</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="comment">// 个人信息修改首页</span></span><br><span class="line">    index: <span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(req.method === <span class="string">'GET'</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> res.view(<span class="string">'user/index'</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到设置头像页面</span></span><br><span class="line">    setAvatar: <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (req.method === <span class="string">'GET'</span>)</span><br><span class="line">            <span class="keyword">return</span> res.view(<span class="string">'user/avatar'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// POST 请求进行文件上传</span></span><br><span class="line">        <span class="comment">// 判断是否有文件上传</span></span><br><span class="line">        <span class="keyword">if</span> (!req.file(<span class="string">'avatar'</span>)._files[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="keyword">return</span> res.badRequest(<span class="string">'No file was uploaded'</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断文件类型是否争取</span></span><br><span class="line">        <span class="keyword">var</span> fileType = req.file(<span class="string">'avatar'</span>)._files[<span class="number">0</span>].stream.headers[<span class="string">'content-type'</span>];</span><br><span class="line">        <span class="keyword">if</span> (fileType != <span class="string">'image/jpeg'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> res.badRequest(<span class="string">'文件类型错误, 仅支持 JPG 文件格式'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        req.file(<span class="string">'avatar'</span>).upload(&#123;</span><br><span class="line">            maxBytes: <span class="number">10000000</span>,</span><br><span class="line">            dirname: <span class="string">'../../assets/images'</span>,</span><br><span class="line">            saveAs: <span class="string">'avatar.jpg'</span></span><br><span class="line">        &#125;, <span class="function"><span class="keyword">function</span> <span class="title">whenDone</span>(<span class="params">err, uploadedFiles</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                <span class="keyword">return</span> res.negotiate(err);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> res.redirect(<span class="string">'/'</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-5_article_profile.png" width="800"><br></div>
 
 <blockquote>
-<p>图像预览我选用的插件是<a href="https://github.com/blueimp/JavaScript-Load-Image" target="_blank" rel="external"> JavaScript-Load-Image
+<p>图像预览我选用的插件是<a href="https://github.com/blueimp/JavaScript-Load-Image" target="_blank" rel="noopener"> JavaScript-Load-Image
 </a></p>
 </blockquote>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>利用 Sails + MongoDB 开发个人博客系统的教程就暂告段落，其实教程中很多东西未必是最佳实践（Best Practice），很多功能也尚未开发，本教程的写作动机和目的也不在于搭建一个博客系统，因为博主认为技术博客的最佳实践仍是静态博客。本教程的出发点还是在于让各位能够了解 Sails 开发 Web app 的流程及优化手段，也让各位接触一下 b ower，grunt，semantic-ui 这些前端工具。</p>
@@ -294,15 +295,15 @@
         
   <nav class="post-nav">
     
-      <a class="prev" href="/2015/05/04/利用-Sails-js-MongoDB-开发博客系统（4）-文章模块/">
+      <a class="prev" href="/2016/03/18/闭包的一个经典实例和认识误区/">
         <i class="iconfont icon-left"></i>
-        <span class="prev-text nav-default">利用 Sails.js + MongoDB 开发博客系统（4）-- 文章模块</span>
+        <span class="prev-text nav-default">闭包的一个经典实例和认识误区</span>
         <span class="prev-text nav-mobile">Prev</span>
       </a>
     
     
-      <a class="next" href="/2016/03/18/闭包的一个经典实例和认识误区/">
-        <span class="next-text nav-default">闭包的一个经典实例和认识误区</span>
+      <a class="next" href="/2015/05/04/利用-Sails-js-MongoDB-开发博客系统（4）-文章模块/">
+        <span class="next-text nav-default">利用 Sails.js + MongoDB 开发博客系统（4）-- 文章模块</span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
       </a>
@@ -391,7 +392,7 @@
      
       2015 - 
     
-    2017
+    2018
 
     <span class="heart">
       <i class="iconfont icon-heart"></i>

@@ -38,6 +38,7 @@
 <meta property="og:url" content="http://yoyoyohamapi.me/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
 <meta property="og:description" content="只要努力，蛆虫也能变成苍蝇翱翔于天际">
+<meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="吴小蛆的巣">
 <meta name="twitter:description" content="只要努力，蛆虫也能变成苍蝇翱翔于天际">
@@ -215,7 +216,7 @@
 <li><strong>Push（<code>f(x: A): void</code>）</strong>：响应式的，当有值产生时，会发出一个事件，并携带上这个值。订阅了该事件的观察者（Observer）将获得反馈。</li>
 </ul>
 <p>JavaScript 中的 <code>Math.random()</code>、<code>window.outerHeight</code> 等都是 pull 模型：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> height = <span class="built_in">window</span>.outerHeight();</div><div class="line"><span class="comment">// 或者是迭代器写法 </span></div><div class="line"><span class="function"><span class="keyword">function</span>* <span class="title">getWindowHeight</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</div><div class="line">        <span class="keyword">yield</span> <span class="built_in">window</span>.outerHeight;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> iter = getWindowHeight()</div><div class="line">iter.next()</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> height = <span class="built_in">window</span>.outerHeight();</span><br><span class="line"><span class="comment">// 或者是迭代器写法 </span></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">getWindowHeight</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="built_in">window</span>.outerHeight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> iter = getWindowHeight()</span><br><span class="line">iter.next()</span><br></pre></td></tr></table></figure>
 <p>pull 模型包含两个部分：</p>
 <ul>
 <li><strong> 生产者 </strong>：负责生产数据，是数据源</li>
@@ -223,7 +224,7 @@
 </ul>
 <p>在 pull 模型中，数据是 <strong> 按需索取 </strong> 的。</p>
 <p>再通过 RxJs 看一个 push 模型的例子：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">Rx.Observable</div><div class="line">    .fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>)</div><div class="line">  .map(<span class="function"><span class="params">event</span> =&gt;</span> <span class="string">`Event time: <span class="subst">$&#123;event.timeStamp&#125;</span>`</span>)</div><div class="line">    .subscribe(<span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">val</span>) </span>&#123;</div><div class="line">    	<span class="built_in">console</span>.log(val);</div><div class="line">  &#125;)</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Rx.Observable</span><br><span class="line">    .fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>)</span><br><span class="line">  .map(<span class="function"><span class="params">event</span> =&gt;</span> <span class="string">`Event time: <span class="subst">$&#123;event.timeStamp&#125;</span>`</span>)</span><br><span class="line">    .subscribe(<span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    	<span class="built_in">console</span>.log(val);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
 <p>push 模型的组成包含了两个部分：</p>
 <ul>
 <li><strong> 可观察（可监听）对象 </strong>：是数据来源</li>
@@ -236,7 +237,7 @@
 <li><strong> 延迟执行 </strong>：可观察对象只有被观察者订阅，才会派发数据。</li>
 <li><strong> 声明式、描述未来的代码 </strong>：我们只用声明数据源和数据消费方式，而不用关心数据交付时的细节。</li>
 </ul>
-<p><a href="https://cycle.js.org/">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
+<p><a href="https://cycle.js.org/" target="_blank" rel="noopener">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream" target="_blank" rel="noopener">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581" target="_blank" rel="noopener">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
           <div class="read-more">
             <a href="/2018/02/14/callbag/" class="read-more-link">Read more..</a>
           </div>
@@ -276,7 +277,7 @@
         
 
         
-          <p><a href="https://www.gitbook.com/book/fepatients/cycle-js-21/details" target="_blank" rel="external">Gitbook</a></p>
+          <p><a href="https://www.gitbook.com/book/fepatients/cycle-js-21/details" target="_blank" rel="noopener">Gitbook</a></p>
 
         
       
@@ -364,11 +365,11 @@
 
         
           <blockquote>
-<p>系列文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml">Gitbook</a></p>
+<p>系列文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml" target="_blank" rel="noopener">Gitbook</a></p>
 </blockquote>
-<p>本书为斯坦福吴恩达教授的在 coursera 上的 <a href="https://zh.coursera.org/learn/machine-learning">机器学习公开课</a> 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。</p>
-<p>本书涉及到的程序代码均放在了我个人的 <a href="https://github.com/yoyoyohamapi/mit-ml">github</a> 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有放这门课程的 homework 代码，原因是 homework 布置的编程作业是填空式的作业，而完整实现一个算法虽然历经更多坎坷，但更有助于检验自己对算法理解和掌握程度。</p>
-<div style="text-align:center"><br><img src="https://yoyoyohamapi.gitbooks.io/mit-ml/content/%E8%AF%81%E4%B9%A6.jpg" width="350"></img><br></div>
+<p>本书为斯坦福吴恩达教授的在 coursera 上的 <a href="https://zh.coursera.org/learn/machine-learning" target="_blank" rel="noopener">机器学习公开课</a> 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。</p>
+<p>本书涉及到的程序代码均放在了我个人的 <a href="https://github.com/yoyoyohamapi/mit-ml" target="_blank" rel="noopener">github</a> 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有放这门课程的 homework 代码，原因是 homework 布置的编程作业是填空式的作业，而完整实现一个算法虽然历经更多坎坷，但更有助于检验自己对算法理解和掌握程度。</p>
+<div style="text-align:center"><br><img src="https://yoyoyohamapi.gitbooks.io/mit-ml/content/%E8%AF%81%E4%B9%A6.jpg" width="350"><br></div>
           <div class="read-more">
             <a href="/2017/04/29/斯坦福机器学习笔记/" class="read-more-link">Read more..</a>
           </div>
@@ -411,10 +412,10 @@
 
         
           <blockquote>
-<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/-co/details">GitBook</a></p>
+<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/-co/details" target="_blank" rel="noopener">GitBook</a></p>
 </blockquote>
 <p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</span><br></pre></td></tr></table></figure>
           <div class="read-more">
             <a href="/2017/02/03/一步步写一个-co/" class="read-more-link">Read more..</a>
           </div>
@@ -457,11 +458,11 @@
 
         
           <blockquote>
-<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/undersercore-analysis">GitBook</a></p>
+<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/undersercore-analysis" target="_blank" rel="noopener">GitBook</a></p>
 </blockquote>
 <h2 id="写作意图"><a href="#写作意图" class="headerlink" title="写作意图"></a>写作意图</h2><p>起初，我分析 underscore 的源码只是想更深入的了解 <strong> 函数式编程（Functional Programming）</strong>，但分析结束后，我就觉得单纯的源码注释不足以记录我的收获、理解和感悟，所以我想把这些写下来，我粗略地将写作意图概括如下：</p>
 <ul>
-<li><p>函数式编程近些年非常火爆，诸如 haskwell 这样的纯函数式编程语言获得了非常高的社区活跃度。JavaScript 支持多范式编程，抛开 underscore 和 lodash 这样的生来为了函数编程的库不谈，诸如 <a href="https://github.com/reactjs/redux">redux</a> 这样的库也大量运用了函数式编程，即便作为一个 react+redux 的业务开发者，想要深入理解的 redux 的实现机制，也不得不学习函数式编程。因此，学习函数式编程，将会成为 JavaScript 开发者的必须。</p>
+<li><p>函数式编程近些年非常火爆，诸如 haskwell 这样的纯函数式编程语言获得了非常高的社区活跃度。JavaScript 支持多范式编程，抛开 underscore 和 lodash 这样的生来为了函数编程的库不谈，诸如 <a href="https://github.com/reactjs/redux" target="_blank" rel="noopener">redux</a> 这样的库也大量运用了函数式编程，即便作为一个 react+redux 的业务开发者，想要深入理解的 redux 的实现机制，也不得不学习函数式编程。因此，学习函数式编程，将会成为 JavaScript 开发者的必须。</p>
 <p>   在阅读 underscore 的源码期间，被作者 jashkenas（他同时也是 backbone 和 coffee 的作者）的功力深深折服，一些功能可能我也能写出，但绝对写不了如此健壮。所以，深入学习 underscore 源码，不仅有助于我们认识函数式编程，也能深化我们对于 JavaScript 中一些基础知识的理解和掌握。</p>
 <p>   随着 backbone 的衰落和 lodash 的崛起，underscore 的热度已经不及当年，但是截止这篇文章的开始前的一个月，underscore 仍然有最新的 bug 修复，可见作者 jashkenas 仍然没有放弃 underscore 的维护。所以现在分析 underscore 的源码仍然不显得过时。相较于 lodash，underscore 的源码更加短小，也不太涉及 JavaScript 中的一些奇淫巧技，所以，分析 underscore 更加适合 JavaScript 开发者的进阶。在完成了 underscore 的源码分析后，希望我自己有时间，也希望读者有意愿再去分析 lodash 的源码，后者在性能和功能上都已经超越了 underscore，并且长时间霸占了 npm 了最热 package 的位置。</p>
 </li>
@@ -507,7 +508,7 @@
         
 
         
-          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</div><div class="line">  <span class="comment">// ....</span></div><div class="line">  <span class="comment">// 一切完成后会触发回调函数</span></div><div class="line">  cb(<span class="literal">null</span>, errMap);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ....</span></span><br><span class="line">  <span class="comment">// 一切完成后会触发回调函数</span></span><br><span class="line">  cb(<span class="literal">null</span>, errMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>出于性能上的考虑，该库被封装为了一个异步函数，需要提供一个回调函数 <code>cb</code> 来获得验证结果，该回调函数是一个满足 node 规范的 <strong>error-first callback</strong>。在其他系统中，该库使用良好，但是，新项目使用了 koa，我在中间件中使用这个库提供的 <code>validate</code> 方法， 却连编译期都没有通过：</p>
           <div class="read-more">
             <a href="/2016/08/02/thunkify/" class="read-more-link">Read more..</a>
@@ -551,7 +552,7 @@
 
         
           <blockquote>
-<p>原文：<a href="https://davidwalsh.name/async-generators">Going Async With ES6 Generators</a> 本文在作者文章的基础上，适当补充了一些代码及说明</p>
+<p>原文：<a href="https://davidwalsh.name/async-generators" target="_blank" rel="noopener">Going Async With ES6 Generators</a> 本文在作者文章的基础上，适当补充了一些代码及说明</p>
 </blockquote>
 <p>ES6 中的 generator 能够帮助我们提供一种类似同步一样的代码风格，来将异步过程的具体实现隐藏。这样的好处就是我们能够更加自然的表达自己的业务流程（work flow），而避免陷入异步的麻烦中。换言之，借助于 generator，我们既拥有了异步执行的能力，又不用再绞尽脑汁的去维护异步代码。</p>
 <p>继续阅读本文，你会发现这么做的结果简直太美妙了，以前那些糟糕的异步代码现在讲会向同步代码那样变得 <strong> 易于阅读 </strong> 和 <strong> 可维护 </strong>。需要知道的是，这个同步只是代码风格上的同步，他的执行过程仍然是异步的。</p>
@@ -598,11 +599,11 @@
 
         
           <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>说到递归，我们先来看一个最常见的递归用例：<strong> 计算阶乘 </strong></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(n==<span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">  <span class="keyword">return</span> n*factorial(n<span class="number">-1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(n==<span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> n*factorial(n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>测试一下：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">factorial(<span class="number">5</span>); <span class="comment">// =&gt; 120</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">factorial(<span class="number">5</span>); <span class="comment">// =&gt; 120</span></span><br></pre></td></tr></table></figure>
 <p>似乎一切正常，5 的阶乘 120 被正确计算出来了，我们试着把数字调大一些：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">factorial(<span class="number">70000</span>);</div><div class="line"><span class="comment">// Uncaught RangeError:Maximum call stack size exceeded(…)</span></div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">factorial(<span class="number">70000</span>);</span><br><span class="line"><span class="comment">// Uncaught RangeError:Maximum call stack size exceeded(…)</span></span><br></pre></td></tr></table></figure>
 <p>浏览器提示我们 <strong> 栈溢出 </strong> 了（测试环境：chrome 51），究竟发生了什么呢?</p>
           <div class="read-more">
             <a href="/2016/06/28/JavaScript-中的递归优化/" class="read-more-link">Read more..</a>
@@ -646,7 +647,7 @@
 
         
           <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>我们知道在 Redux 中，dispatch 的作用在于派发一个 action，该 action 会被 reducer 收到，reducer 根据 action 的类型进行相应的状态（state）维护：</p>
-<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png" width="500"></img><br></div>
+<div style="text-align:center"><br><img src="https://www.lucidchart.com/publicSegments/view/bc695af5-28c4-432d-ba5f-270905ce996e/image.png" width="500"><br></div>
           <div class="read-more">
             <a href="/2016/06/23/Redux-的中间件/" class="read-more-link">Read more..</a>
           </div>

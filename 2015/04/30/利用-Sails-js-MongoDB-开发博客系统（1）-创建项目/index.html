@@ -41,6 +41,7 @@
 <meta property="og:url" content="http://yoyoyohamapi.me/2015/04/30/利用-Sails-js-MongoDB-开发博客系统（1）-创建项目/index.html">
 <meta property="og:site_name" content="吴小蛆的巣">
 <meta property="og:description" content="框架教程具有时效性，尽可能以官方文档为主  Sails.js 简介Sails 是构建于 Express 之上的一个实时 Node MVC 框架，其整个风格来源于 Ruby on Rails。Sails 提供了类似于 Rails 的脚手架功能，同时又吸纳了不少现代 Web app 工具和功能，比如 Grunt 和 websocket 等。 显然，Sails 的最佳应用场景会是一些实时性较强的场景，">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.sailsjs.org/images/bkgd_squiddy.png">
 <meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png">
 <meta property="og:image" content="http://7pulhb.com1.z0.glb.clouddn.com/sails-sais_lift.png">
@@ -218,44 +219,44 @@
         <blockquote>
 <p>框架教程具有时效性，尽可能以官方文档为主</p>
 </blockquote>
-<h2 id="Sails-js-简介"><a href="#Sails-js-简介" class="headerlink" title="Sails.js 简介"></a>Sails.js 简介</h2><p>Sails 是构建于 <a href="http://expressjs.com/" target="_blank" rel="external">Express</a> 之上的一个实时 Node MVC 框架，其整个风格来源于 <a href="http://rubyonrails.org/" target="_blank" rel="external">Ruby on Rails</a>。Sails 提供了类似于 Rails 的脚手架功能，同时又吸纳了不少现代 Web app 工具和功能，比如 Grunt 和 websocket 等。</p>
+<h2 id="Sails-js-简介"><a href="#Sails-js-简介" class="headerlink" title="Sails.js 简介"></a>Sails.js 简介</h2><p>Sails 是构建于 <a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a> 之上的一个实时 Node MVC 框架，其整个风格来源于 <a href="http://rubyonrails.org/" target="_blank" rel="noopener">Ruby on Rails</a>。Sails 提供了类似于 Rails 的脚手架功能，同时又吸纳了不少现代 Web app 工具和功能，比如 Grunt 和 websocket 等。</p>
 <p>显然，Sails 的最佳应用场景会是一些实时性较强的场景，比如聊天室，游戏等，但是官方也笃定的认为 Sails 适用于任何 web app 开发。对于 Web 项目开发，之前我已经使用过了的 PHP 的 Symfony2 和 Ruby 的 Rails，但在学习了 Node 之后，我需要一个 Node 的框架进行项目实战，因此，我因为那只小章鱼和官网健全的文档选择了 Sails，这一点都不机智。</p>
 <p>本教程（也可以说是开发日志）将帮助各位开发一个基本的个人技术博客站点，旨在让大家熟悉 Sails 的开发流程，并且再好好地串联一下有关 JavaScript，也有关前端，有关 MongoDB 的相关知识，真正要搭建一个健壮的博客系统，教程上的内容还远远不够，需要各位自己努力。</p>
-<p><a href="https://github.com/yoyoyohamapi/blog" target="_blank" rel="external">项目源码</a>已经托管到了 Github，大家可以 Clone 测试。</p>
+<p><a href="https://github.com/yoyoyohamapi/blog" target="_blank" rel="noopener">项目源码</a>已经托管到了 Github，大家可以 Clone 测试。</p>
 <p><img src="http://www.sailsjs.org/images/bkgd_squiddy.png" alt="sails"></p>
 <a id="more"></a>
 <h2 id="前驱知识"><a href="#前驱知识" class="headerlink" title="前驱知识"></a>前驱知识</h2><p>在完成博客系统搭建前，你需要去认识或者学习以下罗列出的几门知识，个人认为，每次新技能 get 是会带来如同网游中技能树成长的快感的。</p>
 <ul>
-<li><a href="https://nodejs.org/" target="_blank" rel="external"><strong>Node.js</strong></a></li>
+<li><a href="https://nodejs.org/" target="_blank" rel="noopener"><strong>Node.js</strong></a></li>
 </ul>
 <p>要注意，Node 并非 JavaScript 一个框架，相比框架，Node 更加底层。其实 Node.js 归为前驱知识也并不必要，因为大部分想要利用 Sails 来构建博客系统的读者在之前已经对 Node.js 有所接触了。</p>
-<p>任何工程技术最好的教学资料一定是官方文档(理由不是官方文档写的多么精彩，而是足够时效)，除了官方文档外，我的 Node 启蒙还有<a href="http://item.jd.com/11457487.html" target="_blank" rel="external">《Node.js 实战》</a>。</p>
+<p>任何工程技术最好的教学资料一定是官方文档(理由不是官方文档写的多么精彩，而是足够时效)，除了官方文档外，我的 Node 启蒙还有<a href="http://item.jd.com/11457487.html" target="_blank" rel="noopener">《Node.js 实战》</a>。</p>
 <ul>
-<li><a href="http://Gruntjs.com/" target="_blank" rel="external"><strong>Grunt（智慧野猪）</strong></a></li>
+<li><a href="http://Gruntjs.com/" target="_blank" rel="noopener"><strong>Grunt（智慧野猪）</strong></a></li>
 </ul>
 <p>一个前端自动化构建工具，从现在开始，应当把以前你那混乱不堪，毫无优化的前端代码扔到历史的垃圾桶了，我们需要 Grunt 让我们的前端更加智慧。Grunt 本意是 “咕噜声”, 官方也是贴切的采用了野猪作为其 Logo，猪是一种大智若愚的动物，而 Grunt “愚” 在一定学习成本，配置撰写，“智” 在撰写完成后行云流水的自动化构建体验。</p>
 <ul>
-<li><a href="http://bower.io/" target="_blank" rel="external"><strong>Bower（美丽园丁鸟）</strong></a></li>
+<li><a href="http://bower.io/" target="_blank" rel="noopener"><strong>Bower（美丽园丁鸟）</strong></a></li>
 </ul>
 <p>Bower 是一个前端插件管理器，类似于 PHP 的<a href=""> composer </a>。Bower 能够帮助开发者脱离手动下载包，手动管理包的依赖关系等等繁重业务劳动。Bower 的 Logo 设计精良，看见小鸟嘴上衔着的叶纸了吗，是不是就是那片璀璨的 Jquery 哇，名字也是诗意盎然，勤劳如园丁鸟，衔取树枝木条，造就景观大厦，相比之下，composer 那残念的指挥家简直不能看。</p>
-<p>对于 Grunt 和 Bower 的学习，除了官方资料外，<a href="https://github.com/materliu" target="_blank" rel="external"> materliu </a>的 <a href="http://www.imooc.com/learn/30" target="_blank" rel="external">视频教程</a> 十分推荐，PPT 制作精良，讲解也充满文艺气息，风格非常对我胃口。</p>
+<p>对于 Grunt 和 Bower 的学习，除了官方资料外，<a href="https://github.com/materliu" target="_blank" rel="noopener"> materliu </a>的 <a href="http://www.imooc.com/learn/30" target="_blank" rel="noopener">视频教程</a> 十分推荐，PPT 制作精良，讲解也充满文艺气息，风格非常对我胃口。</p>
 <ul>
-<li><a href="http://sass-lang.com/" target="_blank" rel="external"><strong>Sass</strong></a> &amp; <a href="http://compass-style.org/" target="_blank" rel="external"><strong>Compass</strong></a></li>
+<li><a href="http://sass-lang.com/" target="_blank" rel="noopener"><strong>Sass</strong></a> &amp; <a href="http://compass-style.org/" target="_blank" rel="noopener"><strong>Compass</strong></a></li>
 </ul>
 <p>Sass 能够程序化我们的 CSS，提高了我们 CSS 代码的重用性，而 Compass 则又让 Sass 变得无比强大。借助于 Compass，我们现在甚至都只用一句话就能写出一个健壮的 <code>box-shadow</code>，而不用在疲惫地去为该属性添加一个个内核前缀。</p>
 <ul>
-<li><a href="http://requirejs.org/" target="_blank" rel="external"><strong>RequireJS</strong></a></li>
+<li><a href="http://requirejs.org/" target="_blank" rel="noopener"><strong>RequireJS</strong></a></li>
 </ul>
-<p>其实我是国内 <a href="https://github.com/seajs/seajs" target="_blank" rel="external"> Seajs </a> 的忠实拥趸，但是考虑到更好的兼容性，前端模块化开发这次选择了 RequireJS，如果你曾经接触过 Seajs，那么学习 RequireJS 并不是难事。</p>
+<p>其实我是国内 <a href="https://github.com/seajs/seajs" target="_blank" rel="noopener"> Seajs </a> 的忠实拥趸，但是考虑到更好的兼容性，前端模块化开发这次选择了 RequireJS，如果你曾经接触过 Seajs，那么学习 RequireJS 并不是难事。</p>
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="基础设施"><a href="#基础设施" class="headerlink" title="基础设施"></a>基础设施</h3><ol>
-<li>Node 环境搭建：<a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager" target="_blank" rel="external">戳我</a></li>
-<li>Ruby 环境搭建：<a href="https://www.ruby-lang.org/en/documentation/" target="_blank" rel="external">戳我</a></li>
-<li>MongoDB 安装：<a href="https://www.mongodb.org/downloads" target="_blank" rel="external">戳我</a></li>
+<li>Node 环境搭建：<a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager" target="_blank" rel="noopener">戳我</a></li>
+<li>Ruby 环境搭建：<a href="https://www.ruby-lang.org/en/documentation/" target="_blank" rel="noopener">戳我</a></li>
+<li>MongoDB 安装：<a href="https://www.mongodb.org/downloads" target="_blank" rel="noopener">戳我</a></li>
 </ol>
-<h3 id="文本编辑器-or-IDE"><a href="#文本编辑器-or-IDE" class="headerlink" title="文本编辑器 or IDE"></a>文本编辑器 or IDE</h3><p>如果是想用文本编辑器开发，<a href="http://www.sublimetext.com/" target="_blank" rel="external"> sublime </a>是不错的选择，git 官方出品的 <a href="https://atom.io/" target="_blank" rel="external"> Atom </a> 目前也发布了稳定版，大家可以尝鲜。如果是 IDE，作为 jetbrain 家的铁粉，会强烈推荐<a href="https://www.jetbrains.com/webstorm/" target="_blank" rel="external"> Webstorm </a>，各种愉悦，爽快加轻松不一一列举辣。</p>
-<h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><h3 id="安装-sails"><a href="#安装-sails" class="headerlink" title="安装 sails"></a>安装 sails</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sudo npm -g install sails</div></pre></td></tr></table></figure>
-<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sails new blog</div></pre></td></tr></table></figure>
-<p>如此这般，我们就在当前目录下创建了一个 Sails 项目（如果你知道<a href="http://yeoman.io/" target="_blank" rel="external"> Yeoman </a>, 那也不建议用 Yeaman 来创建项目，但是上面 Sails 的构建器（generator）已经许久没有更新了）。</p>
+<h3 id="文本编辑器-or-IDE"><a href="#文本编辑器-or-IDE" class="headerlink" title="文本编辑器 or IDE"></a>文本编辑器 or IDE</h3><p>如果是想用文本编辑器开发，<a href="http://www.sublimetext.com/" target="_blank" rel="noopener"> sublime </a>是不错的选择，git 官方出品的 <a href="https://atom.io/" target="_blank" rel="noopener"> Atom </a> 目前也发布了稳定版，大家可以尝鲜。如果是 IDE，作为 jetbrain 家的铁粉，会强烈推荐<a href="https://www.jetbrains.com/webstorm/" target="_blank" rel="noopener"> Webstorm </a>，各种愉悦，爽快加轻松不一一列举辣。</p>
+<h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><h3 id="安装-sails"><a href="#安装-sails" class="headerlink" title="安装 sails"></a>安装 sails</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo npm -g install sails</span><br></pre></td></tr></table></figure>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sails new blog</span><br></pre></td></tr></table></figure>
+<p>如此这般，我们就在当前目录下创建了一个 Sails 项目（如果你知道<a href="http://yeoman.io/" target="_blank" rel="noopener"> Yeoman </a>, 那也不建议用 Yeaman 来创建项目，但是上面 Sails 的构建器（generator）已经许久没有更新了）。</p>
 <h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png" width="300"><br></div>
 
 <p>..<strong>api</strong>：存放业务逻辑，数据模型，安全策略等</p>
@@ -298,7 +299,7 @@
 <li><strong>sails-linker.js</strong>:</li>
 </ul>
 <p>Sails 链接器，当你在 html 文件中插入</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="comment">&lt;!--SCRIPTS--&gt;</span></div><div class="line"><span class="comment">&lt;!--SCRIPTS END--&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--SCRIPTS--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--SCRIPTS END--&gt;</span></span><br></pre></td></tr></table></figure>
 <p>等代码包裹块后，该任务能够自动注入在 pipeline.js 中设置好的 js 文件，CSS 文件的注入也类似。注入后的文件输出至 .tmp/public 目录及 views 目录。</p>
 <ul>
 <li><strong>sync.js</strong>:</li>
@@ -316,9 +317,9 @@
 <li><strong>compileAssets.js</strong>:</li>
 </ul>
 <p>顾名思义, 该任务旨在编译 assets 目录下文件，该任务流的任务执行过程为:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">clean:dev --&gt; jst:dev --&gt; less:dev --&gt; copy:dev --&gt; coffee:dev</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">clean:dev --&gt; jst:dev --&gt; less:dev --&gt; copy:dev --&gt; coffee:dev</span><br></pre></td></tr></table></figure>
 <p>亦即：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">缓存清除 --&gt; 编译 jst 至 .tmp/public --&gt; 编译 less 至 .tmp/publc --&gt; 剩余文件（字体，图片等）拷贝至 .tmp/public --&gt; JavaScript 转换成 CoffeeScript 至 .tmp/public</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">缓存清除 --&gt; 编译 jst 至 .tmp/public --&gt; 编译 less 至 .tmp/publc --&gt; 剩余文件（字体，图片等）拷贝至 .tmp/public --&gt; JavaScript 转换成 CoffeeScript 至 .tmp/public</span><br></pre></td></tr></table></figure>
 <ul>
 <li><strong>linkAssetsXXXX.js</strong>:</li>
 </ul>
@@ -327,12 +328,12 @@
 <li><strong>syncAssets.js</strong>:</li>
 </ul>
 <p>同步 assets 目录下文件的任务流，其过程为：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">jst:dev --&gt; less:dev --&gt; sync:dev --&gt; coffee:dev</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">jst:dev --&gt; less:dev --&gt; sync:dev --&gt; coffee:dev</span><br></pre></td></tr></table></figure>
 <ul>
 <li><strong>default.js</strong>:</li>
 </ul>
 <p>该任务流会在 Grunt 命令后不接任何参数时执行，其任务过程为：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">compileAssets --&gt; linkAssets --&gt; watch</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">compileAssets --&gt; linkAssets --&gt; watch</span><br></pre></td></tr></table></figure>
 <ul>
 <li><strong>build.js</strong>:</li>
 </ul>
@@ -343,9 +344,9 @@
 <p>只是在产品环境（production）下的构建过程，相比较于 build.js，会执行一些文件合并及压缩工作来提高页面访问体验和效率。</p>
 <hr>
 <h2 id="扬帆起航"><a href="#扬帆起航" class="headerlink" title="扬帆起航"></a>扬帆起航</h2><p>OK，现在我们可以启动项目了</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">sails lift</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sails lift</span><br></pre></td></tr></table></figure>
 <p>不带参数 lift 过程默认会执行的 Grunt 任务流的 default.js。</p>
-<p>接下来访问 <a href="http://localhost:1337" target="_blank" rel="external">http://localhost:1337</a>，你应该能够看到如下页面：</p>
+<p>接下来访问 <a href="http://localhost:1337" target="_blank" rel="noopener">http://localhost:1337</a>，你应该能够看到如下页面：</p>
 <div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/sails-sais_lift.png" width="800"><br></div>
 
 <h2 id="章节预告"><a href="#章节预告" class="headerlink" title="章节预告"></a>章节预告</h2><p>在下一章当中，我们不会立即开始博客系统开发，而是先对 Sails 再进行一定的配置和改造，使其能够更加方便我们的代码编写。</p>
@@ -359,15 +360,15 @@
 
   <div class="post-copyright">
     <p class="copyright-item">
-      <span>Author: </span>
+      <span>作者: </span>
       <span>吴晓军</span>
     </p>
     <p class="copyright-item">
-      <span>Origin: </span>
+      <span>来源: </span>
       <a href="http://yoyoyohamapi.me">http://yoyoyohamapi.me</a>
     </p>
     <p class="copyright-item">
-      <span>Link: </span>
+      <span>链接: </span>
       <a href="http://yoyoyohamapi.me/2015/04/30/利用-Sails-js-MongoDB-开发博客系统（1）-创建项目/">http://yoyoyohamapi.me/2015/04/30/利用-Sails-js-MongoDB-开发博客系统（1）-创建项目/</a>
     </p>
 
@@ -400,15 +401,15 @@
         
   <nav class="post-nav">
     
-      <a class="prev" href="/2015/04/30/RMM-Level-对于-REST-的层级划分模型/">
+      <a class="prev" href="/2015/05/02/利用-Sails-js-MongoDB-开发博客系统（2）-框架完善/">
         <i class="iconfont icon-left"></i>
-        <span class="prev-text nav-default">RMM Level -- 对于 REST 的层级划分模型</span>
+        <span class="prev-text nav-default">利用 Sails.js + MongoDB 开发博客系统（2）-- 框架完善</span>
         <span class="prev-text nav-mobile">Prev</span>
       </a>
     
     
-      <a class="next" href="/2015/05/02/利用-Sails-js-MongoDB-开发博客系统（2）-框架完善/">
-        <span class="next-text nav-default">利用 Sails.js + MongoDB 开发博客系统（2）-- 框架完善</span>
+      <a class="next" href="/2015/04/30/RMM-Level-对于-REST-的层级划分模型/">
+        <span class="next-text nav-default">RMM Level -- 对于 REST 的层级划分模型</span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
       </a>
