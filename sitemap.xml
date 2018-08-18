@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoyoyohamapi.me/2018/08/18/%E4%BD%BF%E7%94%A8_redux-observable_%E5%AE%9E%E7%8E%B0%E7%BB%84%E4%BB%B6%E8%87%AA%E6%B2%BB/</loc>
+    
+    <lastmod>2018-08-18T18:09:55.766Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoyoyohamapi.me/2018/08/18/RxJS+Redux-1/</loc>
+    
+    <lastmod>2018-08-18T05:44:20.531Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoyoyohamapi.me/2016/05/29/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-throttle-%E4%B8%8E-debounce/</loc>
     
     <lastmod>2018-08-11T14:20:10.016Z</lastmod>

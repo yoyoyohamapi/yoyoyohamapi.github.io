@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoyoyohamapi.me/"/>
-  <updated>2018-02-14T17:05:28.507Z</updated>
+  <updated>2018-08-18T05:44:20.531Z</updated>
   <id>http://yoyoyohamapi.me/</id>
   
   <author>
@@ -14,6 +14,183 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://yoyoyohamapi.me/2018/08/18/RxJS+Redux-1/"/>
+    <id>http://yoyoyohamapi.me/2018/08/18/RxJS+Redux-1/</id>
+    <published>2018-08-18T05:44:00.066Z</published>
+    <updated>2018-08-18T05:44:20.531Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>使用 redux-observable 实现组件自治</title>
+    <link href="http://yoyoyohamapi.me/2018/08/18/%E4%BD%BF%E7%94%A8_redux-observable_%E5%AE%9E%E7%8E%B0%E7%BB%84%E4%BB%B6%E8%87%AA%E6%B2%BB/"/>
+    <id>http://yoyoyohamapi.me/2018/08/18/使用_redux-observable_实现组件自治/</id>
+    <published>2018-08-18T02:35:00.000Z</published>
+    <updated>2018-08-18T18:09:55.766Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/cover.png" alt=""></p>
+<h1 id="使用-redux-observable-实现组件自治"><a href="#使用-redux-observable-实现组件自治" class="headerlink" title="使用 redux-observable 实现组件自治"></a>使用 redux-observable 实现组件自治</h1><blockquote>
+<p>本文是 《使用 RxJS + Redux 管理应用状态》系列第一篇文章，旨在介绍 redux-obervable v1 版本为 React + Redux 带来的组件自治能力。</p>
+</blockquote>
+<h2 id="redux-observable-简介"><a href="#redux-observable-简介" class="headerlink" title="redux-observable 简介"></a>redux-observable 简介</h2><p><a href="https://github.com/redux-observable/redux-observable" target="_blank" rel="noopener">redux-observable</a> 是 redux 一个中间件，使用了 RxJs 来驱动 action 副作用。与其目的类似的有大家比较熟悉的 <a href="https://github.com/reduxjs/redux-thunk" target="_blank" rel="noopener">redux-thunk</a> 和 <a href="https://github.com/redux-saga/redux-saga" target="_blank" rel="noopener">redux-saga</a>。通过集成 redux-observable，我们可以在 Redux 中使用到 RxJS 所提供的函数响应式编程（FRP）的能力，从而更轻松的管理我们的异步副作用（前提是你熟悉了 RxJS）。</p>
+<a id="more"></a>
+<p><strong>Epic</strong> 是 redux-observable 的核心概念和基础类型，几乎承载了 redux-observable 的所有。从形式上看，Epic 是一个函数，其接收一个 <strong>action stream</strong>，输出一个新的 action stream：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">action$: Observable&lt;Action&gt;, state$: StateObservable&lt;State&gt;</span>): <span class="title">Observable</span>&lt;<span class="title">Action</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，Epic 扮演了 stream 转换器的能力。</p>
+<p>在 redux-observable 的视角下，Redux 作为中央状态收集器，当一个 action 被 dispatch，历经某个同步或者异步任务，将 dispatch 一个新的 action，携带着它的负载（payload）到 reducer，如此反复。这么看的话，Epic 定义了 action 因果关系。</p>
+<p>同时，FRP 模式的 RxJS 还带来了如下能力：</p>
+<ul>
+<li><strong> 竞态处理能力 </strong></li>
+<li><strong> 声明式地任务处理 </strong></li>
+<li><strong> 测试友好 </strong></li>
+<li><strong> 组件自治 </strong>（redux-observable 1. 0 开始支持）</li>
+</ul>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>本系列是假定读者有了 FRP 和 RxJS 的基础，因此，关于 RxJS 和 redux-observable 不再赘述。</p>
+<p>现在，我们实践一个常见的业务需求 —— 列表页。先罗列列表页的诉求：</p>
+<ul>
+<li>间隔一段时间轮询数据列表</li>
+<li>支持搜索，触发搜索时，重新轮询</li>
+<li>支持字段排序，排序状况变动，重新轮询</li>
+<li>支持分页，页面容量修改，分页状况变动，重新轮询</li>
+<li>组件卸载时，结束轮询</li>
+</ul>
+<p>在前端组件化开发的思路下，我们可能会设计如下容器组件（Container），其中基础组件基于 <a href="">ant design</a>：</p>
+<ul>
+<li><p><strong> 数据表格（含分页）</strong>：基于 <strong>Table</strong> 组件</p>
+</li>
+<li><p><strong> 搜索框：</strong>：基于 <strong>Input</strong> 组件</p>
+</li>
+<li><p><strong> 排序选择框：</strong> 基于 <strong>Select </strong> 组件</p>
+</li>
+</ul>
+<p>在 React + Redux 的架构下，容器组件通过 <code>connect</code> 方法从状态树上采摘自己所需要的状态，因此，先要认识到，这些容器组件必定存在一个 <strong> 耦合 </strong>—— Redux：</p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_list_page.png" alt="列表页"></p>
+<p>借下将会讨论两种不同的模式下，列表应用的状态管理和副作用处理，它们分别是基于 redux-thunk 或者 redux-saga 的传统模式，以及基于 redux-observable 的 FRP 模式。大家可以看到不同模式下，除了基础的对于 Redux 的耦合，组件及其数据生态（状态与副作用）上耦合状况的差异。</p>
+<p>当然，为了让大家更好的理解文章传达的，我也撰写了一个 <strong><a href="https://github.com/yoyoyohamapi/self-government-component-with-redux-observable" target="_blank" rel="noopener">demo</a></strong>，大家可以 clone &amp; run。接下来的代码也都来源于这个 demo。demo 一个 github 小应用，其中你看到用户列表背后是基于 FRP 模式的，Repo 列表则是基于传统模式的：</p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_demo.png" alt="demo screenshot"></p>
+<h2 id="传统模式下组件的耦合"><a href="#传统模式下组件的耦合" class="headerlink" title="传统模式下组件的耦合"></a>传统模式下组件的耦合</h2><p>在传统的模式下，我们需要面对一个现实，对于状态的获取是 <strong> 主动式（proactive）</strong> 的：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = store.getState()</span><br></pre></td></tr></table></figure>
+<p>亦即我们需要 <strong> 主动取用状态 </strong>，而无法监听状态变化。因此，在这种模式下，我们组件化开发的思路会是：</p>
+<ul>
+<li>组件挂载，开启轮询<ul>
+<li>搜索时，结束上次轮询，构建新的请求参数，开始新的轮询</li>
+<li>排序变动时，结束上次轮询，构建新的请求参数，开始新的轮询</li>
+<li>分页变动时，结束上次轮询，构建新的请求参数，开始新的轮询</li>
+</ul>
+</li>
+<li>组件卸载，结束轮询</li>
+</ul>
+<p>在这种思路下，我们撰写搜索，排序，分页等容器时，当容器涉及的取值变动时，不仅需要在状态树上更新这些值，还需要去重启一下轮询。</p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_traditional.png" alt="组件耦合"></p>
+<p>假定我们使用 redux-thunk 来处理副作用，代码大致如下：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> pollingTimer: <span class="built_in">number</span> = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchUsers</span>(<span class="params"></span>): <span class="title">ThunkResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch, getState</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> delay = pollingTimer === <span class="literal">null</span> ? <span class="number">0</span> : <span class="number">15</span> * <span class="number">1000</span></span><br><span class="line">    pollingTimer = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      dispatch(&#123;</span><br><span class="line">        <span class="keyword">type</span>: FETCH_START,</span><br><span class="line">        payload: &#123;&#125;</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="keyword">const</span> &#123; repo &#125;: &#123; repo: IState &#125; = getState()</span><br><span class="line">      <span class="keyword">const</span> &#123; pagination, sort, query &#125; = repo</span><br><span class="line">      <span class="comment">// 封装参数 </span></span><br><span class="line">      <span class="keyword">const</span> param: ISearchParam = &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 进行请求 </span></span><br><span class="line">      <span class="comment">// fetch(param)...</span></span><br><span class="line">  &#125;, delay)</span><br><span class="line">&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">polling</span>(<span class="params"></span>): <span class="title">ThunkResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    dispatch(stopPolling())</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      <span class="keyword">type</span>: POLLING_START,</span><br><span class="line">      payload: &#123;&#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    dispatch(fetchUsers())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">stopPolling</span>(<span class="params"></span>): <span class="title">IAction</span> </span>&#123;</span><br><span class="line">  clearTimeout(pollingTimer)</span><br><span class="line">  pollingTimer = <span class="literal">null</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="keyword">type</span>: POLLING_STOP,</span><br><span class="line">    payload: &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">changePagination</span>(<span class="params">pagination: IPagination</span>): <span class="title">ThunkResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      <span class="keyword">type</span>: CHANGE_PAGINATION,</span><br><span class="line">      payload: &#123;</span><br><span class="line">        pagination</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    dispatch(polling())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">changeQuery</span>(<span class="params">query: <span class="built_in">string</span></span>): <span class="title">ThunkResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      <span class="keyword">type</span>: CHANGE_QUERY,</span><br><span class="line">      payload: &#123;</span><br><span class="line">        query</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    dispatch(polling())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">changeSort</span>(<span class="params">sort: <span class="built_in">string</span></span>): <span class="title">ThunkResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      <span class="keyword">type</span>: CHANGE_SORT,</span><br><span class="line">      payload: &#123;</span><br><span class="line">        sort</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    dispatch(polling())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，涉及到 <strong> 请求参数 </strong> 的几个组件，如筛选项目，分页，搜索等，当它们 dispatch 了一个 action 修改对应的业务状态后，<strong> 还需要手动 dispatch 一个重启轮询的 action 结束上一次轮询，开启下一次轮询 </strong>。</p>
+<p>或许这个场景的复杂程度你觉得也还能接受，但是假想我们有一个更大的项目，或者现在的项目未来会扩展得很大，那么组件势必会越来越多，参与协作的开发者也会越来越多。协作的开发者就需要时刻关注到自己撰写的组件是否会是其他开发者撰写的组件的影响因子，如果是的话，影响有多大，又该怎么处理？</p>
+<blockquote>
+<p>这里提到的组件不单纯指 UI Component，还包括了组件涉及的数据生态。因为绝大部分前端开发者撰写业务组件时，除了 UI，还要实现 UI 涉及的业务逻辑。</p>
+</blockquote>
+<p>我们归纳下使用传统模式梳理数据流以及副作用面临的问题：</p>
+<ol>
+<li><strong> 过程式编程 </strong>，代码啰嗦</li>
+<li><strong> 竞态处理 </strong> 需要人为地通过标志量等进行控制</li>
+<li><strong> 组件间耦合 </strong> 大，彼此牵连。</li>
+</ol>
+<h2 id="FRP-模式与组件自治"><a href="#FRP-模式与组件自治" class="headerlink" title="FRP 模式与组件自治"></a>FRP 模式与组件自治</h2><p>在 FRP 模式下，遵循 <strong>passive</strong> 模式，state 应当被观察和响应，而不是主动获取。因此，redux-observable 从 <a href="https://github.com/redux-observable/redux-observable/blob/master/CHANGELOG.md#100-alpha0-2018-04-04" target="_blank" rel="noopener">1.0</a>  开始，不再推荐使用 <code>store.getState()</code> 进行状态获取，Epic 有了新的函数签名， 第二个参数为 <code>state$</code>：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">action$: Observable&lt;Action&gt;, state$: StateObservable&lt;State&gt;</span>): <span class="title">Observable</span>&lt;<span class="title">Action</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>state$ 的引入，redux-observable 也到了里程碑，现在，我们能在 Redux 中更进一步地实践 FRP。</p>
+<p>回过头来，我们还可以将列表页的需求概括为：</p>
+<ul>
+<li>间隔一段时间轮询数据列表</li>
+<li>参数（排序，分页等）变动时，重新发起轮询</li>
+<li>主动进行搜索时，重新发起轮询</li>
+<li>组件卸载时结束轮询</li>
+</ul>
+<p>在 FRP 模式下，我们定义一个轮询 epic：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> pollingEpic: Epic = <span class="function">(<span class="params">action$, state$</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> stopPolling$ = action$.ofType(POLLING_STOP)</span><br><span class="line">  <span class="keyword">const</span> params$: Observable&lt;ISearchParam&gt; = state$.pipe(</span><br><span class="line">    map(<span class="function">(<span class="params">&#123;user&#125;: &#123;user: IState&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; pagination, sort, query &#125; = user</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        q: <span class="string">`<span class="subst">$&#123;query ? query + '' :''&#125;</span>language:javascript`</span>,</span><br><span class="line">        language: <span class="string">'javascript'</span>,</span><br><span class="line">        page: pagination.page,</span><br><span class="line">        per_page: pagination.pageSize,</span><br><span class="line">        sort,</span><br><span class="line">        order: EOrder.Desc</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line">    distinctUntilChanged(isEqual)</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> action$.pipe(</span><br><span class="line">    ofType(LISTEN_POLLING_START, SEARCH),</span><br><span class="line">    combineLatest(params$, <span class="function">(<span class="params">action, params</span>) =&gt;</span> params),</span><br><span class="line">    switchMap(<span class="function">(<span class="params">params: ISearchParam</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> polling$ = merge(</span><br><span class="line">        interval(<span class="number">15</span> * <span class="number">1000</span>).pipe(</span><br><span class="line">          takeUntil(stopPolling$),</span><br><span class="line">          startWith(<span class="literal">null</span>),</span><br><span class="line">          switchMap(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">from</span>(fetch(params)).pipe(</span><br><span class="line">            map(<span class="function">(<span class="params">&#123;data&#125;: ISearchResp</span>) =&gt;</span> (&#123;</span><br><span class="line">              <span class="keyword">type</span>: FETCH_SUCCESS,</span><br><span class="line">              payload: &#123;</span><br><span class="line">                total: data.total_count,</span><br><span class="line">                list: data.items</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;)),</span><br><span class="line">            startWith(&#123;</span><br><span class="line">              <span class="keyword">type</span>: FETCH_START,</span><br><span class="line">              payload: &#123;&#125;</span><br><span class="line">            &#125;),</span><br><span class="line">            catchError(<span class="function">(<span class="params">error: AxiosError</span>) =&gt;</span> of(&#123;</span><br><span class="line">              <span class="keyword">type</span>: FETCH_ERROR,</span><br><span class="line">              payload: &#123;</span><br><span class="line">                error: error.response.statusText</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;))</span><br><span class="line">          )),</span><br><span class="line">          startWith(&#123;</span><br><span class="line">            <span class="keyword">type</span>: POLLING_START,</span><br><span class="line">            payload: &#123;&#125;</span><br><span class="line">          &#125;)</span><br><span class="line">      ))</span><br><span class="line">      <span class="keyword">return</span> polling$</span><br><span class="line">    &#125;)</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是对这个 Epic 的一些解释。</p>
+<ul>
+<li>首先我们声明轮询结束流，当轮询结束流有值产生时，轮询会被终止：</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> stopPolling$ = action$.ofType(POLLING_STOP)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数来源于状态，由于现在状态可观测，我们可以从状态流 <code>state$</code> 派发一个下游 —— <strong> 参数流 </strong>：</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> params$: Observable&lt;ISearchParam&gt; = state$.pipe(</span><br><span class="line">  map(<span class="function">(<span class="params">&#123;user&#125;: &#123;user: IState&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; pagination, sort, query &#125; = user</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="comment">// 构造参数 </span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;),</span><br><span class="line">  distinctUntilChanged(isEqual)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我们预期参数流都是最新的参数，因此使用了 <code>dinstinctUntilChanged(isEqual)</code> 来判断两次参数的异同</p>
+</blockquote>
+<ul>
+<li>主动进行搜索，或者参数变动时，将创建轮询流（借助到了 <code>combineLatest</code> operator），最终，新的 action 仰仗于数据拉取结果：</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> action$.pipe(</span><br><span class="line">  ofType(LISTEN_POLLING_START, SEARCH),</span><br><span class="line">  combineLatest(params$, <span class="function">(<span class="params">action, params</span>) =&gt;</span> params),</span><br><span class="line">  switchMap(<span class="function">(<span class="params">params: ISearchParam</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> polling$ = merge(</span><br><span class="line">      interval(<span class="number">15</span> * <span class="number">1000</span>).pipe(</span><br><span class="line">        takeUntil(stopPolling$),</span><br><span class="line">        <span class="comment">// 自动开始轮询 </span></span><br><span class="line">        startWith(<span class="literal">null</span>),</span><br><span class="line">        switchMap(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">from</span>(fetch(params)).pipe(</span><br><span class="line">          map(<span class="function">(<span class="params">&#123;data&#125;: ISearchResp</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// ... 处理响应 </span></span><br><span class="line">          &#125;),</span><br><span class="line">          startWith(&#123;</span><br><span class="line">            <span class="keyword">type</span>: FETCH_START,</span><br><span class="line">            payload: &#123;&#125;</span><br><span class="line">          &#125;),</span><br><span class="line">          catchError(<span class="function">(<span class="params">error: AxiosError</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">          &#125;)</span><br><span class="line">        )),</span><br><span class="line">        startWith(&#123;</span><br><span class="line">          <span class="keyword">type</span>: POLLING_START,</span><br><span class="line">          payload: &#123;&#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      ))</span><br><span class="line">    <span class="keyword">return</span> polling$</span><br><span class="line">  &#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>OK，我们现在 <strong> 只需要 </strong> 在数据表格这个容器组件中 dispatch 一个 <code>LISTEN_POLLING_START</code> 事件，即可开始我们的轮询，在其对应的 Epic 中，它完全知道什么时候去结束轮询，什么时候去重启轮询。我们的分页组件，排序选择组件都不再需要关心重启轮询这个需求。</p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_frp.png" alt=""></p>
+<p>在 FRP 模式下，passive 模型让我们观测了 state，声明了轮询的诱因，让轮询收归到了数据表格组件中， 解除了轮询和数据表格与分页，搜索，排序等组件的耦合。实现了数据表格的 <strong> 组件自治 </strong>。</p>
+<blockquote>
+<p><strong> 组件自治 </strong>：组件只用关注如何治理自己。</p>
+</blockquote>
+<p>总结，利用 FRP 进行副作用处理带来了：</p>
+<ul>
+<li><strong> 声明式地（declarative）</strong> 描述异步任务，代码简洁</li>
+<li>使用 <code>switchMap</code> operator 处理 <strong> 竞态 </strong> 任务</li>
+<li>尽可能减少组件耦合，来达到 <strong> 组件自治 </strong>。利于多人协作的大型工程。</li>
+</ul>
+<p>其带来的利好拳拳打到了传统模式的痛处。下图是一个更直观的对比，同样的业务逻辑，考上的是 redux-saga 实现，考下则是 redux-observable 实现。你一眼就能感受到谁更简洁明了：</p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_saga.jpg" alt=""></p>
+<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_observable.jpg" alt=""></p>
+<h2 id="接入-redux-observable"><a href="#接入-redux-observable" class="headerlink" title="接入 redux-observable"></a>接入 redux-observable</h2><p>redux-observable 只是 redux 一个中间件，因此它可以和你现在的 redux-thunk，redux-saga 等共存，redux-observable 的作者你可以渐进地接入 redux-observable 去处理一些复杂的业务逻辑，当你基本熟悉了 RxJS 和 FRP 模式，你会发现它可以做一切。</p>
+<p>后续，考虑到整个工程的风格控制，还是建议只选择一套模型，FRP 在复杂场景下表现力卓著，在简单场景下，也不会大炮打蚊子。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://redux-observable.js.org/docs" target="_blank" rel="noopener">redux-observable official docs</a></li>
+</ul>
+<hr>
+<h2 id="关于本系列"><a href="#关于本系列" class="headerlink" title="关于本系列"></a>关于本系列</h2><ul>
+<li><p>本系列将从介绍 redux-observable 1.0 开始，阐述自己在结合 RxJS 到 Redux 中的心得体会。涉及内容会有 redux-observable 实践介绍，redux-observable 实现原理探究，最后会介绍下自己当前基于 redux-observble + dva architecture 的一个 state 管理框架 reobservable。</p>
+</li>
+<li><p>本系列不是 RxJS 或者 Redux 入门，不再讲述他们的基础概念，宣扬他们的核心优势。如果你搜索 RxJS 不小心进到了这个系列，对 RxJS 和 FRP 程序设计产生了兴趣，那么入门我会推荐：</p>
+<ul>
+<li><a href="https://www.learnrxjs.io/" target="_blank" rel="noopener">learnrxjs.io</a></li>
+<li>Andre Staltz 在 <a href="https://egghead.io/courses/introduction-to-reactive-programming" target="_blank" rel="noopener">egghead.io</a> 上的一系列课程</li>
+<li>程墨的 <a href="https://item.jd.com/12336101.html" target="_blank" rel="noopener">《深入浅出 RxJS》</a></li>
+</ul>
+</li>
+<li><p>本系列更不是教程，只是介绍自己在 Redux 中应用 RxJS 的一些思路，希望更多人能指出当中存在的误区，或者交流更优雅的实践。</p>
+</li>
+<li><p>由衷的感谢实践路上一些师兄的帮助，尤其感谢腾讯云的 questguo 学长在模式上的指导。reobservable 脱胎于腾讯云 questguo 主导的 React 框架 —— TCFF，期待未来 TCFF 的开源。</p>
+</li>
+<li><p>感谢小雨的设计支援。</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/2018/08/18/使用_redux-observable_实现组件自治/cover.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;使用-redux-observable-实现组件自治&quot;&gt;&lt;a href=&quot;#使用-redux-observable-实现组件自治&quot; class=&quot;headerlink&quot; title=&quot;使用 redux-observable 实现组件自治&quot;&gt;&lt;/a&gt;使用 redux-observable 实现组件自治&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本文是 《使用 RxJS + Redux 管理应用状态》系列第一篇文章，旨在介绍 redux-obervable v1 版本为 React + Redux 带来的组件自治能力。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;redux-observable-简介&quot;&gt;&lt;a href=&quot;#redux-observable-简介&quot; class=&quot;headerlink&quot; title=&quot;redux-observable 简介&quot;&gt;&lt;/a&gt;redux-observable 简介&lt;/h2&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/redux-observable/redux-observable&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;redux-observable&lt;/a&gt; 是 redux 一个中间件，使用了 RxJs 来驱动 action 副作用。与其目的类似的有大家比较熟悉的 &lt;a href=&quot;https://github.com/reduxjs/redux-thunk&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;redux-thunk&lt;/a&gt; 和 &lt;a href=&quot;https://github.com/redux-saga/redux-saga&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;redux-saga&lt;/a&gt;。通过集成 redux-observable，我们可以在 Redux 中使用到 RxJS 所提供的函数响应式编程（FRP）的能力，从而更轻松的管理我们的异步副作用（前提是你熟悉了 RxJS）。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="React" scheme="http://yoyoyohamapi.me/categories/React/"/>
+    
+    
+      <category term="React" scheme="http://yoyoyohamapi.me/tags/React/"/>
+    
+      <category term="Redux" scheme="http://yoyoyohamapi.me/tags/Redux/"/>
+    
+      <category term="RxJS" scheme="http://yoyoyohamapi.me/tags/RxJS/"/>
+    
+  </entry>
   
   <entry>
     <title>callbag，一个有趣的规范</title>
@@ -2085,158 +2262,6 @@
       <category term="Node" scheme="http://yoyoyohamapi.me/tags/Node/"/>
     
       <category term="MongoDB" scheme="http://yoyoyohamapi.me/tags/MongoDB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>RMM Level -- 对于 REST 的层级划分模型</title>
-    <link href="http://yoyoyohamapi.me/2015/04/30/RMM-Level-%E5%AF%B9%E4%BA%8E-REST-%E7%9A%84%E5%B1%82%E7%BA%A7%E5%88%92%E5%88%86%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://yoyoyohamapi.me/2015/04/30/RMM-Level-对于-REST-的层级划分模型/</id>
-    <published>2015-04-30T00:17:19.000Z</published>
-    <updated>2018-02-14T17:02:14.972Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>原文链接：<a href="https://martinfowler.com/articles/richardsonMaturityModel.html" target="_blank" rel="noopener">https://martinfowler.com/articles/richardsonMaturityModel.html</a></p>
-</blockquote>
-<p>RMM，Richardson Maturity Model，该模型将 REST 划作了由低到高四个等级，等级越高，RESTful 就越成熟，但是，熟透了东西不一定好，甚至可能烂了，所以，项目中对于 RESTful 层级的选择要灵活把控。先看模型图：</p>
-<div style="text-align:center"><br><img src="https://martinfowler.com/articles/images/richardsonMaturityModel/overview.png" width="500"><br></div>
-
-<a id="more"></a>
-<h2 id="Level-0-The-swarmp-of-POX-Plain-old-XML"><a href="#Level-0-The-swarmp-of-POX-Plain-old-XML" class="headerlink" title="Level 0: The swarmp of POX (Plain old XML)"></a>Level 0: The swarmp of POX (Plain old XML)</h2><p>Level 0 的 REST 有如下特点:</p>
-<ol>
-<li>HTTP 仅作为一个通信隧道，即 HTTP 只关注通信消息，而不关注客户端及服务器间的行为。</li>
-<li>采用远程调用协议（Remote Procedure Call Protocol）：即客户端想要执行某一任务，或者说向服务器请求某一服务，只需发送相关消息（执行某一句柄），而不用关心底层实现。</li>
-<li>提供一个调用接口给客户端。</li>
-</ol>
-<p>考虑一个例子：某病人（Client）想要预约某位医生为其诊断，那么其必然经历：</p>
-<ol>
-<li>病人问询医院（Server）该医生那天是否有空。</li>
-<li>医院告知病人该医生当天的空闲时间。</li>
-<li>病人执行预约</li>
-</ol>
-<p>在 Level 0 中，该过程如下图所示：</p>
-<div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/web-level0.png" width="500"><br></div>
-
-<p>注意到绿色的端点（appointmentService），这是医院（Server）为了病人（Client）能够远程咨询（远程调用）而提供的一个调用接口，以下是该过程的伪代码描述, 其中请求及相应都用 XML 描述。</p>
-<p>1、病人想知道 2010 年 1 月 4 号时，jones 医生啥时候有空：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /appointmentService HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotRequest</span> <span class="attr">date</span> = <span class="string">"2010-01-04"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、 医院告诉病人 jones 医生当日的闲暇时间：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotList</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">doctor</span> <span class="attr">id</span> = <span class="string">"mjones"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">start</span> = <span class="string">"1600"</span> <span class="attr">end</span> = <span class="string">"1650"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">doctor</span> <span class="attr">id</span> = <span class="string">"mjones"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">openSlotList</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、病人选择当中一段时间预约 jones 医生</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /appointmentService HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointmentRequest</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointmentRequest</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>4、查看预约结果</p>
-<p>如果预约成功：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointment</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointment</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>否则：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointmentRequestFailure</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">reason</span>&gt;</span>Slot not available<span class="tag">&lt;/<span class="name">reason</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointmentRequestFailure</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>注意到，这里服务器并没有通过状态码来反映预约成功与否，而通过返回了冗长的错误信息。</p>
-<h2 id="Level-1-Resources"><a href="#Level-1-Resources" class="headerlink" title="Level 1: Resources"></a>Level 1: Resources</h2><p>该层的特点有：</p>
-<p>1、 通过 URI 来定位资源，实现资源独立性</p>
-<p>2、 采用 “面向对象” 的通信方式</p>
-<p>相比于 Level 0，这层更加成熟的地方是客户端需要标明 <strong>“我需要什么？”</strong>，考虑上面的例子，新的模型如下：</p>
-<div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/web-level1.png" width="500"><br></div>
-
-<p>可以看到，每个资源都有各自调用接口（如医生资源，空闲表资源），该模型下病人的预约过程如下：</p>
-<p>1、 客户决定预约日期</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /doctors/mjones HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotRequest</span> <span class="attr">date</span> = <span class="string">"2010-01-04"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、 医院据此返回当日空闲表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotList</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"5678"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1600"</span> <span class="attr">end</span> = <span class="string">"1650"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">openSlotList</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、 病人请求获得 id 为 1234 的空闲服务（slot）</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /slots/1234 HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointmentRequest</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointmentRequest</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<ol>
-<li>医院返回 slot 资源给病人</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointment</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointment</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Level-2-HTTP-Verbs"><a href="#Level-2-HTTP-Verbs" class="headerlink" title="Level 2: HTTP Verbs"></a>Level 2: HTTP Verbs</h2><p>顾名思义，Level 2 追加了 HTTP 动词来指明我们对于资源要做何种操作，如此，客户端的请求就能完整的表述为 <strong>“我需要对 XX（资源）做 XX（行为）”</strong>，该层级是当前使用最为广泛的 REST 层级，通常定义如下四个 HTTP 动词：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">操作</th>
-<th style="text-align:left">目的</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">GET</td>
-<td style="text-align:left">一般性获得资源，并不改变资源</td>
-</tr>
-<tr>
-<td style="text-align:left">POST</td>
-<td style="text-align:left">通常为创建资源操作</td>
-</tr>
-<tr>
-<td style="text-align:left">PUT</td>
-<td style="text-align:left">通常为更新资源操作</td>
-</tr>
-<tr>
-<td style="text-align:left">DELETE</td>
-<td style="text-align:left">删除资源操作</td>
-</tr>
-</tbody>
-</table>
-<p>同时，服务端不再通过错误消息（当然，某些系统也会封装错误消息，给予客户友善提示）来告诉客户端执行状态，而是通过返回 HTTP 状态字来告知客户端请求执行结果。</p>
-<p>上例在该层级下的模型如下：</p>
-<div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/web-level2.png" width="500"><br></div>
-
-<p>任务过程如下：</p>
-<p>1、 客户想要获得 10 年 1 月 4 号的医生空闲表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /doctors/mjones/slots?date=20100104&amp;status=open HTTP/1.1</span><br><span class="line">Host: royalhope.nhs.uk</span><br></pre></td></tr></table></figure>
-<p>2、 医院返回空闲表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotList</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"5678"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1600"</span> <span class="attr">end</span> = <span class="string">"1650"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">openSlotList</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、 客户执行预约：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /slots/1234 HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointmentRequest</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointmentRequest</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>4、 医院告知预约结果：</p>
-<p>若成功：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 201 Created</span><br><span class="line">Location: slots/1234/appointment</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointment</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointment</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>若失败：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 409 Conflict</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotList</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"5678"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1600"</span> <span class="attr">end</span> = <span class="string">"1650"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">openSlotList</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>注意其返回状态字的变化，可以和 Level 0 作对比。</p>
-<h2 id="Level-3-Hypermedia-Controls"><a href="#Level-3-Hypermedia-Controls" class="headerlink" title="Level 3: Hypermedia Controls"></a>Level 3: Hypermedia Controls</h2><p>首先要知道 HATEOAS (Hypertext As The Engine Of Application State)：这种策略解决了我们如何从得到的资源中顺带知晓下一步应当如何进行。</p>
-<p>因为要服务端的响应要封装 “下一步如何做”，故而上例的模型变为：</p>
-<div style="text-align:center"><br><img src="http://7pulhb.com1.z0.glb.clouddn.com/web-level3.png" width="500"><br></div>
-
-<p>任务过程如下:</p>
-<p>1、 病人请求 2010 年 1 月 4 号的空闲表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /doctors/mjones/slots?date=20100104&amp;status=open HTTP/1.1</span><br><span class="line">Host: royalhope.nhs.uk</span><br></pre></td></tr></table></figure>
-<p>2、 医院返回空闲表，<strong> 并且附加了下一步操作 </strong>，其中，<code>rel</code> 用于描述客户端要完成什么行为，<code>uri</code> 用于定位该行为需要访问的资源。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">openSlotList</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/slot/book"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">uri</span> = <span class="string">"/slots/1234"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"5678"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1600"</span> <span class="attr">end</span> = <span class="string">"1650"</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/slot/book"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">uri</span> = <span class="string">"/slots/5678"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">openSlotList</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、 病人执行预约：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST /slots/1234 HTTP/1.1</span><br><span class="line">[various other headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointmentRequest</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointmentRequest</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>4、 医院回调预约结果，<strong> 并告知了客户所有预约完以后可以进行的动作（包括取消，联系，帮助等等）</strong>：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 201 Created</span><br><span class="line">Location: http://royalhope.nhs.uk/slots/1234/appointment</span><br><span class="line">[various headers]</span><br></pre></td></tr></table></figure>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">appointment</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">id</span> = <span class="string">"1234"</span> <span class="attr">doctor</span> = <span class="string">"mjones"</span> <span class="attr">start</span> = <span class="string">"1400"</span> <span class="attr">end</span> = <span class="string">"1450"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">patient</span> <span class="attr">id</span> = <span class="string">"jsmith"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/appointment/cancel"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/slots/1234/appointment"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/appointment/addTest"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/slots/1234/appointment/tests"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"self"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/slots/1234/appointment"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/appointment/changeTime"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/doctors/mjones/slots?date=20100104@status=open"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/appointment/updateContactInfo"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/patients/jsmith/contactInfo"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span> = <span class="string">"/linkrels/help"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">uri</span> = <span class="string">"/help/appointment"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">appointment</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>显然，Level 3 更加考虑周全，但是这就类似与我们拨打 10010 等查询电话，有时候用户对接下来的动作心里有杆秤，并不需要服务端告知所有能够进行的 “下一步”，因而，这种层级在某些时候倒回变成一种累赘。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;原文链接：&lt;a href=&quot;https://martinfowler.com/articles/richardsonMaturityModel.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://martinfowler.com/articles/richardsonMaturityModel.html&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;RMM，Richardson Maturity Model，该模型将 REST 划作了由低到高四个等级，等级越高，RESTful 就越成熟，但是，熟透了东西不一定好，甚至可能烂了，所以，项目中对于 RESTful 层级的选择要灵活把控。先看模型图：&lt;/p&gt;
-&lt;div style=&quot;text-align:center&quot;&gt;&lt;br&gt;&lt;img src=&quot;https://martinfowler.com/articles/images/richardsonMaturityModel/overview.png&quot; width=&quot;500&quot;&gt;&lt;br&gt;&lt;/div&gt;
-    
-    </summary>
-    
-      <category term="Web 开发" scheme="http://yoyoyohamapi.me/categories/Web-%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="Web 开发" scheme="http://yoyoyohamapi.me/tags/Web-%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
