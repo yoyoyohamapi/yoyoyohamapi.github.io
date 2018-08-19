@@ -34,7 +34,7 @@
     <link href="http://yoyoyohamapi.me/2018/08/18/%E4%BD%BF%E7%94%A8_redux-observable_%E5%AE%9E%E7%8E%B0%E7%BB%84%E4%BB%B6%E8%87%AA%E6%B2%BB/"/>
     <id>http://yoyoyohamapi.me/2018/08/18/使用_redux-observable_实现组件自治/</id>
     <published>2018-08-18T02:35:00.000Z</published>
-    <updated>2018-08-19T03:11:17.337Z</updated>
+    <updated>2018-08-19T04:44:00.881Z</updated>
     
     <content type="html"><![CDATA[<p><img src="/2018/08/18/使用_redux-observable_实现组件自治/cover.png" alt=""></p>
 <h1 id="使用-redux-observable-实现组件自治"><a href="#使用-redux-observable-实现组件自治" class="headerlink" title="使用 redux-observable 实现组件自治"></a>使用 redux-observable 实现组件自治</h1><blockquote>
@@ -144,7 +144,7 @@
 <li>使用 <code>switchMap</code> operator 处理 <strong> 竞态 </strong> 任务</li>
 <li>尽可能减少组件耦合，来达到 <strong> 组件自治 </strong>。利于多人协作的大型工程。</li>
 </ul>
-<p>其带来的利好拳拳打到了传统模式的痛处。下图是一个更直观的对比，同样的业务逻辑，考上的是 redux-saga 实现，考下则是 redux-observable 实现。你一眼就能感受到谁更简洁明了：</p>
+<p>其带来的利好算是拳拳打到了传统模式的痛处。下图是一个更直观的对比，同样的业务逻辑，靠上的是 redux-saga 实现，考下则是 redux-observable 实现。你一眼就能感受到谁更简洁明了：</p>
 <p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_saga.jpg" alt=""></p>
 <p><img src="/2018/08/18/使用_redux-observable_实现组件自治/rxjs_redux_observable.jpg" alt=""></p>
 <h2 id="接入-redux-observable"><a href="#接入-redux-observable" class="headerlink" title="接入 redux-observable"></a>接入 redux-observable</h2><p>redux-observable 只是 redux 一个中间件，因此它可以和你现在的 redux-thunk，redux-saga 等共存，redux-observable 的作者你可以渐进地接入 redux-observable 去处理一些复杂的业务逻辑，当你基本熟悉了 RxJS 和 FRP 模式，你会发现它可以做一切。</p>
