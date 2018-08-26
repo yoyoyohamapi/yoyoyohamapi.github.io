@@ -86,7 +86,7 @@
 
 
 <script>
-  window.config = {"title":"吴小蛆的巣","subtitle":null,"description":"只要努力，蛆虫也能变成苍蝇翱翔于天际","author":"吴晓军","language":null,"timezone":null,"url":"http://yoyoyohamapi.me","root":"/","permalink":":year/:month/:day/:title/","permalink_defaults":null,"source_dir":"source","public_dir":"public","tag_dir":"tags","archive_dir":"archives","category_dir":"categories","code_dir":"downloads/code","i18n_dir":":lang","skip_render":null,"new_post_name":":title.md","default_layout":"post","titlecase":false,"external_link":true,"filename_case":0,"render_drafts":false,"post_asset_folder":true,"relative_link":false,"future":true,"highlight":{"enable":true,"auto_detect":true,"line_number":false,"tab_replace":"  "},"default_category":"uncategorized","category_map":null,"tag_map":null,"date_format":"YYYY-MM-DD","time_format":"HH:mm:ss","per_page":10,"pagination_dir":"page","theme":"even","deploy":{"type":"git","repo":"https://github.com/yoyoyohamapi/yoyoyohamapi.github.io.git","branch":"master"},"ignore":[],"math":{"engine":"mathjax"},"sitemap":{"path":"sitemap.xml"},"archive_generator":{"per_page":10,"yearly":true,"monthly":true,"daily":false},"index_generator":{"per_page":10},"feed":{"type":"atom","limit":20,"hub":"","content":true,"path":"atom.xml"},"category_generator":{"per_page":10},"tag_generator":{"per_page":10},"marked":{"gfm":true,"pedantic":false,"sanitize":false,"tables":true,"breaks":true,"smartLists":true,"smartypants":true},"server":{"log":false,"ip":"0.0.0.0"},"since":2015,"favicon":"/favicon.ico","rss":"default","menu":{"Home":"/","Archives":"/archives/","Tags":"/tags","Categories":"/categories"},"color":"Default","toc":true,"fancybox":true,"pjax":true,"copyright":{"enable":true,"origin":"http://yoyoyohamapi.me","license":"本文采用<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\" target=\"_blank\">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可"},"reward":{"enable":true,"qrCode":{"wechat":null,"alipay":null}},"social":{"email":"softshot37@gmail.com","stack-overflow":null,"twitter":null,"facebook":null,"linkedin":null,"google":null,"github":"https://github.com/yoyoyohamapi","weibo":null,"zhihu":"https://www.zhihu.com/people/wu-xiao-jun-64-55/activities","pocket":null,"tumblr":null,"instagram":null},"leancloud":{"app_id":null,"app_key":null},"baidu_analytics":null,"baidu_verification":null,"google_analytics":null,"google_verification":null,"disqus_shortname":"yoyoyohamapi","version":"2.9.0"};
+  window.config = {"title":"吴小蛆的巣","subtitle":null,"description":"只要努力，蛆虫也能变成苍蝇翱翔于天际","author":"吴晓军","language":null,"timezone":null,"url":"http://yoyoyohamapi.me","root":"/","permalink":":year/:month/:day/:title/","permalink_defaults":null,"source_dir":"source","public_dir":"public","tag_dir":"tags","archive_dir":"archives","category_dir":"categories","code_dir":"downloads/code","i18n_dir":":lang","skip_render":null,"new_post_name":":title.md","default_layout":"post","titlecase":false,"external_link":true,"filename_case":0,"render_drafts":false,"post_asset_folder":true,"relative_link":false,"future":true,"highlight":{"enable":true,"auto_detect":true,"line_number":false,"tab_replace":"  "},"default_category":"uncategorized","category_map":null,"tag_map":null,"date_format":"YYYY-MM-DD","time_format":"HH:mm:ss","per_page":10,"pagination_dir":"page","theme":"even","deploy":{"type":"git","repo":"https://github.com/yoyoyohamapi/yoyoyohamapi.github.io.git","branch":"master"},"ignore":[],"math":{"engine":"mathjax"},"sitemap":{"path":"sitemap.xml"},"archive_generator":{"per_page":10,"yearly":true,"monthly":true,"daily":false},"feed":{"type":"atom","limit":20,"hub":"","content":true,"content_limit":140,"content_limit_delim":"","path":"atom.xml"},"category_generator":{"per_page":10},"index_generator":{"per_page":10},"tag_generator":{"per_page":10},"marked":{"gfm":true,"pedantic":false,"sanitize":false,"tables":true,"breaks":true,"smartLists":true,"smartypants":true},"server":{"log":false,"ip":"0.0.0.0"},"since":2015,"favicon":"/favicon.ico","rss":"default","menu":{"Home":"/","Archives":"/archives/","Tags":"/tags","Categories":"/categories"},"color":"Default","toc":true,"fancybox":true,"pjax":true,"copyright":{"enable":true,"origin":"http://yoyoyohamapi.me","license":"本文采用<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\" target=\"_blank\">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可"},"reward":{"enable":true,"qrCode":{"wechat":null,"alipay":null}},"social":{"email":"softshot37@gmail.com","stack-overflow":null,"twitter":null,"facebook":null,"linkedin":null,"google":null,"github":"https://github.com/yoyoyohamapi","weibo":null,"zhihu":"https://www.zhihu.com/people/wu-xiao-jun-64-55/activities","pocket":null,"tumblr":null,"instagram":null},"leancloud":{"app_id":null,"app_key":null},"baidu_analytics":null,"baidu_verification":null,"google_analytics":null,"google_verification":null,"disqus_shortname":"yoyoyohamapi","version":"2.9.0"};
 </script>
 
     <title> callbag，一个有趣的规范 - 吴小蛆的巣 </title>
@@ -285,17 +285,17 @@
 <p>进一步概括就是：</p>
 <p><strong>Observer</strong>:</p>
 <ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">observer(1, data): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">observer</span><span class="params">(<span class="number">1</span>, data)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>数据交付 ：observable 将数据交付给 observer</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">observer(2, err): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">observer</span><span class="params">(<span class="number">2</span>, err)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>出错：observable 将错误告知 observer</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">observer(2): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">observer</span><span class="params">(<span class="number">2</span>)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>完成：observable 不再有数据，告知 observer 任务完成</li>
 </ul>
@@ -303,12 +303,12 @@
 </ul>
 <p><strong>Observable</strong>:</p>
 <ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">observable(0, observer): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">observable</span><span class="params">(<span class="number">0</span>, observer)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>问好：observer 订阅了 observable</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">observable(2): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">observable</span><span class="params">(<span class="number">2</span>)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>结束：observer 取消对 observable 的订阅</li>
 </ul>
@@ -317,22 +317,22 @@
 <p>这么概括下来，我们发现，pull 模型也可以进行类似的概括：</p>
 <p><strong>Consumer</strong>：</p>
 <ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">consumer(0, producer): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">consumer</span><span class="params">(<span class="number">0</span>, producer)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>问好：<strong> 在 pull 模型中，producer 需要向 consumer 问好，告诉 consumer 有需要时，从哪里取值 </strong></li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">consumer(1, data): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">consumer</span><span class="params">(<span class="number">1</span>, data)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>数据交付：producer 将数据交付给 consumer</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">consumer(2, err): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">consumer</span><span class="params">(<span class="number">2</span>, err)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>出错：producer 将错误告知 consumer</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">consumer(2): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">consumer</span><span class="params">(<span class="number">2</span>)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>完成：producer 告知 consumer 任务已完成</li>
 </ul>
@@ -340,17 +340,17 @@
 </ul>
 <p><strong>Producer</strong>：</p>
 <ul>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">producer(0, consumer): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">producer</span><span class="params">(<span class="number">0</span>, consumer)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>问好：consumer 确定和哪个 producer 交互</li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">producer(1, data): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">producer</span><span class="params">(<span class="number">1</span>, data)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>数据交付：<strong> 在 pull 模型中，consumer 需要主动向 producer 取值 </strong></li>
 </ul>
 </li>
-<li><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">producer(2): void</span><br></pre></td></tr></table></figure>
+<li><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">producer</span><span class="params">(<span class="number">2</span>)</span></span>: void</span><br></pre></td></tr></table></figure>
 <ul>
 <li>结束：consumer 结束了和 producer 的交互</li>
 </ul>

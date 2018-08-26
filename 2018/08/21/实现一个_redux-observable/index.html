@@ -17,10 +17,12 @@
 
 
 
-  <meta name="description" content="只要努力，蛆虫也能变成苍蝇翱翔于天际"/>
+  <meta name="description" content="如何实现一个 redux-observable"/>
 
 
 
+
+  <meta name="keywords" content="React, Redux, RxJS, 吴小蛆的巣" />
 
 
 
@@ -40,7 +42,7 @@
 
 
 
-<link rel="canonical" href="http://yoyoyohamapi.me/"/>
+<link rel="canonical" href="http://yoyoyohamapi.me/2018/08/21/实现一个_redux-observable/"/>
 
 
 
@@ -87,7 +89,7 @@
   window.config = {"title":"吴小蛆的巣","subtitle":null,"description":"只要努力，蛆虫也能变成苍蝇翱翔于天际","author":"吴晓军","language":null,"timezone":null,"url":"http://yoyoyohamapi.me","root":"/","permalink":":year/:month/:day/:title/","permalink_defaults":null,"source_dir":"source","public_dir":"public","tag_dir":"tags","archive_dir":"archives","category_dir":"categories","code_dir":"downloads/code","i18n_dir":":lang","skip_render":null,"new_post_name":":title.md","default_layout":"post","titlecase":false,"external_link":true,"filename_case":0,"render_drafts":false,"post_asset_folder":true,"relative_link":false,"future":true,"highlight":{"enable":true,"auto_detect":true,"line_number":false,"tab_replace":"  "},"default_category":"uncategorized","category_map":null,"tag_map":null,"date_format":"YYYY-MM-DD","time_format":"HH:mm:ss","per_page":10,"pagination_dir":"page","theme":"even","deploy":{"type":"git","repo":"https://github.com/yoyoyohamapi/yoyoyohamapi.github.io.git","branch":"master"},"ignore":[],"math":{"engine":"mathjax"},"sitemap":{"path":"sitemap.xml"},"archive_generator":{"per_page":10,"yearly":true,"monthly":true,"daily":false},"feed":{"type":"atom","limit":20,"hub":"","content":true,"content_limit":140,"content_limit_delim":"","path":"atom.xml"},"category_generator":{"per_page":10},"index_generator":{"per_page":10},"tag_generator":{"per_page":10},"marked":{"gfm":true,"pedantic":false,"sanitize":false,"tables":true,"breaks":true,"smartLists":true,"smartypants":true},"server":{"log":false,"ip":"0.0.0.0"},"since":2015,"favicon":"/favicon.ico","rss":"default","menu":{"Home":"/","Archives":"/archives/","Tags":"/tags","Categories":"/categories"},"color":"Default","toc":true,"fancybox":true,"pjax":true,"copyright":{"enable":true,"origin":"http://yoyoyohamapi.me","license":"本文采用<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\" target=\"_blank\">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可"},"reward":{"enable":true,"qrCode":{"wechat":null,"alipay":null}},"social":{"email":"softshot37@gmail.com","stack-overflow":null,"twitter":null,"facebook":null,"linkedin":null,"google":null,"github":"https://github.com/yoyoyohamapi","weibo":null,"zhihu":"https://www.zhihu.com/people/wu-xiao-jun-64-55/activities","pocket":null,"tumblr":null,"instagram":null},"leancloud":{"app_id":null,"app_key":null},"baidu_analytics":null,"baidu_verification":null,"google_analytics":null,"google_verification":null,"disqus_shortname":"yoyoyohamapi","version":"2.9.0"};
 </script>
 
-    <title> 吴小蛆的巣 </title>
+    <title> 如何实现一个 redux-observable - 吴小蛆的巣 </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -198,14 +200,12 @@
         <div class="content-wrapper">
           <div id="content" class="content">
             
-  <section id="posts" class="posts">
-    
-      
+  
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2018/08/21/实现一个_redux-observable/">如何实现一个 redux-observable</a>
+          如何实现一个 redux-observable
         
       </h1>
 
@@ -226,15 +226,18 @@
 
     
     
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redux"><span class="toc-text">Redux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用-observable-管理副作用"><span class="toc-text">用 observable 管理副作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构建中间件"><span class="toc-text">构建中间件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流的转换器"><span class="toc-text">流的转换器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化：ofType-operator"><span class="toc-text">优化：ofType operator</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化：获得-state"><span class="toc-text">优化：获得 state</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化：观察状态"><span class="toc-text">优化：观察状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化：响应初始状态"><span class="toc-text">优化：响应初始状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化：相互关联的-transformer"><span class="toc-text">优化：相互关联的 transformer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于本系列"><span class="toc-text">关于本系列</span></a></li></ol>
+    </div>
+  </div>
+
 
 
     <div class="post-content">
       
-        
-        
-
-        
-          <p><img src="/2018/08/21/实现一个_redux-observable/cover.png" alt=""></p>
+        <p><img src="/2018/08/21/实现一个_redux-observable/cover.png" alt=""></p>
 <blockquote>
 <p>本文是 《使用 RxJS + Redux 管理应用状态》系列第二篇文章，将会介绍 redux-observable 的设计哲学和实现思路。返回第一篇：<a href="">使用 redux-observable 实现组件自治</a></p>
 </blockquote>
@@ -363,538 +366,90 @@
 <li>感谢小雨的设计支援。</li>
 </ul>
 
-        
       
     </div>
 
     
-
-    
-
-  </article>
-
-    
       
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/08/18/RxJS+Redux-1/"></a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-08-18
-        </span>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
       
-        
-        
 
-        
-          
-        
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://yoyoyohamapi.me">吴晓军</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://yoyoyohamapi.me/2018/08/21/实现一个_redux-observable/">http://yoyoyohamapi.me/2018/08/21/实现一个_redux-observable/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
       
     </div>
+  </div>
 
     
 
     
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
+      <footer class="post-footer">
         
-          <a class="post-link" href="/2018/08/18/使用_redux-observable_实现组件自治/">使用 redux-observable 实现组件自治</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-08-18
-        </span>
-        
-          <div class="post-category">
+          <div class="post-tags">
             
-              <a href="/categories/React/">React</a>
+              <a href="/tags/React/">React</a>
+            
+              <a href="/tags/Redux/">Redux</a>
+            
+              <a href="/tags/RxJS/">RxJS</a>
             
           </div>
         
         
-      </div>
-    </header>
-
+        
+  <nav class="post-nav">
     
     
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p><img src="/2018/08/18/使用_redux-observable_实现组件自治/cover.png" alt=""></p>
-<h1 id="使用-redux-observable-实现组件自治"><a href="#使用-redux-observable-实现组件自治" class="headerlink" title="使用 redux-observable 实现组件自治"></a>使用 redux-observable 实现组件自治</h1><blockquote>
-<p>本文是 《使用 RxJS + Redux 管理应用状态》系列第一篇文章，旨在介绍 redux-obervable v1 版本为 React + Redux 带来的组件自治能力。</p>
-<p>本系列的文章地址汇总：</p>
-<ul>
-<li><a href="">使用 redux-observable 实现组件自治</a></li>
-<li><a href="">如何实现一个 redux-observable</a></li>
-</ul>
-</blockquote>
-<h2 id="redux-observable-简介"><a href="#redux-observable-简介" class="headerlink" title="redux-observable 简介"></a>redux-observable 简介</h2><p><a href="https://github.com/redux-observable/redux-observable" target="_blank" rel="noopener">redux-observable</a> 是 redux 一个中间件，使用了 RxJs 来驱动 action 副作用。与其目的类似的有大家比较熟悉的 <a href="https://github.com/reduxjs/redux-thunk" target="_blank" rel="noopener">redux-thunk</a> 和 <a href="https://github.com/redux-saga/redux-saga" target="_blank" rel="noopener">redux-saga</a>。通过集成 redux-observable，我们可以在 Redux 中使用到 RxJS 所提供的函数响应式编程（FRP）的能力，从而更轻松的管理我们的异步副作用（前提是你熟悉了 RxJS）。</p>
-          <div class="read-more">
-            <a href="/2018/08/18/使用_redux-observable_实现组件自治/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/02/14/callbag/">callbag，一个有趣的规范</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018-02-14
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/JavaScript-函数式编程/">JavaScript 函数式编程</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="push-和-pull-模型"><a href="#push-和-pull-模型" class="headerlink" title="push 和 pull 模型"></a>push 和 pull 模型</h2><p>如果你了解 RxJs，在响应式编程中，Observable 和 Obsever 是 push 模型，与之对应的，还有一个 pull 模型：</p>
-<p><img src="https://i.stack.imgur.com/HwvQv.png" alt=""></p>
-<ul>
-<li><strong>Pull（<code>f(): B</code>）</strong>：返回一个值。</li>
-<li><strong>Push（<code>f(x: A): void</code>）</strong>：响应式的，当有值产生时，会发出一个事件，并携带上这个值。订阅了该事件的观察者（Observer）将获得反馈。</li>
-</ul>
-<p>JavaScript 中的 <code>Math.random()</code>、<code>window.outerHeight</code> 等都是 pull 模型：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> height = <span class="built_in">window</span>.outerHeight();</span><br><span class="line"><span class="comment">// 或者是迭代器写法 </span></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">getWindowHeight</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="built_in">window</span>.outerHeight;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> iter = getWindowHeight()</span><br><span class="line">iter.next()</span><br></pre></td></tr></table></figure>
-<p>pull 模型包含两个部分：</p>
-<ul>
-<li><strong> 生产者 </strong>：负责生产数据，是数据源</li>
-<li><strong> 消费者 </strong>：负责消费数据，是数据的使用方</li>
-</ul>
-<p>在 pull 模型中，数据是 <strong> 按需索取 </strong> 的。</p>
-<p>再通过 RxJs 看一个 push 模型的例子：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Rx.Observable</span><br><span class="line">    .fromEvent(<span class="built_in">document</span>, <span class="string">'click'</span>)</span><br><span class="line">  .map(<span class="function"><span class="params">event</span> =&gt;</span> <span class="string">`Event time: <span class="subst">$&#123;event.timeStamp&#125;</span>`</span>)</span><br><span class="line">    .subscribe(<span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    	<span class="built_in">console</span>.log(val);</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<p>push 模型的组成包含了两个部分：</p>
-<ul>
-<li><strong> 可观察（可监听）对象 </strong>：是数据来源</li>
-<li><strong> 观察者（监听者）</strong>：是数据的使用方</li>
-</ul>
-<p>与 pull 模型不同，观察者 <strong> 不能主动索取数据 </strong>，而是观察数据源，当数据源有数据时，才可消费和使用。</p>
-<p>push 模型有这么一些优点：</p>
-<ul>
-<li><strong> 高度复用的可观察对象 </strong>：通过对源可观察对象使用不同的运算子，可构建出新的可观察对象。</li>
-<li><strong> 延迟执行 </strong>：可观察对象只有被观察者订阅，才会派发数据。</li>
-<li><strong> 声明式、描述未来的代码 </strong>：我们只用声明数据源和数据消费方式，而不用关心数据交付时的细节。</li>
-</ul>
-<p><a href="https://cycle.js.org/" target="_blank" rel="noopener">Cycle.js</a> 的作者 Andre Staltz 长久以来面对一个问题，Cycle.js 及其推荐使用的响应式编程库 <a href="https://github.com/staltz/xstream" target="_blank" rel="noopener">xstream</a> 都是 push 模型的，这让框架的模型和业务代码都受益于 push 模型的优点。但是，实际项目中，我们还是有不少 pull 模型下的需求，Andre Staltz 也开了一个 <a href="https://github.com/cyclejs/cyclejs/issues/581" target="_blank" rel="noopener">issue</a> ，讨论如何更好的使用代码描述 pull 模型。</p>
-          <div class="read-more">
-            <a href="/2018/02/14/callbag/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/07/30/Cycle.js 基础 21 讲/">Cycle.js 基础 21 讲</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-07-30
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/Cycle-js/">Cycle.js</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <p><a href="https://www.gitbook.com/book/fepatients/cycle-js-21/details" target="_blank" rel="noopener">Gitbook</a></p>
-
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/07/27/2017_03-2017_08学习总结/">2017.03 - 2017.08 的学习总结</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-07-27
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/JavaScript-函数式编程/">JavaScript 函数式编程</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>从今年三月份开始，我在前端的学习路径是：</p>
-<ol>
-<li>JavaScript 函数式编程（Lisp、Haskell 开发者轻喷）</li>
-<li>函数响应式编程：FRP，这一块主要是以学习 Rxjs 为主</li>
-<li>函数式编程和函数响应式编程的应用：这一块主要是以学习 Cycle.js 为主</li>
-</ol>
-          <div class="read-more">
-            <a href="/2017/07/27/2017_03-2017_08学习总结/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/04/29/斯坦福机器学习笔记/">斯坦福机器学习笔记</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-04-29
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/机器学习/">机器学习</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>系列文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/mit-ml" target="_blank" rel="noopener">Gitbook</a></p>
-</blockquote>
-<p>本书为斯坦福吴恩达教授的在 coursera 上的 <a href="https://zh.coursera.org/learn/machine-learning" target="_blank" rel="noopener">机器学习公开课</a> 的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。</p>
-<p>本书涉及到的程序代码均放在了我个人的 <a href="https://github.com/yoyoyohamapi/mit-ml" target="_blank" rel="noopener">github</a> 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有放这门课程的 homework 代码，原因是 homework 布置的编程作业是填空式的作业，而完整实现一个算法虽然历经更多坎坷，但更有助于检验自己对算法理解和掌握程度。</p>
-<div style="text-align:center"><br><img src="https://yoyoyohamapi.gitbooks.io/mit-ml/content/%E8%AF%81%E4%B9%A6.jpg" width="350"><br></div>
-          <div class="read-more">
-            <a href="/2017/04/29/斯坦福机器学习笔记/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/02/03/一步步写一个-co/">一步步写一个 co</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-02-03
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/一步步写一个-co/">一步步写一个 co</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/-co/details" target="_blank" rel="noopener">GitBook</a></p>
-</blockquote>
-<p>现在，我们有三个 markdown 文件 file1.md,file2.md,file3.md，我们想要统计这三个文件的大小信息，并输出为以下格式：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">file1</span>: <span class="number">5384</span>, <span class="attr">file2</span>: <span class="number">2712</span>, <span class="attr">file3</span>: <span class="number">13942</span>&#125;</span><br></pre></td></tr></table></figure>
-          <div class="read-more">
-            <a href="/2017/02/03/一步步写一个-co/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/01/01/underscore-源码分析/">underscore 源码分析</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2017-01-01
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/underscore-源码分析/">underscore 源码分析</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p>文章已发布至 <a href="https://www.gitbook.com/book/yoyoyohamapi/undersercore-analysis" target="_blank" rel="noopener">GitBook</a></p>
-</blockquote>
-<h2 id="写作意图"><a href="#写作意图" class="headerlink" title="写作意图"></a>写作意图</h2><p>起初，我分析 underscore 的源码只是想更深入的了解 <strong> 函数式编程（Functional Programming）</strong>，但分析结束后，我就觉得单纯的源码注释不足以记录我的收获、理解和感悟，所以我想把这些写下来，我粗略地将写作意图概括如下：</p>
-<ul>
-<li><p>函数式编程近些年非常火爆，诸如 haskwell 这样的纯函数式编程语言获得了非常高的社区活跃度。JavaScript 支持多范式编程，抛开 underscore 和 lodash 这样的生来为了函数编程的库不谈，诸如 <a href="https://github.com/reactjs/redux" target="_blank" rel="noopener">redux</a> 这样的库也大量运用了函数式编程，即便作为一个 react+redux 的业务开发者，想要深入理解的 redux 的实现机制，也不得不学习函数式编程。因此，学习函数式编程，将会成为 JavaScript 开发者的必须。</p>
-<p>   在阅读 underscore 的源码期间，被作者 jashkenas（他同时也是 backbone 和 coffee 的作者）的功力深深折服，一些功能可能我也能写出，但绝对写不了如此健壮。所以，深入学习 underscore 源码，不仅有助于我们认识函数式编程，也能深化我们对于 JavaScript 中一些基础知识的理解和掌握。</p>
-<p>   随着 backbone 的衰落和 lodash 的崛起，underscore 的热度已经不及当年，但是截止这篇文章的开始前的一个月，underscore 仍然有最新的 bug 修复，可见作者 jashkenas 仍然没有放弃 underscore 的维护。所以现在分析 underscore 的源码仍然不显得过时。相较于 lodash，underscore 的源码更加短小，也不太涉及 JavaScript 中的一些奇淫巧技，所以，分析 underscore 更加适合 JavaScript 开发者的进阶。在完成了 underscore 的源码分析后，希望我自己有时间，也希望读者有意愿再去分析 lodash 的源码，后者在性能和功能上都已经超越了 underscore，并且长时间霸占了 npm 了最热 package 的位置。</p>
-</li>
-</ul>
-          <div class="read-more">
-            <a href="/2017/01/01/underscore-源码分析/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2016/08/02/thunkify/">thunkify</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2016-08-02
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/JavaScript-学习笔记/">JavaScript 学习笔记</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ....</span></span><br><span class="line">  <span class="comment">// 一切完成后会触发回调函数</span></span><br><span class="line">  cb(<span class="literal">null</span>, errMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>出于性能上的考虑，该库被封装为了一个异步函数，需要提供一个回调函数 <code>cb</code> 来获得验证结果，该回调函数是一个满足 node 规范的 <strong>error-first callback</strong>。在其他系统中，该库使用良好，但是，新项目使用了 koa，我在中间件中使用这个库提供的 <code>validate</code> 方法， 却连编译期都没有通过：</p>
-          <div class="read-more">
-            <a href="/2016/08/02/thunkify/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-  </section>
-
-  
-  <nav class="pagination">
-    
-    
-      <a class="next" href="/page/2/">
-        <span class="next-text">下一页</span>
+      <a class="next" href="/2018/08/18/RxJS+Redux-1/">
+        <span class="next-text nav-default"></span>
+        <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>
     
   </nav>
 
+      </footer>
+    
+
+  </article>
+
 
           </div>
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
       </main>
@@ -979,6 +534,27 @@
     </div>
 
     
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'http://yoyoyohamapi.me/2018/08/21/实现一个_redux-observable/';
+        this.page.identifier = '2018/08/21/实现一个_redux-observable/';
+        this.page.title = '如何实现一个 redux-observable';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//yoyoyohamapi.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+  
+
+  
+
 
 
     
