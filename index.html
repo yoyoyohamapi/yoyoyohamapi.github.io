@@ -205,6 +205,66 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2018/09/04/更好用的_Redux/">更好用的 Redux</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-09-04
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/React/">React</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+
+
+    <div class="post-content">
+      
+        
+        
+          
+        
+
+        
+          <p><img src="/2018/09/04/更好用的_Redux/cover.png" alt="cover"></p>
+<blockquote>
+<p>本文是 《使用 RxJS + Redux 管理应用状态》系列第三篇文章，将介绍我们在使用 Redux 时的困惑，如何重新思考 Redux 定下的范式，以及我们能为此做出的努力。返回第一篇：<a href="http://yoyoyohamapi.me/2018/08/18/%E4%BD%BF%E7%94%A8_redux-observable_%E5%AE%9E%E7%8E%B0%E7%BB%84%E4%BB%B6%E8%87%AA%E6%B2%BB/">使用 redux-observable 实现组件自治</a></p>
+<p>本系列的文章地址汇总：</p>
+<ul>
+<li><a href="http://yoyoyohamapi.me/2018/08/18/%E4%BD%BF%E7%94%A8_redux-observable_%E5%AE%9E%E7%8E%B0%E7%BB%84%E4%BB%B6%E8%87%AA%E6%B2%BB/">使用 redux-observable 实现组件自治</a></li>
+<li><a href="http://yoyoyohamapi.me/2018/08/21/%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA_redux-observable/">如何实现一个 redux-observable</a></li>
+<li><a href="http://yoyoyohamapi.me/2018/09/04/%E6%9B%B4%E5%A5%BD%E7%94%A8%E7%9A%84_Redux/">更好用的 Redux</a></li>
+</ul>
+</blockquote>
+          <div class="read-more">
+            <a href="/2018/09/04/更好用的_Redux/" class="read-more-link">阅读更多</a>
+          </div>
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/08/21/实现一个_redux-observable/">如何实现一个 redux-observable</a>
         
       </h1>
@@ -699,58 +759,6 @@
 </ul>
           <div class="read-more">
             <a href="/2017/01/01/underscore-源码分析/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2016/08/02/thunkify/">thunkify</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2016-08-02
-        </span>
-        
-          <div class="post-category">
-            
-              <a href="/categories/JavaScript-学习笔记/">JavaScript 学习笔记</a>
-            
-          </div>
-        
-        
-      </div>
-    </header>
-
-    
-    
-
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>自己之前曾经撸过一个验证库，代码大致如下：<br><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params">data, rules, cb</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ....</span></span><br><span class="line">  <span class="comment">// 一切完成后会触发回调函数</span></span><br><span class="line">  cb(<span class="literal">null</span>, errMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>出于性能上的考虑，该库被封装为了一个异步函数，需要提供一个回调函数 <code>cb</code> 来获得验证结果，该回调函数是一个满足 node 规范的 <strong>error-first callback</strong>。在其他系统中，该库使用良好，但是，新项目使用了 koa，我在中间件中使用这个库提供的 <code>validate</code> 方法， 却连编译期都没有通过：</p>
-          <div class="read-more">
-            <a href="/2016/08/02/thunkify/" class="read-more-link">阅读更多</a>
           </div>
         
       
