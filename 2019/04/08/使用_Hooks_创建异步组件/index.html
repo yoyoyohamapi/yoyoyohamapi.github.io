@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="使用 Hooks 创建异步组件"/>
+
+
+
+
+  <meta name="keywords" content="函数式编程, React, Hooks, 吴小蛆的巣" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.9.0" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2019/04/08/使用_Hooks_创建异步组件/"/>
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css" />
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.9.0" />
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+<script>
+  window.config = {"title":"吴小蛆的巣","subtitle":null,"description":"只要努力，蛆虫也能变成苍蝇翱翔于天际","author":"吴晓军","language":null,"timezone":null,"url":"http://yoyoyohamapi.me","root":"/","permalink":":year/:month/:day/:title/","permalink_defaults":null,"source_dir":"source","public_dir":"public","tag_dir":"tags","archive_dir":"archives","category_dir":"categories","code_dir":"downloads/code","i18n_dir":":lang","skip_render":null,"new_post_name":":title.md","default_layout":"post","titlecase":false,"external_link":true,"filename_case":0,"render_drafts":false,"post_asset_folder":true,"relative_link":false,"future":true,"highlight":{"enable":true,"auto_detect":true,"line_number":false,"tab_replace":"  "},"default_category":"uncategorized","category_map":null,"tag_map":null,"date_format":"YYYY-MM-DD","time_format":"HH:mm:ss","per_page":10,"pagination_dir":"page","theme":"even","deploy":{"type":"git","repo":"https://github.com/yoyoyohamapi/yoyoyohamapi.github.io.git","branch":"master"},"ignore":[],"math":{"engine":"mathjax"},"sitemap":{"path":"sitemap.xml"},"archive_generator":{"per_page":10,"yearly":true,"monthly":true,"daily":false},"index_generator":{"per_page":10},"feed":{"type":"atom","limit":20,"hub":"","content":true,"content_limit":140,"content_limit_delim":"","path":"atom.xml"},"category_generator":{"per_page":10},"tag_generator":{"per_page":10},"marked":{"gfm":true,"pedantic":false,"sanitize":false,"tables":true,"breaks":true,"smartLists":true,"smartypants":true},"server":{"log":false,"ip":"0.0.0.0"},"since":2015,"favicon":"/favicon.ico","rss":"default","menu":{"Home":"/","Archives":"/archives/","Tags":"/tags","Categories":"/categories"},"color":"Default","toc":true,"fancybox":true,"pjax":true,"copyright":{"enable":true,"origin":"http://yoyoyohamapi.me","license":"本文采用<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\" target=\"_blank\">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可"},"reward":{"enable":true,"qrCode":{"wechat":null,"alipay":null}},"social":{"email":"softshot37@gmail.com","stack-overflow":null,"twitter":null,"facebook":null,"linkedin":null,"google":null,"github":"https://github.com/yoyoyohamapi","weibo":null,"zhihu":"https://www.zhihu.com/people/wu-xiao-jun-64-55/activities","pocket":null,"tumblr":null,"instagram":null},"leancloud":{"app_id":null,"app_key":null},"baidu_analytics":null,"baidu_verification":null,"google_analytics":null,"google_verification":null,"disqus_shortname":"yoyoyohamapi","version":"2.9.0"};
+</script>
+
+    <title> 使用 Hooks 创建异步组件 - 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            分类
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          使用 Hooks 创建异步组件
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-04-08
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/React/">React</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基于-Class-的思维方式"><span class="toc-text">基于 Class 的思维方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基于-Hook-的思维方式"><span class="toc-text">基于 Hook 的思维方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#useService：响应式服务调度"><span class="toc-text">useService：响应式服务调度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#useServiceCallback：手动服务调度"><span class="toc-text">useServiceCallback：手动服务调度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bonus：使用-RxJS-丰富异步能力"><span class="toc-text">Bonus：使用 RxJS 丰富异步能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
+    </div>
+  </div>
+
+
+
+    <div class="post-content">
+      
+        <p><img src="/2019/04/08/使用_Hooks_创建异步组件/cover.png" alt=""></p>
+<a id="more"></a>
+<h2 id="基于-Class-的思维方式"><a href="#基于-Class-的思维方式" class="headerlink" title="基于 Class 的思维方式"></a>基于 Class 的思维方式</h2><p>在 Hooks 之前，如果需要在组件中执行异步任务，例如数据的增删改查，我们只能使用 class 组件，这是因为，一方面，我们需要 <strong> 状态 </strong> 来存储任务的加载状况、错误以及数据，另一方面，我们也需要 <strong> 生命周期 </strong> 来调度任务：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">List</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  state = &#123;</span><br><span class="line">    loading: <span class="literal">false</span>,</span><br><span class="line">    error: <span class="literal">null</span>,</span><br><span class="line">    data: [],</span><br><span class="line">    page: <span class="number">1</span>,</span><br><span class="line">    pageSize: <span class="number">10</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    fetch()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  componentDidUpdate(prevProps, prevState) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; page, pageSize &#125; = <span class="keyword">this</span>.state</span><br><span class="line">    <span class="keyword">if</span> (prevState.page != page || prevState.pageSize != pageSize) &#123;</span><br><span class="line">      fetch()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  handlePaginationChange = <span class="function">(<span class="params">page, pageSize</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      page,</span><br><span class="line">      pageSize</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  fetch = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 设置加载态，重置错误 </span></span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      loading: <span class="literal">true</span>,</span><br><span class="line">      error: <span class="literal">null</span></span><br><span class="line">    &#125;)</span><br><span class="line">  </span><br><span class="line">    API.fetchList(&#123;</span><br><span class="line">      page: <span class="keyword">this</span>.state.page,</span><br><span class="line">      pageSize: <span class="keyword">this</span>.state.pageSize</span><br><span class="line">    &#125;).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">        loading: <span class="literal">false</span>,</span><br><span class="line">        data</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;).catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">        loading: <span class="literal">false</span>,</span><br><span class="line">        error,</span><br><span class="line">        data: []</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; page, pageSize, loading, data, error &#125; = <span class="keyword">this</span>.state</span><br><span class="line">    <span class="keyword">return</span> error </span><br><span class="line">      ? &lt;Error error=&#123;error&#125;&gt; </span><br><span class="line">      : (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">          &lt;Table</span><br><span class="line">            data=&#123;this.state.data&#125;</span><br><span class="line">            loading=&#123;loading&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;Pagination </span><br><span class="line">            page=&#123;page&#125; </span><br><span class="line">            pageSize=&#123;pageSize&#125; </span><br><span class="line">            onChange=&#123;this.handlePaginationChange&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        &lt;/&gt;</span><br><span class="line">      )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上例的列表组件为我们展示了，基于 Class 创建一个异步组件，我们需要：</p>
+<ol>
+<li>创建并维护异步服务所需要的 <strong> 状态 </strong>：loading, error 与 data</li>
+<li>在组件生命期中，调用 <strong> 异步任务 </strong>，还需要留意任务的调用 <strong> 粒度控制 </strong>（如上例中 <code>componentDidUpdate</code> 中的 if 分支）</li>
+</ol>
+<h2 id="基于-Hook-的思维方式"><a href="#基于-Hook-的思维方式" class="headerlink" title="基于 Hook 的思维方式"></a>基于 Hook 的思维方式</h2><p>我们知道，当 React 推出了 Hooks 后，为原本单薄的函数组件带来了：</p>
+<ul>
+<li><strong> 状态管理 </strong>：通过 <code>useState</code> hook</li>
+<li><strong> 副作用治理 </strong>：通过 <code>useEffect</code> hook</li>
+</ul>
+<p>这两个能力能够让函数组件像类组件一样，创建异步任务，维护对应的数据状态：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> List = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [loading, setLoading] = useState(<span class="literal">false</span>)</span><br><span class="line">  <span class="keyword">const</span> [error, setError] = useState(<span class="literal">null</span>)</span><br><span class="line">  <span class="keyword">const</span> [data, setData] = useState(<span class="literal">null</span>)</span><br><span class="line">  <span class="keyword">const</span> [page, setPage] = useState(<span class="number">1</span>)</span><br><span class="line">  <span class="keyword">const</span> [pageSize, setPageSize] = uesState(<span class="number">10</span>)</span><br><span class="line">  </span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setLoading(<span class="literal">true</span>)</span><br><span class="line">    setError(<span class="literal">null</span>)</span><br><span class="line">    API.fetchList(&#123;</span><br><span class="line">      page,</span><br><span class="line">      pageSize</span><br><span class="line">    &#125;).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      setLoading(<span class="literal">false</span>)</span><br><span class="line">      setData(data)</span><br><span class="line">    &#125;).catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">      setLoading(<span class="literal">false</span>)</span><br><span class="line">      setError(error)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;, [page, pageSize])</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> handlePaginationChange = useCallback(<span class="function">(<span class="params">page, pageSize</span>) =&gt;</span> &#123;</span><br><span class="line">    setPage(page)</span><br><span class="line">    setPageSize(pageSize)</span><br><span class="line">  &#125;, [])</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> error </span><br><span class="line">    ? &lt;Error error=&#123;error&#125;&gt; </span><br><span class="line">    : (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">          &lt;Table</span><br><span class="line">            data=&#123;data&#125;</span><br><span class="line">            loading=&#123;loading&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;Pagination </span><br><span class="line">            page=&#123;page&#125; </span><br><span class="line">            pageSize=&#123;pageSize&#125; </span><br><span class="line">            onChange=&#123;handlePaginationChange&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        &lt;/&gt;</span><br><span class="line">      )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用 hooks 与函数组件来创建异步组件时，我们的关注的是：</p>
+<ul>
+<li><strong> 异步副作用是什么 </strong>：即 <code>useEffect</code> 的第一个参数</li>
+<li><strong> 异步副作用的依赖是什么 </strong>，即 <code>useEffect</code> 的第二个参数</li>
+</ul>
+<blockquote>
+<p>上例中，异步副作用即 <code>API.fetchList</code>，这个副作用依赖了两个参数：<code>page</code> 及 <code>pageSize</code>。</p>
+</blockquote>
+<p>乍看之下，貌似我们仍在用 “状态 + 副作用” 的方式编排异步组件，但现在：</p>
+<ul>
+<li>我们不用再关注各个 <strong> 生命期 </strong>：一个 <code>useEffect</code> 足够</li>
+<li>我们不用再 <strong> 命令式地 </strong> 调度任务：只需要声明任务的依赖，当依赖变动时，任务能被自动调度</li>
+</ul>
+<p>这样我们能够用 React 进一步的实践 <a href="https://www.wikiwand.com/en/Functional_reactive_programming" target="_blank" rel="noopener">函数响应式编程（FRP）</a>。类似的模式并不新鲜，几年前 <a href="https://cycle.js.org/" target="_blank" rel="noopener">Cycle.js</a> 就已经这么做了：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;run&#125; <span class="keyword">from</span> <span class="string">'@cycle/run'</span></span><br><span class="line"><span class="keyword">import</span> &#123;div, label, input, hr, h1, makeDOMDriver&#125; <span class="keyword">from</span> <span class="string">'@cycle/dom'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params">sources</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> input$ = sources.DOM.select(<span class="string">'.field'</span>).events(<span class="string">'input'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> name$ = input$.map(<span class="function"><span class="params">ev</span> =&gt;</span> ev.target.value).startWith(<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> vdom$ = name$.map(<span class="function"><span class="params">name</span> =&gt;</span></span><br><span class="line">    div([</span><br><span class="line">      label(<span class="string">'Name:'</span>),</span><br><span class="line">      input(<span class="string">'.field'</span>, &#123;<span class="attr">attrs</span>: &#123;<span class="attr">type</span>: <span class="string">'text'</span>&#125;&#125;),</span><br><span class="line">      hr(),</span><br><span class="line">      h1(<span class="string">'Hello '</span> + name),</span><br><span class="line">    ])</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123; <span class="attr">DOM</span>: vdom$ &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run(main, &#123; <span class="attr">DOM</span>: makeDOMDriver(<span class="string">'#app-container'</span>) &#125;)</span><br></pre></td></tr></table></figure>
+<p>不同的是，Cycle.js 偏爱 Hyperscript，React 则是 JSX，也没有使用 FRP 框架或者 Observable（RxJS 或者 xstream）去组织依赖。</p>
+<h3 id="useService：响应式服务调度"><a href="#useService：响应式服务调度" class="headerlink" title="useService：响应式服务调度"></a><code>useService</code>：响应式服务调度</h3><p>上文中，使用了 hooks 和函数组件来创建异步组件，相较于基于 class 创建的异步组件，<code>useEffect</code> 砍掉了生命期，也砍掉了生命期内的命令式地调度粒度控制，代码着实精简不少。但是这还不够，我们仍能观察到一些样板代码：</p>
+<ul>
+<li>服务状态的创建及维护：loading、error 与 data</li>
+<li>服务调用粒度的控制：当参数变动时，服务就该被调度，但现在，我们仍在 <code>useEffect</code> 中显式地声明它们</li>
+</ul>
+<p>在继续精简代码之前，我们还需要明确一点：Hooks 的到来，并不只是为函数组件带来了状态管理及副作用治理的能力，我们使用 Hooks，也不只是去重复 class 组件能做的事儿。它的到来，更带来了独立于 HOC 和 render props 之外的是新的逻辑复用方式，我们可以将其归纳为：</p>
+<p><img src="/2019/04/08/使用_Hooks_创建异步组件/hook.png" alt="hook.png"> </p>
+<p>即，配置了一个 Hook 之后，若声明了依赖，则每当依赖变动，将获得新的数据。基于此，我们就可以概括出异步任务的对应的 Hook：</p>
+<p><img src="/2019/04/08/使用_Hooks_创建异步组件/useService.png" alt="useService.png"> </p>
+<p>即，我们定义了异步任务，并声明其依赖为请求参数，那么，<code>useService</code> hook 将为我们返回任务的加载状况、报错以及数据，另外，当任意接口参数变动时，服务也会被自动调度。</p>
+<p>现在，在组件中，一个 hook 就能搞定异步任务：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> List = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [page, setPage] = useState(<span class="number">1</span>)</span><br><span class="line">  <span class="keyword">const</span> [pageSize, setPageSize] = uesState(<span class="number">10</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> &#123; loading, error, response &#125; = useService(API.fetchList, &#123;page, pageSize&#125;)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> handlePaginationChange = useCallback(<span class="function">(<span class="params">page, pageSize</span>) =&gt;</span> &#123;</span><br><span class="line">    setPage(page)</span><br><span class="line">    setPageSize(pageSize)</span><br><span class="line">  &#125;, [])</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> error </span><br><span class="line">    ? &lt;Error error=&#123;error&#125; /&gt; </span><br><span class="line">    : (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">          &lt;Table</span><br><span class="line">            data=&#123;this.state.data&#125;</span><br><span class="line">            loading=&#123;loading&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;Pagination </span><br><span class="line">            page=&#123;page&#125; </span><br><span class="line">            pageSize=&#123;pageSize&#125; </span><br><span class="line">            onChange=&#123;handlePaginationChange&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        &lt;/&gt;</span><br><span class="line">      )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>useService</code> 的实现大致如下，要留意的是，在此实现中，我们对先后两次的参数进行了 <strong> 深度比较 </strong>，保证只有在参数变动时，请求才会被发出：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; isEqual &#125; <span class="keyword">from</span> <span class="string">'lodash'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useService</span>(<span class="params">service, params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> prevParams = useRef(<span class="literal">null</span>)</span><br><span class="line">  <span class="keyword">const</span> [loading, setLoading] = useState(<span class="literal">false</span>)</span><br><span class="line">  <span class="keyword">const</span> [error, setError] = useState(<span class="literal">null</span>)</span><br><span class="line">  <span class="keyword">const</span> [response, setResponse] = useState(<span class="literal">null</span>)</span><br><span class="line">  </span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!isEqual(prevParams.current, params)) &#123;</span><br><span class="line">      prevParams.current = params</span><br><span class="line">      setLoading(<span class="literal">true</span>)</span><br><span class="line">      setError(<span class="literal">null</span>)</span><br><span class="line">      service(params)</span><br><span class="line">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">        setLoading(<span class="literal">false</span>)</span><br><span class="line">        setResponse(response)</span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">        setLoading(<span class="literal">false</span>)</span><br><span class="line">        setError(error)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> &#123; loading, error, response &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子你可以在 <a href="https://codesandbox.io/s/38666polx1" target="_blank" rel="noopener">CodeSandbox</a> 查看，尝试切换页码，或者页面大小，你能看到请求被发出，而切换表格尺寸时，因为参数没有发生变化，请求将不会发出，即 effect 不会被执行。</p>
+<p>诚然，我们也可以使用 HOC 或者 render props 实现上面的复用，比如下面展示的这样，但它们在层次上容易形成组件嵌套，不如 Hooks + 函数组件那样简洁直接：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">List</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  </span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; page, pageSize &#125; = <span class="keyword">this</span>.state</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;Service params=&#123;&#123;page, pageSize&#125;&#125; service=&#123;fetchList&#125;&gt;</span><br><span class="line">      &#123;(&#123;loading, error, response&#125;) =&gt; error </span><br><span class="line">        ? &lt;Error error=&#123;error&#125; /&gt; </span><br><span class="line">        : (</span><br><span class="line">            &lt;&gt;</span><br><span class="line">              &lt;Table</span><br><span class="line">                data=&#123;response&#125;</span><br><span class="line">                loading=&#123;loading&#125;</span><br><span class="line">              /&gt;</span><br><span class="line">              &lt;Pagination </span><br><span class="line">                page=&#123;page&#125; </span><br><span class="line">                pageSize=&#123;pageSize&#125; </span><br><span class="line">                onChange=&#123;this.handlePaginationChange&#125;</span><br><span class="line">              /&gt;</span><br><span class="line">            &lt;/&gt;</span><br><span class="line">          )&#125;</span><br><span class="line">      &lt;/Service&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="useServiceCallback：手动服务调度"><a href="#useServiceCallback：手动服务调度" class="headerlink" title="useServiceCallback：手动服务调度"></a><code>useServiceCallback</code>：手动服务调度</h2><p>有些时候，我们也需要手动控制一个服务的调用，例如创建、删除等操作，对于这样的需求，我们可以再封装一个 <code>useServiceCallback</code> hook，除了 loading、error、response，它还能够返回服务调用函数。</p>
+<p>下例中，每当我们在 Auto Complete 组件中键入内容，都手动调用下搜索服务进行搜索：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Search = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [api, &#123; loading, error, response &#125;] = useServiceCallback(search);</span><br><span class="line">  <span class="keyword">const</span> handleSearch = useCallback(</span><br><span class="line">    value =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (value.length) &#123;</span><br><span class="line">        api(&#123;</span><br><span class="line">          text: value</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    [api]</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;AutoComplete</span><br><span class="line">      dataSource=&#123;response || []&#125;</span><br><span class="line">      onSearch=&#123;handleSearch&#125;</span><br><span class="line">      placeholder=<span class="string">"等待输入..."</span></span><br><span class="line">    /&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>它的实现你可以在 <a href="https://codesandbox.io/s/q4xj087064" target="_blank" rel="noopener">CodeSandbox</a> 上查看，并且我们还用 <code>useServiceCallback</code> 实现了 <code>useService</code>。</p>
+<h2 id="Bonus：使用-RxJS-丰富异步能力"><a href="#Bonus：使用-RxJS-丰富异步能力" class="headerlink" title="Bonus：使用 RxJS 丰富异步能力"></a>Bonus：使用 RxJS 丰富异步能力</h2><p>在实际项目中，我们对于某个服务，可能还有这些诉求：</p>
+<ul>
+<li><strong> 竞态处理 </strong>：服务响应同时到来时，如何处理它们彼此间的竞争。例如在列表数据获取中，我们希望只响应最后一次的数据。</li>
+<li><strong> 重试 </strong>：某些服务失败时，我们希望能够重试</li>
+<li><strong> 加载延迟 </strong>：我们希望能够超过一定容忍期，再设置加载中，这样能够避免短暂的转菊花带来的闪动问题。</li>
+<li><strong> 粒度控制 </strong>：单位时间周期内，只发送一次请求</li>
+</ul>
+<p>想要让我们的 <code>useService</code> 优雅地实现这些能力，就不得不搬出 RxJS 了，它能让我们 <strong> 声明式地 </strong> 编排异步流程。在  Hooks 推出后，我们也能更加自然的将 RxJS 能力注入到 Hooks 中，实现 RxJS 与 React 组件的解耦。</p>
+<p>如何使用 RxJS 丰富我们 <code>useService</code> 的 hook 能力就不再本文赘述了，对此感兴趣的同学，可以在 <a href="https://codesandbox.io/s/k3jwq5rl3o" target="_blank" rel="noopener">CodeSandbox</a> 上看到实现和范例。现在，我们的 service hook 用起来仍然简单，但是功能更加强大：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> List = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [page, setPage] = useState(<span class="number">1</span>)</span><br><span class="line">  <span class="keyword">const</span> [pageSize, setPageSize] = uesState(<span class="number">10</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> &#123; loading, error, response &#125; = useAdvancedService(&#123;</span><br><span class="line">    service: API.fetchList,</span><br><span class="line">    <span class="comment">/** 加载延迟 */</span></span><br><span class="line">    loadingDelay: <span class="number">500</span>,</span><br><span class="line">    <span class="comment">/** 重试次数 */</span></span><br><span class="line">    retry: <span class="number">3</span>,</span><br><span class="line">    <span class="comment">/** 每次重试延迟 */</span></span><br><span class="line">    retryDelay: <span class="number">500</span>,</span><br><span class="line">    <span class="comment">/** 竞态处理策略 */</span></span><br><span class="line">    race: <span class="string">'switch'</span>,</span><br><span class="line">    <span class="comment">/** 成功回调 */</span></span><br><span class="line">    onSuccess: <span class="function">(<span class="params">resp</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'Fetch success'</span>, resp)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">/** 失败回调 */</span></span><br><span class="line">    onError: <span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(<span class="string">'Fetch error'</span>, error)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> handlePaginationChange = useCallback(<span class="function">(<span class="params">page, pageSize</span>) =&gt;</span> &#123;</span><br><span class="line">    setPage(page)</span><br><span class="line">    setPageSize(pageSize)</span><br><span class="line">  &#125;, [])</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> error </span><br><span class="line">    ? &lt;Error error=&#123;error&#125; /&gt; </span><br><span class="line">    : (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">          &lt;Table</span><br><span class="line">            data=&#123;this.state.data&#125;</span><br><span class="line">            loading=&#123;loading&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;Pagination </span><br><span class="line">            page=&#123;page&#125; </span><br><span class="line">            pageSize=&#123;pageSize&#125; </span><br><span class="line">            onChange=&#123;handlePaginationChange&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        &lt;/&gt;</span><br><span class="line">      )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当然，当 React 官方的 cache + AsyncComponent 组件 stable 后，我们可能会有更完美的异步组件撰写方式和编排体验，关于 RxJS 与 React Hooks 结合，我也在我的 <a href="https://yoyoyohamapi.gitbooks.io/-rxjs-react-sql/content/" target="_blank" rel="noopener">《使用 RxJS 与 React 实现一个 SQL 编辑器》</a> 进行了深一步的探究，感兴趣的读者可以关注下，目前它在连载中</p>
+</blockquote>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://reactjs.org/docs/hooks-intro.html" target="_blank" rel="noopener">React Hooks</a> </li>
+<li><a href="https://overreacted.io/a-complete-guide-to-useeffect/" target="_blank" rel="noopener">A Complete Guide to useEffect</a></li>
+<li><a href="https://www.learnrxjs.io/operators/creation/interval.html" target="_blank" rel="noopener">learn-rxjs</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://yoyoyohamapi.me">吴晓军</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://yoyoyohamapi.me/2019/04/08/使用_Hooks_创建异步组件/">http://yoyoyohamapi.me/2019/04/08/使用_Hooks_创建异步组件/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/函数式编程/">函数式编程</a>
+            
+              <a href="/tags/React/">React</a>
+            
+              <a href="/tags/Hooks/">Hooks</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/12/16/Cycle.js_的状态管理模型/">
+        <span class="next-text nav-default">Cycle.js 状态管理模型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'http://yoyoyohamapi.me/2019/04/08/使用_Hooks_创建异步组件/';
+        this.page.identifier = '2019/04/08/使用_Hooks_创建异步组件/';
+        this.page.title = '使用 Hooks 创建异步组件';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//yoyoyohamapi.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+  
+
+  
+
+
+
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.9.0"></script>
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
