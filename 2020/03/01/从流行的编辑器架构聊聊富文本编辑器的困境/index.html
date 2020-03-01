@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="从流行的编辑器架构聊聊富文本编辑器的困境"/>
+
+
+
+
+  <meta name="keywords" content="JavaScript, 富文本编辑器, 吴小蛆的巣" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="吴小蛆的巣">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.9.0" />
+
+
+
+<link rel="canonical" href="http://yoyoyohamapi.me/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/"/>
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css" />
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.9.0" />
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+<script>
+  window.config = {"title":"吴小蛆的巣","subtitle":null,"description":"只要努力，蛆虫也能变成苍蝇翱翔于天际","author":"吴晓军","language":null,"timezone":null,"url":"http://yoyoyohamapi.me","root":"/","permalink":":year/:month/:day/:title/","permalink_defaults":null,"source_dir":"source","public_dir":"public","tag_dir":"tags","archive_dir":"archives","category_dir":"categories","code_dir":"downloads/code","i18n_dir":":lang","skip_render":null,"new_post_name":":title.md","default_layout":"post","titlecase":false,"external_link":true,"filename_case":0,"render_drafts":false,"post_asset_folder":true,"relative_link":false,"future":true,"highlight":{"enable":true,"auto_detect":true,"line_number":false,"tab_replace":"  "},"default_category":"uncategorized","category_map":null,"tag_map":null,"date_format":"YYYY-MM-DD","time_format":"HH:mm:ss","per_page":10,"pagination_dir":"page","theme":"even","deploy":{"type":"git","repo":"https://github.com/yoyoyohamapi/yoyoyohamapi.github.io.git","branch":"master"},"ignore":[],"math":{"engine":"mathjax"},"sitemap":{"path":"sitemap.xml"},"category_generator":{"per_page":10},"feed":{"type":"atom","limit":20,"hub":"","content":true,"content_limit":140,"content_limit_delim":"","path":"atom.xml"},"archive_generator":{"per_page":10,"yearly":true,"monthly":true,"daily":false},"index_generator":{"per_page":10},"tag_generator":{"per_page":10},"marked":{"gfm":true,"pedantic":false,"sanitize":false,"tables":true,"breaks":true,"smartLists":true,"smartypants":true},"server":{"log":false,"ip":"0.0.0.0"},"since":2015,"favicon":"/favicon.ico","rss":"default","menu":{"Home":"/","Archives":"/archives/","Tags":"/tags","Categories":"/categories"},"color":"Default","toc":true,"fancybox":true,"pjax":true,"copyright":{"enable":true,"origin":"http://yoyoyohamapi.me","license":"本文采用<a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc/4.0/\" target=\"_blank\">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可"},"reward":{"enable":true,"qrCode":{"wechat":null,"alipay":null}},"social":{"email":"softshot37@gmail.com","stack-overflow":null,"twitter":null,"facebook":null,"linkedin":null,"google":null,"github":"https://github.com/yoyoyohamapi","weibo":null,"zhihu":"https://www.zhihu.com/people/wu-xiao-jun-64-55/activities","pocket":null,"tumblr":null,"instagram":null},"leancloud":{"app_id":null,"app_key":null},"baidu_analytics":null,"baidu_verification":null,"google_analytics":null,"google_verification":null,"disqus_shortname":"yoyoyohamapi","version":"2.9.0"};
+</script>
+
+    <title> 从流行的编辑器架构聊聊富文本编辑器的困境 - 吴小蛆的巣 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">吴小蛆的巣</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            分类
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">吴小蛆的巣</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          从流行的编辑器架构聊聊富文本编辑器的困境
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-03-01
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/JavaScript-编辑器技术/">JavaScript 编辑器技术</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-ContentEditable-is-Terrible"><span class="toc-text">Why ContentEditable is Terrible?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#视觉内容（用户所见）与实际内容（DOM）的一对多关系"><span class="toc-text">视觉内容（用户所见）与实际内容（DOM）的一对多关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#视觉选区与实际选区的多对多关系"><span class="toc-text">视觉选区与实际选区的多对多关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#防患未然：基于行为的同步策略"><span class="toc-text">防患未然：基于行为的同步策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#亦敌亦友：输入法"><span class="toc-text">亦敌亦友：输入法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#亡羊补牢：基于现象的同步策略"><span class="toc-text">亡羊补牢：基于现象的同步策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM-的虚实调和"><span class="toc-text">DOM 的虚实调和</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前路漫漫，任重道远"><span class="toc-text">前路漫漫，任重道远</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
+    </div>
+  </div>
+
+
+
+    <div class="post-content">
+      
+        <p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/cover.jpg" alt="图片取自 https://webdevtrick.com/javascript-rich-text-editor/"></p>
+<h2 id="Why-ContentEditable-is-Terrible"><a href="#Why-ContentEditable-is-Terrible" class="headerlink" title="Why ContentEditable is Terrible?"></a>Why ContentEditable is Terrible?</h2><p>现今主流的 Web 富文本编辑器，大多都是基于 contenteditable 开发的，几年前，Medium Editor 的开发者写过一篇著名的博文：<a href="https://medium.engineering/why-contenteditable-is-terrible-122d8a40e480" target="_blank" rel="noopener">Why ContentEditable is Terrible?</a>，当中列举了一些 contenteditable 存在的一些问题：</p>
+<a id="more"></a>
+<h3 id="视觉内容（用户所见）与实际内容（DOM）的一对多关系"><a href="#视觉内容（用户所见）与实际内容（DOM）的一对多关系" class="headerlink" title="视觉内容（用户所见）与实际内容（DOM）的一对多关系"></a>视觉内容（用户所见）与实际内容（DOM）的一对多关系</h3><p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/1-many.png" alt="1-to-many"></p>
+<p>看上去一样的文本内容，却可能对应了多种 DOM 结构，例如下面这段文字：</p>
+<blockquote>
+<p>The hobbit was a very well-to-do hobbit, and his name was <strong><em>Baggins</em></strong>.</p>
+</blockquote>
+<p>描述这句话的 HTML 可以有多种：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/multiple-html.png" alt="html">)</p>
+<p>如果你的编辑器使用了 contenteditble ，并且将编辑行为都托管给了浏览器，那么在不同的 DOM 结构下，执行相同的操作，浏览器要能够输出一样的视觉内容。</p>
+<h3 id="视觉选区与实际选区的多对多关系"><a href="#视觉选区与实际选区的多对多关系" class="headerlink" title="视觉选区与实际选区的多对多关系"></a>视觉选区与实际选区的多对多关系</h3><p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/many-many.png" alt="many-to-many"></p>
+<p>选区的情况则更加糟糕，一个视觉选区可能映射为多种 DOM 选区，而一个 DOM 选区也可能映射为多个视觉选区，例如我们的 HTML 为:</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/selection-html.png" alt="selection-html"></p>
+<p>如果用户看到光标落在 <code>Baggins</code> 之前，那么 DOM 选区可以是：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/dom-selection.png" alt="dom-selections"></p>
+<p>在光标位置插入字符 <code>I</code>，上面不同的 DOM 选区就会让用户看到不同的文本</p>
+<ul>
+<li>his name was I<strong><em>Baggins</em></strong></li>
+<li>his name was <strong>I*</strong>Baggins*</li>
+<li>his name was <strong><em>IBaggins</em></strong></li>
+</ul>
+<p>而在文本：</p>
+<blockquote>
+<p>The hobbit was a very well-to-do hobbit, and his name was <strong><em>Baggins</em></strong>.</p>
+</blockquote>
+<p>的 <code>well-to-</code> 后回车，用户将看到：</p>
+<blockquote>
+<p>The hobbit was a very well-to<br>do hobbit, and his name was Baggins.</p>
+</blockquote>
+<p>从第一行末尾到第二行开头的 DOM 选区，在视觉上看有两种可能，要么在第一行末尾，要么在第二行开头。面对这样的 “悬摆 DOM 选区”，你无法告诉浏览器将其映射为哪个视觉选区。</p>
+<p>让浏览器自己实现 contenteditbale 元素视觉与实际的统一，已经颇为不易，如果还期盼不同的对 contenteditbale 有一致的处理，就难上加难了。这也就是为什么时至今日，浏览器在功能和性能上已经大幅发展了，开发者还是不信任它的富文本处理能力，社区的 Web 富文本编辑器也还是层出不穷。</p>
+<p>Why ContentEditable is Terrible? 还有一个副标题： <em>How Medium Editor Works?</em>，它不仅仅描述了 contenteditable 存在的缺陷，还以此为引，阐述了 Medium Editor 的工作机制。近年来社区活跃度颇高的 Slate.js，Draft.js 、ProseMirror 以及 CKEditor 等也使用了类似的机制，来规避 contenteditable 缺陷，这个机制可以被简单描述为：</p>
+<ul>
+<li><p><strong> 模型与视图相分离 </strong></p>
+<ul>
+<li>让编辑器决定数据结构（内容 + 选区），保证视觉与实际一致</li>
+<li>方便同样的内容在不同设备设备展示</li>
+</ul>
+</li>
+<li><p><strong> 自定义命令 </strong></p>
+<ul>
+<li>脱离实现不一的浏览器命令（<code>document.execCommand</code>），自行划定编辑器的操作范围</li>
+</ul>
+</li>
+</ul>
+<p>这种机制最小程度使用了 contenteditble —— 仅仅让一个节点的 HTML 内容允许被编辑，而如何编辑，编辑器结果则收敛到了编辑器治理：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/sync-editor.png" alt="sync"></p>
+<h2 id="防患未然：基于行为的同步策略"><a href="#防患未然：基于行为的同步策略" class="headerlink" title="防患未然：基于行为的同步策略"></a>防患未然：基于行为的同步策略</h2><p>编辑器使用了视图模型相分离的架构，就需要处理视图与模型间的同步，当用户在编辑器完成了操作后，编辑器据此更新数据模型，再通过数据模型渲染出新的页面视图即对视图：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/model-view-sync.png" alt="model-view-sync"></p>
+<p>编辑器是如何知道用户执行了哪个操作呢？答案就是 DOM 事件，假设监听到了 <code>keyCode = 8</code> 的 keydown 事件（Event），就推测用户是在执行退格（Intent），从而调用自定义的删除指令（Command），修改数据模型，最终用户看到光标前的字符被成功删除了。</p>
+<p>基于事件拦截的数据同步，是理想型的同步链路，先更新模型，再渲染视图，由于模型和视图一一对应的关系，用户执行了相同的操作，总能获得一致的 DOM 结构，</p>
+<p>然而，由于 DOM Event 的规范仍然在发展，各个浏览器对其的实现也不尽相同，因此，基于事件拦截的同步也不完全可靠。</p>
+<p>举个例子来说，beforeinput event 是非常有用的一个事件，该事件在 <a href="https://www.w3.org/TR/2017/WD-input-events-1-20170321/" target="_blank" rel="noopener">Input Events Level 1</a> 被定义，并在 <a href="https://www.w3.org/TR/input-events-2/" target="_blank" rel="noopener">Input Events Level 2</a> 中获得完善，规范希望能帮助类似 Web 富文本编辑器这样的应用更容易地处理用户输入。</p>
+<p>beforeinput event 能让开发者在输入反馈到 UI 之前，通过事件的 <code>inputType</code> 属性知悉用户输入意图（例如，当 <code>inputType</code> 是 <code>deleteContentBackward</code> 时，我们就知道用户正在向前删除内容）， 但尴尬的是：</p>
+<ul>
+<li>要么浏览器不支持这个事件</li>
+<li>要么部分支持这个事件：例如覆盖到的 input type 不全</li>
+</ul>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/beforeinput-compat.png" alt="beforeinput-compat"></p>
+<p>因此，DOM Event 本身的不完美，也就让编辑器难以完全摸清用户意图。而对用户意图的模糊，也会造成：</p>
+<ul>
+<li><strong> 无法理解 </strong>：编辑器忽略了某个用户操作</li>
+<li><strong> 理解错误 </strong>：将用户的操作理解为了另一个操作，例如用户是在输入，但被编辑器理解为了删除，造成数据模型发生非预期变更，用户看到错误的视图</li>
+</ul>
+<p>因此，基于事件的同步模型也是一个理想型模型，受限于浏览器支持，在实际应用中并不完全可靠。</p>
+<h2 id="亦敌亦友：输入法"><a href="#亦敌亦友：输入法" class="headerlink" title="亦敌亦友：输入法"></a>亦敌亦友：输入法</h2><p>在编辑器的生态中，作为文本合成（Text Composition）的主要手段，输入法能让编辑器展示和处理更多的语言，是编辑器的不可获取的伙伴。然后输入法本身又不受控于编辑器，它完全由第三方厂商实现，其实现也只和操作系统有关，而你编辑器的生死存亡，却不是它的义务：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/os-ime-browser.png" alt="os-ime-browser"></p>
+<p>我们看到，当生态中加入输入法之后，链路变得更加复杂了：输入法和操作系统交互来合成文本，浏览器也通过操作系统，获得输入法状态，在输入过程中抛出对应事件。</p>
+<p>其次，抛开这个链路不看，输入法自己也不是个 “省油的灯”：</p>
+<ul>
+<li><strong> 输入法繁多 </strong>：不同的操作系统版本、浏览器内核，和输入法能形成众多的组合，每种组合在 contenteditable 元素上进行文本合成的时候，难以形成一致的事件流</li>
+<li><strong> 输入方式多样 </strong>：除了键盘能够进行文本合成，还要支持手写、语音等输入方式</li>
+</ul>
+<p>而 Android 因为其生态紊乱，系统版本分布广泛，使用不同内核的浏览器众多，应用市场的第三方输入法层出不穷，让基于事件进行同步的策略更加脆弱。举个例子，我们在 Android 下使用某个第三方浏览器配合上某个第三方输入法编写内容时，可能遇到：</p>
+<ul>
+<li><strong> 浏览器不会抛出 beforeinput 事件 </strong>：编辑器无法通过 beforeinput 事件中的 inputType 属性知悉用户行为</li>
+<li><strong> 浏览器没有传递正确的虚拟键盘响应 </strong>：很多 Andorid 输入法都支持字词联想，当虚拟键盘呼出后，开始进入 Composing 状态，此时 keydown 事件的 <code>keyCode</code> 都会被设置为 229，那么编辑器无法也无法从 keydown 事件知悉用户行为</li>
+</ul>
+<blockquote>
+<p><a href="https://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html" target="_blank" rel="noopener">W3C KeyCode 规范</a> 定义了 keyCode 为 229 的 Keyboard Event 是表示输入法正在处理按键输入</p>
+</blockquote>
+<p>这就会造成比较恶性的现象，举个例子，当用户将光标放置在图片之后时，输入法被唤起，用户通过虚拟键盘按下了退格键希望能够删除图片。但由于编辑器既无法拦截 beforeinput 事件来判断用户是不是在执行删除，也无法通过 keydown 事件判断判断键盘的退格是否被按下，因此，也就不会生成对应的命令去修改数据模型，删除对应节点。此时，用户无论怎么疯狂点按退格，都不能把图片删掉。</p>
+<p>因此，基于事件的同步策略，在面对输入法时，变得更加不可靠，社区目前流行的开源编辑器也仍在和 Android 输入法作斗争：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/android-compat.png" alt="android-compat"></p>
+<h2 id="亡羊补牢：基于现象的同步策略"><a href="#亡羊补牢：基于现象的同步策略" class="headerlink" title="亡羊补牢：基于现象的同步策略"></a>亡羊补牢：基于现象的同步策略</h2><p>编辑器之所以希冀于事件去同步数据模型和视图，是期望在浏览器对页面执行变更前，尽早将用户行为同步到数据模型上，实现实际内容与视觉内容的统一。但我们发现，这个本就不健壮的策略再遇到输入法之后，无法响应用户操作的概率更高了。</p>
+<p>如果回到架构之前，仍然托管 contenteditable 的控制权给浏览器，那么，我们发现，输入法的增删改查还是能正确响应的，这也就说明了，托管给浏览器去处理 contenteditable，用户最基本的编辑诉求还是可以保障的。但我们又不能放任浏览器这么做，原因在开篇回顾 Why ContentEditable is Terrible 中也说了，因此，当浏览器处理了用户的行为并更新了视图后，我们要尽快的去 “纠正” 数据模型，亡羊补牢，犹未为晚。</p>
+<p>浏览器提供了 <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver" target="_blank" rel="noopener">Mutation Observer</a> 来让开发者监听 DOM 变更，它的 API 非常简单，初始化观察者之后，在适当时机开始观察即可，每次观察到的变更序列，其中的元素都是 <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord" target="_blank" rel="noopener">MutationRecord</a> 对象:</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/mutation-observer.png" alt="mutation-observer"></p>
+<p>借助于 Mutation Observer，编辑器在观察到 DOM 变化后，可以根据变化（现象）来反推用户行为，从而生成对应的命令，去修缮数据模型：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/by-mutation-observer.png" alt="mutation-to-intent"></p>
+<p>例如，经过反复的验证发现，当用户在某个段落顶部按下退格并合并了上下两个段落后，observer 将观察到一个 mutation 序列，这个序列的特征为：</p>
+<ul>
+<li>第一个 mutation record 的类型为 <code>childList</code>，且 removeNodes 不为空</li>
+<li>mutation 序列包含了多个 mutation record</li>
+</ul>
+<p>那么，我们就告诉编辑器，当观察到这样的 mutation 序列时，就是用户完成了合并段落，你需要去执行一条 <code>merge-block</code> 的指令，合并数据模型上的两个段落。</p>
+<p>这种 <strong> 事后同步 </strong>，弥补了浏览器无法派发正确事件时，我们仍能推测用户行为 —— 通过现象去反推用户行为。但是，由于现象的成因可能有多个，因此我们就可能造成错误的推断：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/mutilple-predication.png" alt="predication"></p>
+<p>就拿上面的举例的 mutation 序列来说，编辑器中的图片，在加载完成之前，会先展示 loading 占位，当加载完毕后，observer 也会观察到同样特征的 mutation 序列。但是，编辑器先前已经被告知这样的序列是在合并段落，它会调用 <code>merge-block</code> 指令去修改模型，假设该指令内部还可能调用到 <code>delete</code> 指令，那么就会造成刚加载完成的图片又被删除了，用户永远也无法在编辑器中上传图片。为此，我们又得在算法中告诉编辑器如何识别图片的这个特征。</p>
+<p>其实，算法的工作过程非常类似于机器学习中的分类问题：</p>
+<p><strong> 提取特征 -&gt; 分析特征 -&gt; 获得所属分类 </strong></p>
+<p>这种算法需要被不断地被训练（发现并扩充特征），才能让最后的预测更加精准。只是与机器学习不同的是，我们的是人肉学习，为了获得更多特征，去更精确的映射用户行为，开发者将疲于应付不同的 Android 设备，不同的浏览器，以及不同的输入法形成的种种组合。</p>
+<p>综上，基于现象去同步数据模型，是更不牢靠的手段， 即便开发者投入了大量精力去获得现象和意图间的关联关系，但难免还是有 “漏网之鱼”，导致模型 <strong> 同步错误 </strong>，这也许比不能响应操作更加严重。而基于事件的同步模型，因为事件本身就表达了用户意图，所以推测会更加精准，所以，只有当事件系统不完善时（例如在 Android 设备下），我们才使用基于现象的同步做兜底，保证用户在编辑器能进行最基本的输入。</p>
+<h2 id="DOM-的虚实调和"><a href="#DOM-的虚实调和" class="headerlink" title="DOM 的虚实调和"></a>DOM 的虚实调和</h2><p>刚才所讨论的内容，还聚焦在使用了 contenteditable 的编辑器上，如果编辑器在视图层使用了更高的抽象，例如选用了类似 React 这样的基于虚拟 DOM 的解决方案，那么问题还将加剧。</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/xe.png" alt="虚实调和"></p>
+<p>现代化的前端开发中，已经很少使用真实 DOM 来表达一个组件了，如果选用了类似 React 这样的解决方案去描述实现编辑器视图（Slate.js、Draft.js 就倾向于此），就会让视图的表达 “虚实并存”：</p>
+<ul>
+<li><strong> 虚 </strong>：React 根据组件属性和状态，创建并且维护了一棵组件对应的 virtual DOM tree，并使用 virtual DOM tree 渲染节点内容</li>
+<li><strong> 实 </strong>：对 contenteditable 的节点的修改会被浏览器托管，绕开了 React 去修改 DOM</li>
+</ul>
+<p>所以，当你尝试用与下面类似的代码创建一个 contenteditale 组件时：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/react-contenteditable.png" alt="react-contenteditable"></p>
+<p>React 会警告你要自行管控 contenteditable 的节点变更：</p>
+<blockquote>
+<p>Warning: A component is contentEditable and contains children managed by React. It is now your responsibility to guarantee that none of those nodes are unexpectedly modified or duplicated. This is probably not intentional.</p>
+</blockquote>
+<p>所以我们在使用诸如 Slate.js 或者 Draft.js 这样的框架时，会遇到下面这样的异常，此时整个编辑器无法继续工作：</p>
+<blockquote>
+<p>DOMException: Failed to execute ‘removeChild’ on ‘Node’: The node to be removed is not a child of this node.</p>
+</blockquote>
+<p>我们姑且称这个现象为：<strong> 虚实不调，阴阳失衡 </strong>。</p>
+<p>在 Android 设备上，为了解决输入法问题，编辑器将输入先托管给浏览器，并 Mutation Observer 观察 DOM 变化，而后再去同步数据模型。在这样的策略下，用户的输入过程在没有结束之前，都是浏览器在处理，当中发生许许多多的变更，不再受 React 控制，很容易造成 “虚实不调”，引起编辑器崩溃。</p>
+<p>因此，当使用了类似 React 这样的方案之后，编辑器需要更加 <strong> 谨小慎微地 </strong> 处理数据同步，在容易引起虚实不调的场合（例如段落分裂与合并），强刷（rerender）编辑器组件，调和虚实，让 DOM 与 VDOM 保持一致。而对于预料不到的场合，可能还需要借助 <code>componentDidCatch</code> 这样的 hook 去俘获异常，强刷组件。有 React 开发经验的同学都知道，对于编辑器这样内部子孙繁多的组件，重绘的开销是非常的，最终，在终端用户一侧，就是看到页面闪烁和卡顿。</p>
+<h2 id="前路漫漫，任重道远"><a href="#前路漫漫，任重道远" class="headerlink" title="前路漫漫，任重道远"></a>前路漫漫，任重道远</h2><p>上文对 Web 富文本编辑器困局的讨论，还仅仅局限单机版的富文本编辑器，如果还要为编辑器支持多人实时协同，那么面对的挑战更加艰巨。</p>
+<p>contenteditable is terrible, 但是编辑器已经最小化了对它的使用，比之更为严峻的是，操作系统、浏览器、输入法相互组合形成的紊乱生态 —— 一个编辑器无法控制的，但产品又期望在上面开出繁花的生态。所以才说，Web 富文本编辑器是前端的天坑之一。</p>
+<p>面对这样的生态，做不到抛弃，编辑器只能去适应和妥协，但在其领域范围内，似乎还可以有一些突破：</p>
+<ul>
+<li><strong> 是否能通过交互绕开缺陷？</strong>：上面我们举例的图片无法通过退格删除的问题，但键盘不是唯一的 I/O，如果在交互上，能多一个删除图片的方式，就不会阻塞用户。</li>
+<li><strong> 是否能脱离 contenteditable 的架构？</strong>：更大程度的以模型为核心，完全自绘内容和选区，脱离 contenteditable，让视图层更加可控。</li>
+</ul>
+<p>但是无论哪种解法，对编辑器的产品逻辑和开发者的技术要求都是非常大的。创建一个优秀的 Web 富文本编辑器，依然任重道远。钉钉文档团队致力于为钉钉用户提供最优质的文档服务，也因此面临着许许多多要去攻坚的技术方向，富文本编辑器就是其中之一，也希望对这个方向感兴趣的同学，和我们一起投入到这个可能会是伟大的历史进程中来：</p>
+<p><img src="/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/pd.png" alt="招聘"></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>编辑器技术：钉钉文字编辑技术的蜀道之难</li>
+<li><a href="https://medium.engineering/why-contenteditable-is-terrible-122d8a40e480" target="_blank" rel="noopener">Why ContentEditable is Terrible</a></li>
+<li><a href="https://developer.android.com/guide/topics/text/creating-input-method#kotlin" target="_blank" rel="noopener">Create an input method</a></li>
+<li><a href="https://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html" target="_blank" rel="noopener">keyCode property of key events</a></li>
+<li><a href="https://www.zhihu.com/question/38699645" target="_blank" rel="noopener">知乎 - 为什么都说富文本编辑器是天坑</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://yoyoyohamapi.me">吴晓军</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://yoyoyohamapi.me/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/">http://yoyoyohamapi.me/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+    </p>
+  </div>
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/JavaScript/">JavaScript</a>
+            
+              <a href="/tags/富文本编辑器/">富文本编辑器</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/07/16/React_Suspense与Hooks的另类实现/">
+        <span class="next-text nav-default">React Suspense 与 Hooks 的另类实现</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:softshot37@gmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/yoyoyohamapi" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wu-xiao-jun-64-55/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2020
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">吴晓军</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  <script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'http://yoyoyohamapi.me/2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/';
+        this.page.identifier = '2020/03/01/从流行的编辑器架构聊聊富文本编辑器的困境/';
+        this.page.title = '从流行的编辑器架构聊聊富文本编辑器的困境';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//yoyoyohamapi.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script>
+
+  
+
+  
+
+
+
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.9.0"></script>
+
+  </body>
+</html>
